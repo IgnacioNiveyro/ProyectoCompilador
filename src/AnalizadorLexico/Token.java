@@ -9,5 +9,8 @@ public class Token {
         this.lexema = lexema;
         this.nro_linea = nro_linea;
     }
-    
+
+    public String toString(){
+        return "("+this.token_id+","+this.lexema+","+this.nro_linea+")";
+    }
 }

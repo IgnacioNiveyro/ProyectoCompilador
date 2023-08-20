@@ -31,7 +31,7 @@ public class ManejadorDeArchivo {
         return this.numeroLineaActual;
     }
 
-    public int obtenerCaracterACtual(){
+    public int obtenerCaracterActual(){
         return this.caracterActual;
     }
 
