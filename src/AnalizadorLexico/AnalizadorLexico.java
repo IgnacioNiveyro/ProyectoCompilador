@@ -29,7 +29,7 @@ public class AnalizadorLexico {
         return this.caracterActual != -1;
     }
 
-    public Token siguienteToken() throws IOException {
+    public Token proximoToken() throws IOException {
         this.lexema = "";
         return e0();
     }
@@ -57,7 +57,7 @@ public class AnalizadorLexico {
         }
         else
             if(this.palabrasClave.containsKey(this.lexema)){
-                return new Token("identificador", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
+                return new Token("palabra_clave", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
             }
             else
                 return new Token("identificador", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
