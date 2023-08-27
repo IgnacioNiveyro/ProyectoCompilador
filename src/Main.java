@@ -1,6 +1,6 @@
 import AnalizadorLexico.AnalizadorLexico;
 import ManejadorDeArchivo.ManejadorDeArchivo;
-
+import AnalizadorLexico.ExcepcionLexica;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,17 +43,24 @@ public class Main {
             e.printStackTrace();
         }
 
-        analizadorLexico = new AnalizadorLexico(manejadorDeArchivo,palabrasClave);
-        ArrayList<Token> tokens = new ArrayList<>();
         try {
-            while (analizadorLexico.tokenDisponibles()) {
+            analizadorLexico = new AnalizadorLexico(manejadorDeArchivo,palabrasClave);
+            ArrayList<Token> tokens = new ArrayList<>();
+
+            boolean quedanTokens = true;
+            while (quedanTokens) {
 
                 Token token = analizadorLexico.proximoToken();
-                System.out.println(token.toString());
+                //System.out.println(token.toString());
                 tokens.add(token);
+                if(token.getToken_id() == "EOF"){
+                    for(Token t : tokens)
+                        System.out.println(t.toString());
+                    System.out.println("\n[SinErrores]");
+                    quedanTokens = false;
+                }
             }
-            System.out.println(tokens.size());
-        } catch (IOException e){
+        } catch (IOException | ExcepcionLexica e){
             System.out.println(e.getMessage());
         }
     }

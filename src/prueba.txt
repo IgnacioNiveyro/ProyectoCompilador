@@ -1,5 +1,3 @@
-class interface extends implements
-public static
-void boolean char int
-if else while return var
-this new null true false
+1234567
+1234567891
+123456789

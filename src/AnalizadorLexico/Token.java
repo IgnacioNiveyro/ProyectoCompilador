@@ -13,4 +13,8 @@ public class Token {
     public String toString(){
         return "("+this.token_id+","+this.lexema+","+this.nro_linea+")";
     }
+
+    public String getToken_id(){
+        return this.token_id;
+    }
 }
