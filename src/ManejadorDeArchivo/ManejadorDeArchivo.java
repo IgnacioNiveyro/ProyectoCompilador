@@ -37,7 +37,7 @@ public class ManejadorDeArchivo {
     public String obtenerLineaConError() throws IOException {
         BufferedReader lectorArchivoParaLineaConError = new BufferedReader(new FileReader(file));
         int numeroLinea = 1;
-        System.out.println("numero de linea: "+numeroLinea+" | numero de linea actual: "+numeroLineaActual);
+        //System.out.println("numero de linea: "+numeroLinea+" | numero de linea actual: "+numeroLineaActual);
         while(numeroLinea < this.numeroLineaActual){
 
             lectorArchivoParaLineaConError.readLine();

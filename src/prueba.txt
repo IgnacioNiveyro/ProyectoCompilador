@@ -1,56 +1,6 @@
-Hola Soy Ignacio\
-Un ID_de_clase
-Linea_3_IDCLASE
+///[Error:#|5]
 
-hola soy ignacio
-un iD_MeT_Var33
-lInEa_7_IDMETVAR
 
-class interface extends implements public static void boolean char int if else while return var this new null true false
-
-1
-12
-123
-1234
-12345
-123456
-1234567
-12345678
-123456789
-1234567899
-
-'a' 'z' 'ñ' 'n'
-'\a' '\z' '\ñ' '\n' '\r'
-'\´' '\*' '\]' '\}' '\_'
-
-"Hola!"
-""
-"Hol\"la"
-"soy pancrasio 33 de la njungla de los pancraaasisos XDDD_1234\"XD"
-
-//Soy un comentario si
-mple!
-/
-/** Soy un comentario multilinea! */
->=
->
-<=
-<
-!
-!=
-==
-*
--=
--
-+=
-+
-%
-&&
-||
-(
-)
-{
-}
-;
-,
-.
+"hola"
+v1 + # chau
+if class}

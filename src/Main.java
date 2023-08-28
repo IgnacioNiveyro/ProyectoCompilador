@@ -10,10 +10,25 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
+        AnalizadorLexico analizadorLexico = null;
 
-        File file;
+        File file = null;
         ManejadorDeArchivo manejadorDeArchivo = null;
-        AnalizadorLexico analizadorLexico;
+
+        try{
+            file = new File(args[0]);
+        }catch (ArrayIndexOutOfBoundsException e){
+            e.printStackTrace();
+        }
+        
+        try{
+            manejadorDeArchivo = new ManejadorDeArchivo(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
         Map<String, String> palabrasClave = new HashMap<>();
         palabrasClave.put("class", "pr_class");
         palabrasClave.put("interface", "pr_interface");
@@ -36,22 +51,20 @@ public class Main {
         palabrasClave.put("true", "pr_true");
         palabrasClave.put("false", "pr_false");
 
-        file = new File("src/prueba.txt");
         try {
-            manejadorDeArchivo = new ManejadorDeArchivo(file);
+            analizadorLexico = new AnalizadorLexico(manejadorDeArchivo, palabrasClave);
         }catch(IOException e){
             e.printStackTrace();
         }
 
-        try {
-            analizadorLexico = new AnalizadorLexico(manejadorDeArchivo,palabrasClave);
-            ArrayList<Token> tokens = new ArrayList<>();
+        ArrayList<Token> tokens = new ArrayList<>();
 
+        try{
             boolean quedanTokens = true;
             while (quedanTokens) {
 
                 Token token = analizadorLexico.proximoToken();
-                System.out.println(token.toString());
+                //System.out.println(token.toString());
                 tokens.add(token);
                 if(token.getToken_id() == "EOF"){
                     for(Token t : tokens)
