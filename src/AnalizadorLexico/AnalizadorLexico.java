@@ -287,7 +287,7 @@ public class AnalizadorLexico {
     private Token e3_novenoCaracter() throws IOException, ExcepcionLexica {
         if (Character.isDigit(this.caracterActual)) {
             this.actualizarLexema();
-            throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ "tiene mas de 9 digitos" );
+            throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ " tiene mas de 9 digitos" );
         }
         else
             return new Token("intLiteral", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
@@ -300,7 +300,7 @@ public class AnalizadorLexico {
         }
         else
             if(this.caracterActual == '\n' || this.caracterActual == '\'' || this.caracterActual == -1){
-                throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ "no es un caracter valido." );
+                throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ " no es un caracter valido." );
             }
             else {
                 this.actualizarLexema();
@@ -317,7 +317,7 @@ public class AnalizadorLexico {
         else
             if(this.caracterActual != -1 && this.caracterActual != '\n')
                 this.actualizarLexema();
-        throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ "no es un caracter valido" );
+        throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ " no es un caracter valido" );
     }
 
     private Token e6(){
@@ -325,13 +325,13 @@ public class AnalizadorLexico {
     }
 
     private Token e7() throws IOException, ExcepcionLexica {
-        if(!Character.isWhitespace(this.caracterActual) && this.caracterActual !=  -1 && this.caracterActual != '\n' && this.caracterActual != '\''){
+        if(this.caracterActual !=  -1 && this.caracterActual != '\n'){
             this.actualizarLexema();
             this.actualizarCaracterActual();
             return this.e5();
         }
         else
-            throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ "no es un caracter valido" );
+            throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ " no es un caracter valido" );
     }
     private Token e8() throws IOException, ExcepcionLexica{
         if(this.caracterActual == '"'){
@@ -341,7 +341,7 @@ public class AnalizadorLexico {
         }
         else
             if(this.caracterActual == '\n' || this.caracterActual == -1)
-                throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ "no es un caracter valido" );
+                throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ " no es un caracter valido" );
             else
                 if(this.caracterActual == '\\'){
                     this.actualizarLexema();
@@ -362,7 +362,7 @@ public class AnalizadorLexico {
         }
         else
             if(this.caracterActual == '\n' || this.caracterActual == -1)
-                throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ "no es un caracter valido" );
+                throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ " no es un caracter valido" );
             else{
                 this.actualizarLexema();
                 this.actualizarCaracterActual();
@@ -418,7 +418,7 @@ public class AnalizadorLexico {
         }
         else
             if(this.caracterActual == -1)
-                throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ "no es un caracter valido" );
+                throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ " no es un caracter valido" );
             else
                 if(!this.encontreSaltoLinea && this.caracterActual == '\n'){
                     this.encontreSaltoLinea = true;
@@ -447,7 +447,7 @@ public class AnalizadorLexico {
             }
             else
                 if(this.caracterActual == -1)
-                    throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ "no es un caracter valido" );
+                    throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ " no es un caracter valido" );
                 else
                     if(!this.encontreSaltoLinea && this.caracterActual == '\n'){
                         this.encontreSaltoLinea = true;
@@ -550,7 +550,7 @@ public class AnalizadorLexico {
             return this.e32();
         }
         else
-            throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ "no es un caracter valido" );
+            throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ " no es un caracter valido" );
     }
     private Token e32(){
         return new Token("op&&", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
@@ -562,7 +562,7 @@ public class AnalizadorLexico {
             return this.e34();
         }
         else
-            throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ "no es un caracter valido" );
+            throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ " no es un caracter valido" );
     }
     private Token e34(){
         return new Token("op||", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
