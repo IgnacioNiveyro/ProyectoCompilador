@@ -51,7 +51,7 @@ public class Main {
             while (quedanTokens) {
 
                 Token token = analizadorLexico.proximoToken();
-                //System.out.println(token.toString());
+                System.out.println(token.toString());
                 tokens.add(token);
                 if(token.getToken_id() == "EOF"){
                     for(Token t : tokens)

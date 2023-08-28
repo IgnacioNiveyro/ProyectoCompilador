@@ -40,13 +40,13 @@ public class AnalizadorLexico {
             return this.e0();
         }
         else
-            if(Character.isLetter(this.caracterActual) || Character.isUpperCase(this.caracterActual)){
+            if(Character.isLetter(this.caracterActual) && Character.isUpperCase(this.caracterActual)){
                 this.actualizarLexema();
                 this.actualizarCaracterActual();
                 return this.e1();
             }
             else
-                if(Character.isLetter(this.caracterActual) || Character.isLowerCase(this.caracterActual)){
+                if(Character.isLetter(this.caracterActual) && Character.isLowerCase(this.caracterActual)){
                     this.actualizarLexema();
                     this.actualizarCaracterActual();
                     return this.e2();
@@ -131,6 +131,7 @@ public class AnalizadorLexico {
                                                                     }
                                                                     else
                                                                         if(this.caracterActual == '|'){
+                                                                            System.out.println("entre aca");
                                                                             this.actualizarLexema();
                                                                             this.actualizarCaracterActual();
                                                                             return this.e33();
@@ -558,7 +559,7 @@ public class AnalizadorLexico {
         if(this.caracterActual == '|') {
             this.actualizarLexema();
             this.actualizarCaracterActual();
-            return this.e33();
+            return this.e34();
         }
         else
             throw new ExcepcionLexica(this.manejadorDeArchivo.obtenerNumeroLineaActual(), this.manejadorDeArchivo.obtenerNumeroColumnaActual(), this.lexema,this.manejadorDeArchivo.obtenerLineaConError(), this.lexema+ "no es un caracter valido" );
@@ -574,10 +575,10 @@ public class AnalizadorLexico {
         return new Token("parentesis_cierra", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
     }
     private Token e37(){
-        return new Token("llave_abre", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
+        return new Token("llave_cierra", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
     }
     private Token e38(){
-        return new Token("llave_cierra", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
+        return new Token("llave_abre", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
     }
     private Token e39(){
         return new Token("punto_y_coma", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
