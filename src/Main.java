@@ -13,6 +13,7 @@ public class Main {
         AnalizadorLexico analizadorLexico = null;
 
         File file = null;
+
         ManejadorDeArchivo manejadorDeArchivo = null;
 
         try{
@@ -24,10 +25,8 @@ public class Main {
         try{
             manejadorDeArchivo = new ManejadorDeArchivo(file);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-
-
 
         Map<String, String> palabrasClave = new HashMap<>();
         palabrasClave.put("class", "pr_class");
@@ -62,7 +61,6 @@ public class Main {
         try{
             boolean quedanTokens = true;
             while (quedanTokens) {
-
                 Token token = analizadorLexico.proximoToken();
                 //System.out.println(token.toString());
                 tokens.add(token);
@@ -77,5 +75,4 @@ public class Main {
             System.out.println(e.getMessage());
         }
     }
-
 }

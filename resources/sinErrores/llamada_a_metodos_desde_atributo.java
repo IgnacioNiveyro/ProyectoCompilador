@@ -1,2 +1,0 @@
-///[SinErrores]
-a.b.f();
