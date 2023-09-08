@@ -187,7 +187,7 @@ public class AnalizadorLexico {
                                                                                                         }
 
     }
-    private Token e1() throws IOException, ExcepcionLexica{
+    private Token e1() throws IOException{
         if( Character.isLetter(this.caracterActual) || Character.isDigit(this.caracterActual)  || this.caracterActual == '_'){
             this.actualizarLexema();
             this.actualizarCaracterActual();
@@ -196,7 +196,7 @@ public class AnalizadorLexico {
         else
             return new Token("idClase", this.lexema, this.manejadorDeArchivo.obtenerNumeroLineaActual());
     }
-    private Token e2() throws IOException, ExcepcionLexica{
+    private Token e2() throws IOException{
         if(Character.isLetter(this.caracterActual) || Character.isDigit(this.caracterActual) || this.caracterActual == '_') {
             this.actualizarLexema();
             this.actualizarCaracterActual();
