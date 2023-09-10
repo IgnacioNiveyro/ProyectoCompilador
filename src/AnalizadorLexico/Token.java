@@ -17,4 +17,8 @@ public class Token {
     public String getToken_id(){
         return this.token_id;
     }
+
+    public int getNro_linea(){return this.nro_linea;}
+
+    public String getLexema() { return this.lexema;}
 }
