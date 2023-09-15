@@ -1,6 +1,8 @@
 import AnalizadorLexico.AnalizadorLexico;
+import AnalizadorSintactico.AnalizadorSintactico;
 import ManejadorDeArchivo.ManejadorDeArchivo;
 import AnalizadorLexico.ExcepcionLexica;
+import AnalizadorSintactico.ExcepcionSintactica;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) {
         AnalizadorLexico analizadorLexico = null;
+        AnalizadorSintactico analizadorSintactico = null;
 
         File file = null;
 
@@ -52,27 +55,14 @@ public class Main {
 
         try {
             analizadorLexico = new AnalizadorLexico(manejadorDeArchivo, palabrasClave);
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+            analizadorSintactico = new AnalizadorSintactico(analizadorLexico);
 
-        ArrayList<Token> tokens = new ArrayList<>();
+            System.out.println("La compilacion fue exitosa\n");
+            System.out.println("[SinErrores]");
 
-        try{
-            boolean quedanTokens = true;
-            while (quedanTokens) {
-                Token token = analizadorLexico.proximoToken();
-                //System.out.println(token.toString());
-                tokens.add(token);
-                if(token.getToken_id() == "EOF"){
-                    for(Token t : tokens)
-                        System.out.println(t.toString());
-                    System.out.println("\n[SinErrores]");
-                    quedanTokens = false;
-                }
-            }
-        } catch (IOException | ExcepcionLexica e){
+        }catch(IOException | ExcepcionLexica | ExcepcionSintactica e){
             System.out.println(e.getMessage());
         }
+
     }
 }

@@ -267,7 +267,8 @@ public class AnalizadorSintactico {
                 "pr_if",     //primeros de If
                 "pr_while",//primeros de while
                 "llave_abre",                    //primeros de Bloque poner null | true | false | intLiteral | charLiteral | stringLiteral
-                "pr_this"
+                "pr_this",
+                "parentesis_abre"
                 ).contains(tokenActual.getToken_id())){
 
             Sentencia();
@@ -609,14 +610,11 @@ public class AnalizadorSintactico {
     }
     /** 55 */
     private void EncadenadoOpcionalPrima() throws ExcepcionSintactica, ExcepcionLexica, IOException {
-        if (Arrays.asList("punto").contains(tokenActual.getToken_id())) {
-            EncadenadoOpcional();
-        } else if (tokenActual.getToken_id().equals("parentesis_abre")) {
+        if (tokenActual.getToken_id().equals("parentesis_abre")) {
             ArgsActuales();
             EncadenadoOpcional();
         } else{
-        //PREGUNTAR - REVISAR , HAY QUE TIRAR EXCEPCION?
+            EncadenadoOpcional();
         }
     }
-
 }
