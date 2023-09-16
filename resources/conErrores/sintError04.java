@@ -6,7 +6,7 @@ class Error1{
             a=10;
             else a=20;
         }
-    }
+}
 }
 
     
