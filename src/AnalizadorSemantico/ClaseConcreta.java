@@ -56,4 +56,9 @@ public class ClaseConcreta extends Clase {
     public void estaBienDeclarado() throws ExcepcionSemantica{
 
     }
+    public Token obtenerTokenClaseAncestro(){
+        if(tokenClaseAncestro==null)
+            return new Token("Object", "Object",-1);
+        return tokenClaseAncestro;
+    }
 }

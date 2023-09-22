@@ -35,6 +35,7 @@ public class Interface extends Clase{
 
     }
 
+
     public void consolidate() throws ExcepcionSemantica{
 
     }

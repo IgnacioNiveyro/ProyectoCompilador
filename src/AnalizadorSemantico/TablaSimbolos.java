@@ -1,23 +1,34 @@
 package AnalizadorSemantico;
 
+
 import java.util.ArrayList;
 import java.util.Hashtable;
+import AnalizadorLexico.Token;
+
+import javax.net.ssl.SSLEngineResult;
 
 public class TablaSimbolos {
 
     private static TablaSimbolos instancia = null;
+    private Clase claseActual;
     private Hashtable<String, ClaseConcreta> tablaDeClasesConcretas;
     private Hashtable<String, Interface> tablaDeInterfaces;
-
+    private Token tokenEOF;
     private ArrayList<ErrorSemantico> listaConErroresSemanticos;
 
     public static TablaSimbolos obtenerInstancia(){
-        if(instancia == null)
+        if(instancia == null) {
             instancia = new TablaSimbolos();
+        }
         return instancia;
     }
-
     public TablaSimbolos(){
+        tablaDeClasesConcretas = new Hashtable<String,ClaseConcreta>();
+        tablaDeInterfaces = new Hashtable<String, Interface>();
+        listaConErroresSemanticos = new ArrayList<>();
+        agregarClasesPredefinidas();
+    }
+    public void construirTablaSimbolos(){
         tablaDeClasesConcretas = new Hashtable<String,ClaseConcreta>();
         tablaDeInterfaces = new Hashtable<String, Interface>();
         listaConErroresSemanticos = new ArrayList<>();
@@ -49,7 +60,29 @@ public class TablaSimbolos {
         return tablaDeInterfaces.containsKey(nombreInterface);
     }
 
+
     public void agregarClasesPredefinidas(){
+        insertarObjectClass();
         /** 2.1.2 documento Object, System, String*/
+    }
+
+    public Hashtable<String, ClaseConcreta> obtenerTablaDeClasesConcretas(){
+        return tablaDeClasesConcretas;
+    }
+    public Hashtable<String,Interface> obtenerTablaInterfaces(){
+        return tablaDeInterfaces;
+    }
+    public ClaseConcreta obtenerClaseConcreta(String nombreClaseConcreta){
+        return tablaDeClasesConcretas.get(nombreClaseConcreta);
+    }
+
+    private void insertarObjectClass(){
+        //tablaDeClasesConcretas.put("Object",null);
+    }
+    public void setClaseActual(Clase claseActual){
+        this.claseActual = claseActual;
+    }
+    public void setTokenEOF(Token tokenEOF){
+        this.tokenEOF = tokenEOF;
     }
 }

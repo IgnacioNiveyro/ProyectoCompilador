@@ -1,6 +1,9 @@
 package AnalizadorSintactico;
 
 import AnalizadorLexico.*;
+import AnalizadorSemantico.ClaseConcreta;
+import AnalizadorSemantico.Interface;
+import AnalizadorSemantico.TablaSimbolos;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,6 +29,8 @@ public class AnalizadorSintactico {
     /** 1 */
     private void Inicial() throws ExcepcionLexica, ExcepcionSintactica, IOException {
         ListaClases();
+        Token tokenEOF = tokenActual;
+        TablaSimbolos.obtenerInstancia().setTokenEOF(tokenEOF);
         match("EOF");
     }
     /** 2 */
@@ -50,8 +55,12 @@ public class AnalizadorSintactico {
     private void ClaseConcreta() throws ExcepcionSintactica, ExcepcionLexica, IOException {
         if(tokenActual.getToken_id().equals("pr_class")){
             match("pr_class");
+            Token tokenClaseActual = tokenActual;
             match("idClase");
-            HerenciaOpcional();
+            Token tokenClaseAncestro = HerenciaOpcional(); //Object, token extend, o token implement
+            ClaseConcreta claseActual = new ClaseConcreta(tokenClaseActual,tokenClaseAncestro);
+            TablaSimbolos.obtenerInstancia().setClaseActual(claseActual);
+            TablaSimbolos.obtenerInstancia().insertarClaseConcreta(claseActual);
             match("llave_abre");
             ListaMiembros();
             match("llave_cierra");
@@ -62,6 +71,10 @@ public class AnalizadorSintactico {
     private void Interface() throws ExcepcionSintactica, ExcepcionLexica, IOException{
         if(tokenActual.getToken_id().equals("pr_interface")){
             match("pr_interface");
+            Token tokenDeInterface = tokenActual;
+            Interface interfaceActual = new Interface(tokenDeInterface);
+            TablaSimbolos.obtenerInstancia().setClaseActual(interfaceActual);
+            TablaSimbolos.obtenerInstancia().insertarInterface(interfaceActual);
             match("idClase");
             ExtiendeOpcional();
             match("llave_abre");
@@ -71,28 +84,36 @@ public class AnalizadorSintactico {
             throw new ExcepcionSintactica(tokenActual, "interface");
     }
     /** 6 */
-    private void HerenciaOpcional() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private Token HerenciaOpcional() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+        Token tokenHerencia = null;
         if(tokenActual.getToken_id().equals("pr_extends")){
-            HeredaDe();
+            tokenHerencia = HeredaDe();
         }else if(tokenActual.getToken_id().equals("pr_implements")){
-            ImplementaA();
+            tokenHerencia = ImplementaA();
         }else {
-            //Epsilon
+            //Epsilon TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object").obtenerToken();
         }
+        return tokenHerencia;
     }
     /** 7 */
-    private void HeredaDe() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private Token HeredaDe() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+        Token tokenHerencia = null;
         if(tokenActual.getToken_id().equals("pr_extends")){
             match("pr_extends");
+            tokenHerencia = tokenActual;
             match("idClase");
+            return tokenHerencia;
         }else
-            throw new ExcepcionSintactica(tokenActual, "extends");
+            return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object").obtenerToken();
     }
     /** 8 */
-    private void ImplementaA() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private Token ImplementaA() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+        Token tokenHerencia = null;
         if(tokenActual.getToken_id().equals("pr_implements")){
             match("pr_implements");
+            tokenHerencia = tokenActual;
             match("idClase");
+            return tokenHerencia;
         }else
             throw new ExcepcionSintactica(tokenActual, "implements");
     }

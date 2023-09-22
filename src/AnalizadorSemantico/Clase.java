@@ -32,6 +32,9 @@ public abstract class Clase {
         return metodos.get(nombreMetodo);
     }
 
+    public HashSet<Interface> obtenerInterfacesAncestro(){
+        return interfacesAncestro;
+    }
     public Hashtable<String,Metodo> obtenerMetodos(){
         return metodos;
     }

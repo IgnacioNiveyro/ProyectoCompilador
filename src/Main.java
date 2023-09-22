@@ -1,12 +1,14 @@
 import AnalizadorLexico.AnalizadorLexico;
+import AnalizadorSemantico.ClaseConcreta;
+import AnalizadorSemantico.ExcepcionSemantica;
+import AnalizadorSemantico.Interface;
+import AnalizadorSemantico.TablaSimbolos;
 import AnalizadorSintactico.AnalizadorSintactico;
 import ManejadorDeArchivo.ManejadorDeArchivo;
 import AnalizadorLexico.ExcepcionLexica;
 import AnalizadorSintactico.ExcepcionSintactica;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import AnalizadorLexico.Token;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,13 +56,33 @@ public class Main {
         palabrasClave.put("false", "pr_false");
 
         try {
+
+            TablaSimbolos.obtenerInstancia().construirTablaSimbolos();
+
             analizadorLexico = new AnalizadorLexico(manejadorDeArchivo, palabrasClave);
             analizadorSintactico = new AnalizadorSintactico(analizadorLexico);
+
+            System.out.println("Tamaño tabla de clases concretas: "+TablaSimbolos.obtenerInstancia().obtenerTablaDeClasesConcretas().size());
+            for(ClaseConcreta clase : TablaSimbolos.obtenerInstancia().obtenerTablaDeClasesConcretas().values()) {
+                System.out.println("Nombre de la clase: "+clase.obtenerNombreClase());
+                System.out.println("Ancestro de la clase: "+clase.obtenerTokenClaseAncestro().getLexema());
+            }
+
+            System.out.println("Tamaño tabla de Interfaces: "+TablaSimbolos.obtenerInstancia().obtenerTablaInterfaces().size());
+            for(Interface interface_test : TablaSimbolos.obtenerInstancia().obtenerTablaInterfaces().values()) {
+                System.out.println("Nombre de la clase: "+interface_test.obtenerNombreClase());
+                if(interface_test.obtenerInterfacesAncestro().size()>0)
+                    for(Interface i : interface_test.obtenerInterfacesAncestro())
+                    System.out.println("Interfaces Ancestro : "+i.obtenerNombreClase());
+            }
+
+            if(TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().size() > 0)
+                throw new ExcepcionSemantica(TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos());
 
             System.out.println("La compilacion fue exitosa\n");
             System.out.println("[SinErrores]");
 
-        }catch(IOException | ExcepcionLexica | ExcepcionSintactica e){
+        }catch(IOException | ExcepcionLexica | ExcepcionSintactica | ExcepcionSemantica e){
             System.out.println(e.getMessage());
         }
 
