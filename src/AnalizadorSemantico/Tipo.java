@@ -16,8 +16,5 @@ public abstract class Tipo {
         return token.getLexema();
     }
 
-    public String toString(){
-        return token.getLexema();
-    }
     public abstract boolean esTipoPrimitivo();
 }

@@ -3,12 +3,12 @@ package AnalizadorSemantico;
 import AnalizadorLexico.Token;
 
 public class Atributo {
-    private String visibilidad;
+    private String esStatic;
     private Token token;
     private Tipo tipoDelAtributo;
 
-    public Atributo(Token token, Tipo tipoDelAtributo, String visibilidad){
-        this.visibilidad = visibilidad;
+    public Atributo(Token token, Tipo tipoDelAtributo, String esStatic){
+        this.esStatic = esStatic;
         this.tipoDelAtributo = tipoDelAtributo;
         this.token = token;
     }
@@ -20,8 +20,8 @@ public class Atributo {
     public Token obtenerToken(){
         return token;
     }
-    public String obtenerVisibilidad(){
-        return visibilidad;
+    public boolean esTipoStatic(){
+        return esStatic == "static";
     }
     public Tipo obtenerTipoAtributo(){
         return tipoDelAtributo;

@@ -4,8 +4,17 @@ import AnalizadorLexico.Token;
 
 public class Interface extends Clase{
 
-    public Interface(Token tokenDeInterface){
+    Token tokenClaseAncestro;
+    boolean extiende;
+
+    public Interface(Token tokenDeInterface,Token tokenClaseAncestro){
         super(tokenDeInterface);
+        if(tokenClaseAncestro != null)
+            extiende = true;
+        else
+            extiende = false;
+        this.tokenClaseAncestro = tokenClaseAncestro;
+
     }
 
     public void insertarMetodo(Metodo metodoInsertar){
@@ -17,24 +26,12 @@ public class Interface extends Clase{
             TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoInsertar.obtenerToken(), "El metodo "+metodoInsertar.obtenerNombreMetodo()+" ya se encuentra declarado en la clase "+obtenerNombreClase()));
     }
 
-    public void agregarInterfaceAncestro(Interface interfaceAgregar){
-        String nombreInterfaceAgregar = interfaceAgregar.obtenerNombreClase();
-        String nombreInterfaceComparar;
-        boolean existe=false;
-        for(Interface interfacesAncestro : interfacesAncestro){
-            nombreInterfaceComparar  = interfacesAncestro.obtenerNombreClase();
-            if(nombreInterfaceAgregar.equals(nombreInterfaceComparar)){
-                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(interfaceAgregar.obtenerToken(),"La interface "+this.obtenerNombreClase()+" ya extiende a la interface "+interfaceAgregar.obtenerNombreClase()));
-                existe=true;
-                break;
-            }
-        }
-        if(!existe){
-            interfacesAncestro.add(interfaceAgregar);
-        }
-
+    public Token obtenerTokenClaseAncestro(){
+        return tokenClaseAncestro;
     }
-
+    public boolean interfaceExtiende(){
+        return extiende;
+    }
 
     public void consolidate() throws ExcepcionSemantica{
 

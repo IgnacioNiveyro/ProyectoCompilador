@@ -6,14 +6,14 @@ import java.util.Hashtable;
 public abstract class Clase {
     protected Token tokenDeClase;
     protected Hashtable<String, Metodo> metodos;
-    protected HashSet<Interface> interfacesAncestro;
     protected boolean estaConsolidada;
+    protected boolean extiende;
     protected boolean tieneHerenciaCircular;
 
     public Clase(Token token){
         this.tokenDeClase = token;
         metodos = new Hashtable<>();
-        interfacesAncestro = new HashSet<>();
+        extiende = false;
         estaConsolidada = false;
         tieneHerenciaCircular = false;
     }
@@ -23,7 +23,6 @@ public abstract class Clase {
     public String obtenerNombreClase(){
         return tokenDeClase.getLexema();
     }
-
     public boolean existeMetodo(Metodo metodo){
         return this.metodos.containsKey(metodo.obtenerNombreMetodo());
     }
@@ -32,9 +31,6 @@ public abstract class Clase {
         return metodos.get(nombreMetodo);
     }
 
-    public HashSet<Interface> obtenerInterfacesAncestro(){
-        return interfacesAncestro;
-    }
     public Hashtable<String,Metodo> obtenerMetodos(){
         return metodos;
     }
@@ -42,8 +38,6 @@ public abstract class Clase {
     public void consolidar(){
         estaConsolidada = true;
     }
-
-    public abstract void agregarInterfaceAncestro(Interface interfaceAgregar);
 
     public abstract void insertarMetodo(Metodo metodoAInsertar) throws ExcepcionSemantica;
 

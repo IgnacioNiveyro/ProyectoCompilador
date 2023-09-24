@@ -8,29 +8,16 @@ public class ClaseConcreta extends Clase {
     private Token tokenClaseAncestro;
     private Hashtable<String, Atributo> atributos;
     private Constructor constructorClase;
-    private boolean tieneInterfacesRepetidas;
+    private boolean implementa;
 
     public ClaseConcreta(Token tokenClase, Token tokenAncestro) {
         super(tokenClase);
+        if(tokenAncestro != null)
+            implementa = true;
+        else
+            implementa = false;
         tokenClaseAncestro = tokenAncestro;
         atributos = new Hashtable<>();
-        tieneInterfacesRepetidas = false;
-    }
-
-    public void agregarInterfaceAncestro(Interface interfaceAgregar) {
-        String nombreInterfaceAgregar = interfaceAgregar.obtenerNombreClase();
-        String nombreInterfaceComparar;
-        boolean existe = false;
-        for (Interface interfacesAncestro : interfacesAncestro) {
-            nombreInterfaceComparar = interfacesAncestro.obtenerNombreClase();
-            if (nombreInterfaceAgregar.equals(nombreInterfaceComparar)) {
-                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(interfaceAgregar.obtenerToken(), "La clase " + obtenerNombreClase() + " ya implementa a la interface " + interfaceAgregar.obtenerNombreClase()));
-                existe = true;
-                break;
-            }
-        }
-        if (!existe)
-            interfacesAncestro.add(interfaceAgregar);
     }
 
     public void insertarMetodo(Metodo metodoAInsertar) throws ExcepcionSemantica {
@@ -46,7 +33,7 @@ public class ClaseConcreta extends Clase {
         else
             TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(atributoAInsertar.obtenerToken(), "El atributo "+atributoAInsertar.obtenerNombreAtributo()+" ya existe en la clase "+obtenerNombreClase()));
     }
-
+    public Hashtable<String, Atributo> obtenerAtributos(){return atributos;}
     public boolean existeAtributo(Atributo atributoAInsertar){
         return atributos.containsKey(atributoAInsertar.obtenerNombreAtributo());
     }

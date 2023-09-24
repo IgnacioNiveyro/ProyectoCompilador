@@ -9,16 +9,20 @@ public class Metodo {
     private String alcanceDelMetodo;
     private Tipo tipoRetornoDelMetodo;
     private ArrayList<Parametro> listaParametros;
-    private Hashtable<String, Parametro> tablaParametros;
 
     public Metodo(Token tokenDelMetodo, String alcanceDelMetodo, Tipo tipoRetornoDelMetodo){
         this.tokenDelMetodo = tokenDelMetodo;
         this.alcanceDelMetodo = alcanceDelMetodo;
         this.tipoRetornoDelMetodo = tipoRetornoDelMetodo;
         listaParametros = new ArrayList<>();
-        tablaParametros = new Hashtable<>();
     }
 
+    public void insertarParametro(Parametro parametroAInsertar){
+        if(!listaParametros.contains(parametroAInsertar))
+            listaParametros.add(parametroAInsertar);
+        else
+            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(parametroAInsertar.obtenerTokenDelParametro(), "El parametro "+parametroAInsertar.obtenerNombreDelParametro()+" ya se encuentra declarado en el metodo "+tokenDelMetodo.getLexema()));
+    }
     public String obtenerAlcance(){
         return alcanceDelMetodo;
     }
@@ -28,5 +32,7 @@ public class Metodo {
     public String obtenerNombreMetodo(){
         return tokenDelMetodo.getLexema();
     }
+    public Tipo obtenerTipoRetornoMetodo(){return tipoRetornoDelMetodo;}
+    public ArrayList<Parametro> obtenerListaParametros(){return listaParametros;}
 
 }

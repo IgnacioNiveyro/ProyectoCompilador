@@ -11,6 +11,7 @@ public class TablaSimbolos {
 
     private static TablaSimbolos instancia = null;
     private Clase claseActual;
+    private Metodo metodoActual;
     private Hashtable<String, ClaseConcreta> tablaDeClasesConcretas;
     private Hashtable<String, Interface> tablaDeInterfaces;
     private Token tokenEOF;
@@ -82,6 +83,9 @@ public class TablaSimbolos {
     public void setClaseActual(Clase claseActual){
         this.claseActual = claseActual;
     }
+    public void setMetodoActual(Metodo metodoActual){this.metodoActual = metodoActual;}
+    public Clase getClaseActual(){return claseActual;}
+    public Metodo obtenerMetodoActual(){return metodoActual;}
     public void setTokenEOF(Token tokenEOF){
         this.tokenEOF = tokenEOF;
     }
