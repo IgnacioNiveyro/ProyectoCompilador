@@ -1,9 +1,7 @@
 package AnalizadorSintactico;
 
 import AnalizadorLexico.*;
-import AnalizadorSemantico.ClaseConcreta;
-import AnalizadorSemantico.Interface;
-import AnalizadorSemantico.TablaSimbolos;
+import AnalizadorSemantico.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -13,7 +11,7 @@ public class AnalizadorSintactico {
     private AnalizadorLexico analizadorLexico;
     private Token tokenActual;
 
-    public AnalizadorSintactico(AnalizadorLexico analizadorLexico) throws ExcepcionLexica, ExcepcionSintactica, IOException {
+    public AnalizadorSintactico(AnalizadorLexico analizadorLexico) throws ExcepcionLexica, ExcepcionSintactica, IOException, ExcepcionSemantica {
         this.analizadorLexico = analizadorLexico;
         this.tokenActual = analizadorLexico.proximoToken();
         Inicial();
@@ -27,14 +25,14 @@ public class AnalizadorSintactico {
             throw new ExcepcionSintactica(tokenActual, nombreToken);
     }
     /** 1 */
-    private void Inicial() throws ExcepcionLexica, ExcepcionSintactica, IOException {
+    private void Inicial() throws ExcepcionLexica, ExcepcionSintactica, IOException, ExcepcionSemantica {
         ListaClases();
         Token tokenEOF = tokenActual;
         TablaSimbolos.obtenerInstancia().setTokenEOF(tokenEOF);
         match("EOF");
     }
     /** 2 */
-    private void ListaClases() throws ExcepcionSintactica, ExcepcionLexica, IOException {
+    private void ListaClases() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
         if(Arrays.asList("pr_class", "pr_interface").contains(tokenActual.getToken_id())){
             Clase();
             ListaClases();
@@ -43,7 +41,7 @@ public class AnalizadorSintactico {
         }
     }
     /** 3 */
-    private void Clase() throws ExcepcionSintactica, ExcepcionLexica, IOException {
+    private void Clase() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
         if(tokenActual.getToken_id().equals("pr_class")) {
             ClaseConcreta();
         }else if(tokenActual.getToken_id().equals("pr_interface")){
@@ -52,7 +50,7 @@ public class AnalizadorSintactico {
             throw new ExcepcionSintactica(tokenActual, "class o interface");
     }
     /** 4 */
-    private void ClaseConcreta() throws ExcepcionSintactica, ExcepcionLexica, IOException {
+    private void ClaseConcreta() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
         if(tokenActual.getToken_id().equals("pr_class")){
             match("pr_class");
             Token tokenClaseActual = tokenActual;
@@ -68,15 +66,15 @@ public class AnalizadorSintactico {
             throw new ExcepcionSintactica(tokenActual, "class");
     }
     /** 5 */
-    private void Interface() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private void Interface() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
         if(tokenActual.getToken_id().equals("pr_interface")){
             match("pr_interface");
             Token tokenDeInterface = tokenActual;
-            Interface interfaceActual = new Interface(tokenDeInterface);
+            match("idClase");
+            Token tokenExtiende = ExtiendeOpcional();
+            Interface interfaceActual = new Interface(tokenDeInterface, tokenExtiende);
             TablaSimbolos.obtenerInstancia().setClaseActual(interfaceActual);
             TablaSimbolos.obtenerInstancia().insertarInterface(interfaceActual);
-            match("idClase");
-            ExtiendeOpcional();
             match("llave_abre");
             ListaEncabezados();
             match("llave_cierra");
@@ -118,16 +116,19 @@ public class AnalizadorSintactico {
             throw new ExcepcionSintactica(tokenActual, "implements");
     }
     /** 9 */
-    private void ExtiendeOpcional() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private Token ExtiendeOpcional() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+        Token tokenExtiende = null;
         if(tokenActual.getToken_id().equals("pr_extends")){
             match("pr_extends");
+            tokenExtiende = tokenActual;
             match("idClase");
         }else {
             //Epsilon
         }
+        return tokenExtiende;
     }
     /** 10 */
-    private void ListaMiembros() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private void ListaMiembros() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
         if(Arrays.asList("pr_static", "pr_public", "idClase", "pr_void", "pr_boolean", "pr_char", "pr_int").contains(tokenActual.getToken_id())){
             Miembro();
             ListaMiembros();
@@ -137,7 +138,7 @@ public class AnalizadorSintactico {
     }
 
     /** 11 */
-    private void ListaEncabezados() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private void ListaEncabezados() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
         if(Arrays.asList("pr_static", "pr_void", "idClase", "pr_boolean", "pr_char", "pr_int").contains(tokenActual.getToken_id())){
             EncabezadoMetodo();
             ListaEncabezados();
@@ -147,33 +148,44 @@ public class AnalizadorSintactico {
     }
 
     /** 12 */
-    private void Miembro() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private void Miembro() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
         if(Arrays.asList("pr_static", "pr_void", "idClase", "pr_boolean" , "pr_char", "pr_int").contains(tokenActual.getToken_id())){
-            EstaticoOpcional();
-            TipoMiembro();
+            String esStatic = EstaticoOpcional();
+            Tipo tipoAtributoOMetodo = TipoMiembro();
+            Token tokenAtributoOMetodo = tokenActual;
             match("IdMetVar");
-            AtributoOMetodo();
+            AtributoOMetodo(esStatic,tipoAtributoOMetodo, tokenAtributoOMetodo);
         }else if(tokenActual.getToken_id().equals("pr_public")){
                 ConstructorLL1();
         }else
             throw new ExcepcionSintactica(tokenActual, "static, void, idClase, boolean, char, int");
     }
     /** 13 */
-    private void AtributoOMetodo() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private void AtributoOMetodo(String esStatic, Tipo tipoAtributoOMetodo, Token tokenAtributoOMetodo) throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
 
         if(tokenActual.getToken_id().equals("parentesis_abre")){
+            Metodo metodoAInsertar = new Metodo(tokenAtributoOMetodo,esStatic,tipoAtributoOMetodo);
+            TablaSimbolos.obtenerInstancia().setMetodoActual(metodoAInsertar);
+            TablaSimbolos.obtenerInstancia().getClaseActual().insertarMetodo(metodoAInsertar);
             ArgsFormales();
             Bloque();
         } else if(tokenActual.getToken_id().equals("punto_y_coma")) {
+            Atributo atributoAinsertar = new Atributo(tokenAtributoOMetodo, tipoAtributoOMetodo, esStatic);
+            ClaseConcreta claseConcreta = (ClaseConcreta) TablaSimbolos.obtenerInstancia().getClaseActual();
+            claseConcreta.insertarAtributo(atributoAinsertar);
             match("punto_y_coma");
         }else
             throw new ExcepcionSintactica(tokenActual, "( o ;");
     }
     /** 14 */
-    private void EncabezadoMetodo() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private void EncabezadoMetodo() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica{
         if(Arrays.asList("pr_static", "pr_void", "idClase", "pr_boolean", "pr_char", "pr_int").contains(tokenActual.getToken_id())){
-            EstaticoOpcional();
-            TipoMiembro();
+            String alcanceDelMetodo = EstaticoOpcional();
+            Tipo tipoRetornoDelMetodo = TipoMiembro();
+            Token tokenDelMetodo = tokenActual;
+            Metodo metodoAInsertar = new Metodo(tokenDelMetodo,alcanceDelMetodo,tipoRetornoDelMetodo);
+            TablaSimbolos.obtenerInstancia().setMetodoActual(metodoAInsertar);
+            TablaSimbolos.obtenerInstancia().getClaseActual().insertarMetodo(metodoAInsertar);
             match("IdMetVar");
             ArgsFormales();
             match("punto_y_coma");
@@ -184,32 +196,47 @@ public class AnalizadorSintactico {
     private void ConstructorLL1() throws ExcepcionSintactica, ExcepcionLexica, IOException{
         if(tokenActual.getToken_id().equals("pr_public")){
             match("pr_public");
+            String visibilidad = "public";
+            Token tokenConstructor = tokenActual;
+            //Constructor constructor = new Constructor(tokenConstructor, visibilidad);
+            //TablaSimbolos.obtenerInstancia().setMetodoActual(constructor);
+            Metodo metodoConstructor = new Metodo(tokenConstructor,visibilidad);
+            TablaSimbolos.obtenerInstancia().setMetodoActual(metodoConstructor);
             match("idClase");
             ArgsFormales();
             Bloque();
+            ClaseConcreta claseAInsertarConstructor = (ClaseConcreta) TablaSimbolos.obtenerInstancia().getClaseActual();
+            claseAInsertarConstructor.insertarConstructor(metodoConstructor);
         }else
             throw new ExcepcionSintactica(tokenActual, "public");
     }
     /** 16 */
-    private void TipoMiembro() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private Tipo TipoMiembro() throws ExcepcionSintactica, ExcepcionLexica, IOException{
         if(Arrays.asList("pr_boolean","pr_char", "pr_int", "idClase").contains(tokenActual.getToken_id())){
-            Tipo();
+            return Tipo();
         }else if(tokenActual.getToken_id().equals("pr_void")){
+            Token tokenTipoPrimitivo = tokenActual;
+            Tipo tipoPrimitivo = new TipoPrimitivo(tokenTipoPrimitivo);
             match("pr_void");
+            return tipoPrimitivo;
         }else
             throw new ExcepcionSintactica(tokenActual, "boolean, char, int, idClase, void");
     }
     /** 17 */
-    private void Tipo() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private Tipo Tipo() throws ExcepcionSintactica, ExcepcionLexica, IOException{
         if(Arrays.asList("pr_boolean", "pr_char", "pr_int").contains(tokenActual.getToken_id())){
-            TipoPrimitivo();
+            return TipoPrimitivo();
         } else if (tokenActual.getToken_id().equals("idClase")) {
+            Token tokenTipoRetorno = tokenActual;
+            Tipo tipoRetorno = new TipoClase(tokenTipoRetorno);
             match("idClase");
+            return  tipoRetorno;
         }else
             throw new ExcepcionSintactica(tokenActual, "boolean, char, int, idClase");
     }
     /** 18 */
-    private void TipoPrimitivo() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private Tipo TipoPrimitivo() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+        Tipo tipoPrimitivoRetorno = new TipoPrimitivo(tokenActual);
         if(tokenActual.getToken_id().equals("pr_boolean")){
             match("pr_boolean");
         } else if (tokenActual.getToken_id().equals("pr_char")) {
@@ -218,14 +245,20 @@ public class AnalizadorSintactico {
             match("pr_int");
         } else
             throw new ExcepcionSintactica(tokenActual, "boolean, char, int");
+
+        return tipoPrimitivoRetorno;
+
     }
     /** 19 */
-    private void EstaticoOpcional() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private String EstaticoOpcional() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+        String alcanceDelMetodo = "";
         if(tokenActual.getToken_id().equals("pr_static")){
+            alcanceDelMetodo = "static";
             match("pr_static");
         }else {
             //Epsilon
         }
+        return alcanceDelMetodo;
     }
     /** 20 */
     private void ArgsFormales() throws ExcepcionSintactica, ExcepcionLexica, IOException{
@@ -264,7 +297,9 @@ public class AnalizadorSintactico {
     /** 24 */
     private void ArgFormal() throws ExcepcionSintactica, ExcepcionLexica, IOException{
         if(Arrays.asList("pr_boolean", "pr_char", "pr_int", "idClase").contains(tokenActual.getToken_id())){
-            Tipo();
+            Tipo tipoDelParametro = Tipo();
+            Parametro parametro = new Parametro(tokenActual,tipoDelParametro);
+            TablaSimbolos.obtenerInstancia().obtenerMetodoActual().insertarParametro(parametro);
             match("IdMetVar");
         }else
             throw new ExcepcionSintactica(tokenActual, "boolean, char, int, idClase");

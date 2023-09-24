@@ -9,14 +9,22 @@ public class Metodo {
     private String alcanceDelMetodo;
     private Tipo tipoRetornoDelMetodo;
     private ArrayList<Parametro> listaParametros;
+    private boolean esConstructor;
 
     public Metodo(Token tokenDelMetodo, String alcanceDelMetodo, Tipo tipoRetornoDelMetodo){
         this.tokenDelMetodo = tokenDelMetodo;
         this.alcanceDelMetodo = alcanceDelMetodo;
         this.tipoRetornoDelMetodo = tipoRetornoDelMetodo;
         listaParametros = new ArrayList<>();
+        esConstructor = false;
     }
-
+    public Metodo(Token tokenDelMetodo, String visibilidad){
+        this.tokenDelMetodo = tokenDelMetodo;
+        this.alcanceDelMetodo = visibilidad;
+        this.tipoRetornoDelMetodo = null;
+        listaParametros = new ArrayList<>();
+        esConstructor = true;
+    }
     public void insertarParametro(Parametro parametroAInsertar){
         if(!listaParametros.contains(parametroAInsertar))
             listaParametros.add(parametroAInsertar);
