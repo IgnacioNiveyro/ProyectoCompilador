@@ -34,12 +34,12 @@ public class ClaseConcreta extends Clase {
             TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(atributoAInsertar.obtenerToken(), "El atributo "+atributoAInsertar.obtenerNombreAtributo()+" ya existe en la clase "+obtenerNombreClase()));
     }
     public void insertarConstructor(Metodo constructorAInsertar){
-        if(!tieneConstructor) {
+        if((!tieneConstructor) && constructorAInsertar.obtenerToken().getLexema().equals(tokenDeClase.getLexema())) {
             constructorClase = constructorAInsertar;
             tieneConstructor = true;
         }
         else
-            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(constructorAInsertar.obtenerToken(), "La clase "+obtenerNombreClase()+" ya posee constructor"));
+            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenDeClase, "La clase "+obtenerNombreClase()+" ya posee constructor o definio mal el mismo"));
     }
     public Hashtable<String, Atributo> obtenerAtributos(){return atributos;}
     public boolean existeAtributo(Atributo atributoAInsertar){
@@ -61,7 +61,7 @@ public class ClaseConcreta extends Clase {
                 if(obtenerClaseAncestro() != null){
                     ClaseConcreta ancestro = obtenerClaseAncestro();
                     if(!ancestro.estaConsolidada)
-                        ancestro.consolidar();
+                        ancestro.consolidate();
                     consolidarAtributos(ancestro);
                     consolidarMetodos(ancestro);
                     verificarMetodosInterfaces();

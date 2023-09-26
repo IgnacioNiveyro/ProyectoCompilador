@@ -64,7 +64,7 @@ public class TablaSimbolos {
     public void agregarClasesPredefinidas(){
         insertarObjectClass();
         insertarStringClass();
-        insertarSystemClass();
+        //insertarSystemClass();
     }
     private void insertarObjectClass(){
         Token tokenObject = new Token("idClase", "Object", 0);
@@ -129,8 +129,9 @@ public class TablaSimbolos {
     public void consolidate() throws ExcepcionSemantica {
         for(Interface interfaceConsolidar : tablaDeInterfaces.values())
             interfaceConsolidar.consolidate();
-        for(ClaseConcreta claseConcretaConsolidar : tablaDeClasesConcretas.values())
+        for(ClaseConcreta claseConcretaConsolidar : tablaDeClasesConcretas.values()) {
             claseConcretaConsolidar.consolidate();
+        }
         if(!tieneMain)
             TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenEOF, "No se encontro el metodo main"));
     }

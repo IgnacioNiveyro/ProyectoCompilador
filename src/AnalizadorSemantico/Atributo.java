@@ -29,7 +29,7 @@ public class Atributo {
 
     public void estaBienDeclarado(){
         if(!existeTipoReferencia(tipoDelAtributo.obtenerNombreClase()) && !esTipoPrimitivo())
-            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(token, "El atributo "+token.getLexema()+" no posee tipo declarado"));
+            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tipoDelAtributo.obtenerToken(), "El atributo "+tipoDelAtributo.obtenerToken().getLexema()+" no posee tipo declarado"));
     }
 
     private boolean existeTipoReferencia(String nombreClase){
