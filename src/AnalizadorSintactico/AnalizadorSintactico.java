@@ -102,8 +102,10 @@ public class AnalizadorSintactico {
             match("idClase");
             return tokenHerencia;
         }else{
-           /** nose si esta bien*/ return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object").obtenerToken();
+           /** lo cambie*/ //return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object").obtenerToken();
+            throw new ExcepcionSintactica(tokenActual, "extends");
         }
+
     }
     /** 8 */
     private Token ImplementaA() throws ExcepcionSintactica, ExcepcionLexica, IOException{
@@ -114,8 +116,8 @@ public class AnalizadorSintactico {
             match("idClase");
             return tokenHerencia;
         }else
-        /** nose si esta bien*/ return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object").obtenerToken();
-           /** throw new ExcepcionSintactica(tokenActual, "implements");*/
+            throw new ExcepcionSintactica(tokenActual, "implements");
+            /** aca tmb retornaba object*/
     }
     /** 9 */
     private Token ExtiendeOpcional() throws ExcepcionSintactica, ExcepcionLexica, IOException{
@@ -172,9 +174,13 @@ public class AnalizadorSintactico {
             ArgsFormales();
             Bloque();
         } else if(tokenActual.getToken_id().equals("punto_y_coma")) {
-            Atributo atributoAinsertar = new Atributo(tokenAtributoOMetodo, tipoAtributoOMetodo, esStatic);
-            ClaseConcreta claseConcreta = (ClaseConcreta) TablaSimbolos.obtenerInstancia().getClaseActual();
-            claseConcreta.insertarAtributo(atributoAinsertar);
+            if(tipoAtributoOMetodo.obtenerToken().getLexema().equals("void")){
+                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenAtributoOMetodo, "El atributo "+tokenAtributoOMetodo.getLexema()+" no puede poseer tipo void"));
+            }else {
+                Atributo atributoAinsertar = new Atributo(tokenAtributoOMetodo, tipoAtributoOMetodo, esStatic);
+                ClaseConcreta claseConcreta = (ClaseConcreta) TablaSimbolos.obtenerInstancia().getClaseActual();
+                claseConcreta.insertarAtributo(atributoAinsertar);
+            }
             match("punto_y_coma");
         }else
             throw new ExcepcionSintactica(tokenActual, "( o ;");

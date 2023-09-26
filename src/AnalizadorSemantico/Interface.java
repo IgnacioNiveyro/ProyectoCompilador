@@ -58,13 +58,35 @@ public class Interface extends Clase{
 
     }
     public void chequearHerenciaCircular(){
-        if(tokenClaseAncestro != null) {
-            if (tokenDeClase.getLexema().equals(tokenClaseAncestro.getLexema())) {
-                tieneHerenciaCircular = true;
-                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "Herencia circular: La interface " + tokenClaseAncestro.getLexema() + " se extiende a si misma"));
+        ArrayList<String> listaAncestros = new ArrayList<>();
+        listaAncestros.add(this.obtenerNombreClase());
+        if(tokenClaseAncestro!=null){
+            Interface interfaceChequear = TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema());
+            if(interfaceChequear != null){
+                if(interfaceChequear.tieneHerenciaCircular(listaAncestros,tokenClaseAncestro)){
+                    TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "Herencia circular, la interface "+this.obtenerNombreClase()+" se extiende a si misma"));
+                    tieneHerenciaCircular = true;
+                }
             }
         }
+    }
 
+    public boolean tieneHerenciaCircular(ArrayList<String> listaAncestros, Token tokenInterface){
+        if(!listaAncestros.contains(this.obtenerNombreClase())){
+            listaAncestros.add(tokenInterface.getLexema());
+            if(tokenClaseAncestro!=null){
+                Interface interfaceChequear = TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema());
+                if(interfaceChequear != null){
+                    if(interfaceChequear.tieneHerenciaCircular(listaAncestros,tokenClaseAncestro)) {
+                        return true;
+                    }
+                }
+                listaAncestros.remove(tokenInterface.getLexema());
+            }
+        }
+        else
+            return true;
+        return false;
     }
 
     public void chequearDeclaracionMetodos(){

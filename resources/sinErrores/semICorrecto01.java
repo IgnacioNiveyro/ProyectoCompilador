@@ -5,3 +5,12 @@ class A{
 
 }
 
+class B{
+
+}
+
+class Init{
+    static void main()
+    { }
+}
+

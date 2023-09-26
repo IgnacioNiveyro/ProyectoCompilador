@@ -21,8 +21,7 @@ public class TablaSimbolos {
         return instancia;
     }
     public TablaSimbolos(){
-        //tieneMain = false;
-        tieneMain = true;
+        tieneMain = false;
         tablaDeClasesConcretas = new Hashtable<String,ClaseConcreta>();
         tablaDeInterfaces = new Hashtable<String, Interface>();
         listaConErroresSemanticos = new ArrayList<>();
@@ -32,8 +31,7 @@ public class TablaSimbolos {
         tablaDeClasesConcretas = new Hashtable<String,ClaseConcreta>();
         tablaDeInterfaces = new Hashtable<String, Interface>();
         listaConErroresSemanticos = new ArrayList<>();
-        //tieneMain = false;
-        tieneMain = true;
+        tieneMain = false;
         agregarClasesPredefinidas();
     }
     public void insertarClaseConcreta(ClaseConcreta claseAInsertar){
@@ -114,18 +112,19 @@ public class TablaSimbolos {
     public void estaBienDeclarado() throws ExcepcionSemantica {
         for(ClaseConcreta claseChequear : tablaDeClasesConcretas.values()){
             claseChequear.estaBienDeclarado();
-            //tieneMetodoMain(claseChequear);
+            tieneMetodoMain(claseChequear);
         }
         for(Interface interfaceChequear : tablaDeInterfaces.values())
             interfaceChequear.estaBienDeclarado();
     }
     private void tieneMetodoMain(ClaseConcreta claseChequear){
-        for(Metodo metodoChequear : claseChequear.metodos.values())
-            if(metodoChequear.obtenerAlcance().equals("static") && metodoChequear.obtenerTipoRetornoMetodo().equals("void") && metodoChequear.obtenerNombreMetodo().equals("main") && !metodoChequear.tieneParametros())
-                if(tieneMain)
+        for(Metodo metodoChequear : claseChequear.metodos.values()) {
+            if (metodoChequear.obtenerAlcance().equals("static") && metodoChequear.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void") && metodoChequear.obtenerNombreMetodo().equals("main") && !metodoChequear.tieneParametros())
+                if (tieneMain)
                     TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoChequear.obtenerToken(), "El metodo main ya fue declarado"));
                 else
                     tieneMain = true;
+        }
     }
     public void consolidate() throws ExcepcionSemantica {
         for(Interface interfaceConsolidar : tablaDeInterfaces.values())

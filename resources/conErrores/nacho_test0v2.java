@@ -4,13 +4,17 @@
 //el tipo de retorno tambi´en deben coincidir
 class C implements D{
 
-    static void m1(boolean b, char c, int i, A claseA){}
+    void m1(boolean b, char c, int i, A claseA){
+
+    }
 
 }
 
-interface D{
+class D{
 
-    void m1(boolean b, char c, int i, A claseA);
+    static void m1(boolean b, char c, int i, A claseA){
+
+    }
 }
 
 class Init{

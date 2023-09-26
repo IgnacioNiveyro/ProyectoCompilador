@@ -1,5 +1,5 @@
 ///[Error:C|7]
-
+// La entidad C no esta declarada
 class A{
 
 }

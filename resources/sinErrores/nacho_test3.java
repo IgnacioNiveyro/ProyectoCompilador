@@ -2,4 +2,9 @@ class E extends F{
 
 }
 
-class F{}
+class F{
+
+    static void main()
+    { }
+
+}

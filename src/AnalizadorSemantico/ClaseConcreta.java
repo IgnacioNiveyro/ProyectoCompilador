@@ -2,6 +2,7 @@ package AnalizadorSemantico;
 
 import AnalizadorLexico.Token;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class ClaseConcreta extends Clase {
@@ -102,8 +103,6 @@ public class ClaseConcreta extends Clase {
     public void verificarMetodosInterfaces(){
         if(tokenClaseAncestro!=null){ /** && implementa*/
             Interface interfaceVerificar = TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema());
-            //System.out.println("yo: "+tokenDeClase.getLexema());
-            //System.out.println("ancestro: "+tokenClaseAncestro.getLexema());
             if(interfaceVerificar != null)
                 interfaceVerificar.verificarImplementacionMetodos(tokenClaseAncestro, this);
         }
@@ -126,18 +125,29 @@ public class ClaseConcreta extends Clase {
         return null;
     }
     public void chequearHerenciaCircular(){
-        if(tokenClaseAncestro!=null) {
-            if (tokenDeClase.getLexema().equals(tokenClaseAncestro.getLexema())) {
-                tieneHerenciaCircular = true;
-                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "Herencia circular: La interface" + tokenClaseAncestro.getLexema() + " se extiende a si misma"));
-            }
+        ArrayList<String> listaAncestros = new ArrayList<>();
+        if(tieneHerenciaCircular(listaAncestros)){
+            tieneHerenciaCircular = true;
+            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "Herencia circular, la clase "+this.obtenerNombreClase()+" se extiende a si misma"));
         }
+    }
+    public boolean tieneHerenciaCircular(ArrayList<String> listaAncestros){
+        if(obtenerClaseAncestro() != null){
+            if(!listaAncestros.contains(obtenerClaseAncestro().obtenerNombreClase())){
+                listaAncestros.add(tokenClaseAncestro.getLexema());
+                return obtenerClaseAncestro().tieneHerenciaCircular(listaAncestros);
+            }
+            else
+                return true;
+        }
+        return false;
     }
     public void chequearConstructor() {
         if (!tieneConstructor) {
             constructorClase = new Metodo(new Token("idClase", this.obtenerNombreClase(), 0), "public");
             tieneConstructor = true;
-        }
+        }else
+            constructorClase.chequearConstructor(); /** preguntar profe*/
     }
     public void chequearClaseAncestro(){
         if(tokenClaseAncestro!=null) {

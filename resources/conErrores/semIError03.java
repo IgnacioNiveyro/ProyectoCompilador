@@ -1,5 +1,5 @@
 ///[Error:m1|19]
-
+//Ninguna clase puede declarar dos metodos con el mismo nombre
 class A {
     void m1()
     {}

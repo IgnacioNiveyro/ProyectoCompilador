@@ -5,3 +5,8 @@ interface B{
     char m4();
     int m5();
 }
+
+class Init{
+    static void main()
+    { }
+}
