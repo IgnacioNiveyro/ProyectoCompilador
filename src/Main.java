@@ -1,8 +1,5 @@
 import AnalizadorLexico.AnalizadorLexico;
-import AnalizadorSemantico.ClaseConcreta;
-import AnalizadorSemantico.ExcepcionSemantica;
-import AnalizadorSemantico.Interface;
-import AnalizadorSemantico.TablaSimbolos;
+import AnalizadorSemantico.*;
 import AnalizadorSintactico.AnalizadorSintactico;
 import ManejadorDeArchivo.ManejadorDeArchivo;
 import AnalizadorLexico.ExcepcionLexica;
@@ -61,20 +58,44 @@ public class Main {
 
             analizadorLexico = new AnalizadorLexico(manejadorDeArchivo, palabrasClave);
             analizadorSintactico = new AnalizadorSintactico(analizadorLexico);
-
+    /*
             System.out.println("Tamaño tabla de clases concretas: "+TablaSimbolos.obtenerInstancia().obtenerTablaDeClasesConcretas().size());
             for(ClaseConcreta clase : TablaSimbolos.obtenerInstancia().obtenerTablaDeClasesConcretas().values()) {
-                System.out.println("Nombre de la clase: "+clase.obtenerNombreClase());
-                System.out.println("Ancestro de la clase: "+clase.obtenerTokenClaseAncestro().getLexema());
+                System.out.println("clase: "+clase.obtenerNombreClase()+" | ancestro: "+clase.obtenerNombreClaseAncestro()+" | cant. metodos: "+clase.obtenerMetodos().size()+" | cant. atributos: "+clase.obtenerAtributos().size()+" |Tiene construc: "+clase.tieneConstructor());
+                for(Metodo metodo: clase.obtenerMetodos().values()) {
+                    System.out.print(metodo.obtenerNombreMetodo()+" "+metodo.obtenerTipoRetornoMetodo().obtenerNombreClase()+"(");
+                    for(Parametro parametro : metodo.obtenerListaParametros()){
+                        System.out.print(parametro.obtenerTipoDelParametro().obtenerNombreClase()+" "+parametro.obtenerNombreDelParametro()+",");
+                    }
+                    System.out.print(")");
+                    System.out.println();
+                }
+                for(Atributo atributo: clase.obtenerAtributos().values()){
+                    System.out.println(atributo.obtenerTipoAtributo().obtenerNombreClase()+" "+atributo.obtenerNombreAtributo());
+                }
             }
 
             System.out.println("Tamaño tabla de Interfaces: "+TablaSimbolos.obtenerInstancia().obtenerTablaInterfaces().size());
             for(Interface interface_test : TablaSimbolos.obtenerInstancia().obtenerTablaInterfaces().values()) {
-                System.out.println("Nombre de la clase: "+interface_test.obtenerNombreClase());
-                if(interface_test.obtenerInterfacesAncestro().size()>0)
-                    for(Interface i : interface_test.obtenerInterfacesAncestro())
-                    System.out.println("Interfaces Ancestro : "+i.obtenerNombreClase());
+
+                if(interface_test.interfaceExtiende())
+                    System.out.println("interface: "+interface_test.obtenerNombreClase()+" | ancestro: "+interface_test.obtenerTokenClaseAncestro().getLexema()+" | cant. metodos: "+interface_test.obtenerMetodos().size());
+                else
+                    System.out.println("interface: "+interface_test.obtenerNombreClase()+" | ancestro: No posee | cant. metodos: "+interface_test.obtenerMetodos().size());
+
+                for(Metodo metodo: interface_test.obtenerMetodos().values()) {
+                    System.out.print(metodo.obtenerNombreMetodo() + " " + metodo.obtenerTipoRetornoMetodo().obtenerNombreClase()+"(");
+                    for(Parametro parametro: metodo.obtenerListaParametros()){
+                        System.out.print(parametro.obtenerTipoDelParametro().obtenerNombreClase()+" "+parametro.obtenerNombreDelParametro()+",");
+                    }
+                    System.out.print(")");
+                    System.out.println();
+                }
             }
+    */
+            TablaSimbolos.obtenerInstancia().estaBienDeclarado();
+            TablaSimbolos.obtenerInstancia().consolidate();
+
 
             if(TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().size() > 0)
                 throw new ExcepcionSemantica(TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos());

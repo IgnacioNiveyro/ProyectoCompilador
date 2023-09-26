@@ -55,7 +55,7 @@ public class AnalizadorSintactico {
             match("pr_class");
             Token tokenClaseActual = tokenActual;
             match("idClase");
-            Token tokenClaseAncestro = HerenciaOpcional(); //Object, token extend, o token implement
+            Token tokenClaseAncestro = HerenciaOpcional();
             ClaseConcreta claseActual = new ClaseConcreta(tokenClaseActual,tokenClaseAncestro);
             TablaSimbolos.obtenerInstancia().setClaseActual(claseActual);
             TablaSimbolos.obtenerInstancia().insertarClaseConcreta(claseActual);
@@ -89,7 +89,7 @@ public class AnalizadorSintactico {
         }else if(tokenActual.getToken_id().equals("pr_implements")){
             tokenHerencia = ImplementaA();
         }else {
-            //Epsilon TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object").obtenerToken();
+            return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object").obtenerToken();
         }
         return tokenHerencia;
     }
@@ -101,8 +101,9 @@ public class AnalizadorSintactico {
             tokenHerencia = tokenActual;
             match("idClase");
             return tokenHerencia;
-        }else
-            return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object").obtenerToken();
+        }else{
+           /** nose si esta bien*/ return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object").obtenerToken();
+        }
     }
     /** 8 */
     private Token ImplementaA() throws ExcepcionSintactica, ExcepcionLexica, IOException{
@@ -113,7 +114,8 @@ public class AnalizadorSintactico {
             match("idClase");
             return tokenHerencia;
         }else
-            throw new ExcepcionSintactica(tokenActual, "implements");
+        /** nose si esta bien*/ return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object").obtenerToken();
+           /** throw new ExcepcionSintactica(tokenActual, "implements");*/
     }
     /** 9 */
     private Token ExtiendeOpcional() throws ExcepcionSintactica, ExcepcionLexica, IOException{

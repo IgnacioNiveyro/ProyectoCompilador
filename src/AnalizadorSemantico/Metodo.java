@@ -1,7 +1,6 @@
 package AnalizadorSemantico;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import AnalizadorLexico.Token;
 public class Metodo {
 
@@ -42,5 +41,38 @@ public class Metodo {
     }
     public Tipo obtenerTipoRetornoMetodo(){return tipoRetornoDelMetodo;}
     public ArrayList<Parametro> obtenerListaParametros(){return listaParametros;}
+    public boolean chequearHeadersIguales(Metodo metodoAncestro){
+        if(!metodoAncestro.obtenerAlcance().equals(alcanceDelMetodo) || !metodoAncestro.obtenerTipoRetornoMetodo().obtenerNombreClase().equals(tipoRetornoDelMetodo.obtenerNombreClase()) || !tienenMismosParametros(metodoAncestro))
+           return false;
+        return true;
+    }
 
+    public boolean tieneParametros(){
+        return listaParametros.size() != 0;
+    }
+    public boolean tienenMismosParametros(Metodo metodoAncestro){
+        boolean poseenMismosParametros;
+        if(metodoAncestro.obtenerListaParametros().size() == listaParametros.size()){
+            poseenMismosParametros = true;
+            int indiceParametro = 0;
+            while(poseenMismosParametros && (indiceParametro < listaParametros.size())){
+                Parametro parametroAncestro = metodoAncestro.obtenerListaParametros().get(indiceParametro);
+                if(!tienenMismosParametrosAux(parametroAncestro, indiceParametro))
+                    poseenMismosParametros = false;
+                indiceParametro += 1;
+            }
+        }
+        else
+            poseenMismosParametros = false;
+        return poseenMismosParametros;
+    }
+    public boolean tienenMismosParametrosAux(Parametro parametroAncestro, int indiceParametro){
+        Parametro parametroDeMiMetodo = this.listaParametros.get(indiceParametro);
+        if(!parametroAncestro.obtenerTipoDelParametro().obtenerNombreClase().equals((parametroDeMiMetodo.obtenerTipoDelParametro().obtenerNombreClase())))
+            return false;
+        return true;
+    }
+    public void estaBienDeclarado(){
+
+    }
 }

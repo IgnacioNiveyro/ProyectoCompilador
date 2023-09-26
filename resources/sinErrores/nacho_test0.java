@@ -1,21 +1,21 @@
 class A{
 
-
-    public A(){
-
-    }
-
     void atributoVoid;
     A atributoClaseA;
     boolean atributoBoolean;
     char atributoChar;
     int atributoInt;
 
+    static void main(){}
     static void m1(int entero, char charparametro){
 
     }
 
     static A m2(){
+
+    }
+
+    public A(){
 
     }
 
@@ -28,4 +28,5 @@ class A{
     static int m5(){
 
     }
+
 }
