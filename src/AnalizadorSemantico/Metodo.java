@@ -28,7 +28,11 @@ public class Metodo {
         boolean mismoParametro = false;
         for(int i=0; i<listaParametros.size() && !mismoParametro; i++){
             if(listaParametros.get(i).obtenerTokenDelParametro().getLexema().equals(parametroAInsertar.obtenerTokenDelParametro().getLexema())){
-                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(parametroAInsertar.obtenerTokenDelParametro(), "El parametro "+parametroAInsertar.obtenerNombreDelParametro()+" ya se encuentra declarado en el metodo "+tokenDelMetodo.getLexema()));
+                if(!esConstructor)
+                    TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(parametroAInsertar.obtenerTokenDelParametro(), "El parametro "+parametroAInsertar.obtenerNombreDelParametro()+" ya se encuentra declarado en el metodo "+tokenDelMetodo.getLexema()));
+                else if (esConstructor) {
+                    TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(parametroAInsertar.obtenerTokenDelParametro(), "El parametro "+parametroAInsertar.obtenerNombreDelParametro()+" ya se encuentra declarado en el constructor "+tokenDelMetodo.getLexema()));
+                }
                 mismoParametro = true;
                 break;
             }
