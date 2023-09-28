@@ -24,8 +24,10 @@ public class Interface extends Clase{
             TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoInsertar.obtenerToken(), "Una interface no puede tener método static"));
         if(!existeMetodo(metodoInsertar))
             metodos.put(metodoInsertar.obtenerNombreMetodo(), metodoInsertar);
-        else
-            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoInsertar.obtenerToken(), "El metodo "+metodoInsertar.obtenerNombreMetodo()+" ya se encuentra declarado en la clase "+obtenerNombreClase()));
+        else {
+            metodoInsertar.estaBienDeclarado();
+            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoInsertar.obtenerToken(), "El metodo " + metodoInsertar.obtenerNombreMetodo() + " ya se encuentra declarado en la interface " + obtenerNombreClase()));
+        }
     }
 
     public Token obtenerTokenClaseAncestro(){
@@ -52,9 +54,10 @@ public class Interface extends Clase{
         if(tokenClaseAncestro!=null){
             if(!interfaceDeclarada(tokenClaseAncestro.getLexema()))
                 TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "La interface "+tokenClaseAncestro.getLexema()+" no esta declarada"));
-            chequearDeclaracionMetodos();
-            chequearHerenciaCircular();
+
         }
+        chequearDeclaracionMetodos();
+        chequearHerenciaCircular();
 
     }
     public void chequearHerenciaCircular(){

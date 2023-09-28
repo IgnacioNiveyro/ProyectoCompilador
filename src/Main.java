@@ -58,7 +58,7 @@ public class Main {
 
             analizadorLexico = new AnalizadorLexico(manejadorDeArchivo, palabrasClave);
             analizadorSintactico = new AnalizadorSintactico(analizadorLexico);
-    /*
+        /*
             System.out.println("Tamaño tabla de clases concretas: "+TablaSimbolos.obtenerInstancia().obtenerTablaDeClasesConcretas().size());
             for(ClaseConcreta clase : TablaSimbolos.obtenerInstancia().obtenerTablaDeClasesConcretas().values()) {
                 System.out.println("clase: "+clase.obtenerNombreClase()+" | ancestro: "+clase.obtenerNombreClaseAncestro()+" | cant. metodos: "+clase.obtenerMetodos().size()+" | cant. atributos: "+clase.obtenerAtributos().size()+" |Tiene construc: "+clase.tieneConstructor());
@@ -92,7 +92,7 @@ public class Main {
                     System.out.println();
                 }
             }
-    */
+*/
             TablaSimbolos.obtenerInstancia().estaBienDeclarado();
             TablaSimbolos.obtenerInstancia().consolidate();
 

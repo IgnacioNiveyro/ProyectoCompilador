@@ -22,12 +22,14 @@ public class TablaSimbolos {
     }
     public TablaSimbolos(){
         tieneMain = false;
+        claseActual = null;
         tablaDeClasesConcretas = new Hashtable<String,ClaseConcreta>();
         tablaDeInterfaces = new Hashtable<String, Interface>();
         listaConErroresSemanticos = new ArrayList<>();
         agregarClasesPredefinidas();
     }
     public void construirTablaSimbolos(){
+        claseActual = null;
         tablaDeClasesConcretas = new Hashtable<String,ClaseConcreta>();
         tablaDeInterfaces = new Hashtable<String, Interface>();
         listaConErroresSemanticos = new ArrayList<>();
@@ -64,7 +66,7 @@ public class TablaSimbolos {
     public void agregarClasesPredefinidas(){
         insertarObjectClass();
         insertarStringClass();
-        //insertarSystemClass();
+        insertarSystemClass();
     }
     private void insertarObjectClass(){
         Token tokenObject = new Token("idClase", "Object", 0);
@@ -133,7 +135,10 @@ public class TablaSimbolos {
             claseConcretaConsolidar.consolidate();
         }
         if(!tieneMain)
-            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenEOF, "No se encontro el metodo main"));
+            if(this.getClaseActual()!=null && tablaDeClasesConcretas.containsKey(claseActual.obtenerNombreClase()))
+                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(claseActual.tokenDeClase, "No se encontro el metodo main"));
+            else
+                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenEOF, "No se encontro el metodo main"));
     }
     private void insertarStringClass(){
         Token stringToken = new Token("idClase", "String", 0);
@@ -163,28 +168,110 @@ public class TablaSimbolos {
     }
 
     private void insertarMetodoPrintSln(ClaseConcreta claseConcretaSystem) {
+        Token voidToken = new Token("pr_void", "void", 0);
+        Token stringToken = new Token("idClase", "String", 0);
+        Token tokenParametroS = new Token("IdMetVar", "s", 0);
+        Tipo tipoMetodoPrintS = new TipoPrimitivo(voidToken);
+        Token tokenMetodoPrintS = new Token("IdMetVar", "printSln", 0);
+        Metodo metodoPrintS = new Metodo(tokenMetodoPrintS, "static", tipoMetodoPrintS);
+        Tipo tipoParametroMetodoPrintS = new TipoPrimitivo(stringToken);
+        Parametro parametroS = new Parametro(tokenParametroS, tipoParametroMetodoPrintS);
 
+        metodoPrintS.insertarParametro(parametroS);
+        claseConcretaSystem.insertarMetodo(metodoPrintS);
     }
 
     private void insertarMetodoPrintIln(ClaseConcreta claseConcretaSystem) {
+        Token voidToken = new Token("pr_void", "void", 0);
+        Token intToken = new Token("pr_int", "int", 0);
+        Token tokenParametroI = new Token("IdMetVar", "i", 0);
+        Tipo tipoMetodoPrintI = new TipoPrimitivo(voidToken);
+        Token tokenMetodoPrintI = new Token("IdMetVar", "printIln", 0);
+        Metodo metodoPrintI = new Metodo(tokenMetodoPrintI, "static", tipoMetodoPrintI);
+        Tipo tipoParametroMetodoPrintI = new TipoPrimitivo(intToken);
+        Parametro parametroI = new Parametro(tokenParametroI, tipoParametroMetodoPrintI);
+
+        metodoPrintI.insertarParametro(parametroI);
+        claseConcretaSystem.insertarMetodo(metodoPrintI);
     }
 
     private void insertarMetodoPrintCln(ClaseConcreta claseConcretaSystem) {
+        Token voidToken = new Token("pr_void", "void", 0);
+        Token charToken = new Token("pr_char", "char", 0);
+        Token tokenParametroC = new Token("IdMetVar", "c", 0);
+        Tipo tipoMetodoPrintC = new TipoPrimitivo(voidToken);
+        Token tokenMetodoPrintC = new Token("IdMetVar", "printCln", 0);
+        Metodo metodoPrintC = new Metodo(tokenMetodoPrintC, "static", tipoMetodoPrintC);
+        Tipo tipoParametroMetodoPrintC = new TipoPrimitivo(charToken);
+        Parametro parametroB = new Parametro(tokenParametroC, tipoParametroMetodoPrintC);
+
+        metodoPrintC.insertarParametro(parametroB);
+        claseConcretaSystem.insertarMetodo(metodoPrintC);
     }
 
     private void insertarMetodoPrintBln(ClaseConcreta claseConcretaSystem) {
+        Token voidToken = new Token("pr_void", "void", 0);
+        Token booleanToken = new Token("pr_boolean", "boolean", 0);
+        Token tokenParametroB = new Token("IdMetVar", "b", 0);
+        Tipo tipoMetodoPrintB = new TipoPrimitivo(voidToken);
+        Token tokenMetodoPrintB = new Token("IdMetVar", "printBln", 0);
+        Metodo metodoPrintB = new Metodo(tokenMetodoPrintB, "static", tipoMetodoPrintB);
+        Tipo tipoParametroMetodoPrintB = new TipoPrimitivo(booleanToken);
+        Parametro parametroB = new Parametro(tokenParametroB, tipoParametroMetodoPrintB);
+
+        metodoPrintB.insertarParametro(parametroB);
+        claseConcretaSystem.insertarMetodo(metodoPrintB);
     }
 
     private void insertarMetodoPrintln(ClaseConcreta claseConcretaSystem) {
+        Token voidToken = new Token("pr_void", "void", 0);
+        Tipo tipoMetodoPrintln = new TipoPrimitivo(voidToken);
+        Token tokenMetodoPrintln = new Token("IdMetVar", "println", 0);
+        Metodo metodoPrintln = new Metodo(tokenMetodoPrintln, "static", tipoMetodoPrintln);
+
+        claseConcretaSystem.insertarMetodo(metodoPrintln);
     }
 
     private void insertarMetodoPrintS(ClaseConcreta claseConcretaSystem) {
+        Token voidToken = new Token("pr_void", "void", 0);
+        Token stringToken = new Token("idClase", "String", 0);
+        Token tokenParametroS = new Token("IdMetVar", "s", 0);
+        Tipo tipoMetodoPrintS = new TipoPrimitivo(voidToken);
+        Token tokenMetodoPrintS = new Token("IdMetVar", "printS", 0);
+        Metodo metodoPrintS = new Metodo(tokenMetodoPrintS, "static", tipoMetodoPrintS);
+        Tipo tipoParametroMetodoPrintS = new TipoPrimitivo(stringToken);
+        Parametro parametroS = new Parametro(tokenParametroS, tipoParametroMetodoPrintS);
+
+        metodoPrintS.insertarParametro(parametroS);
+        claseConcretaSystem.insertarMetodo(metodoPrintS);
     }
 
     private void insertarMetodoPrintI(ClaseConcreta claseConcretaSystem) {
+        Token voidToken = new Token("pr_void", "void", 0);
+        Token intToken = new Token("pr_int", "int", 0);
+        Token tokenParametroI = new Token("IdMetVar", "i", 0);
+        Tipo tipoMetodoPrintI = new TipoPrimitivo(voidToken);
+        Token tokenMetodoPrintI = new Token("IdMetVar", "printI", 0);
+        Metodo metodoPrintI = new Metodo(tokenMetodoPrintI, "static", tipoMetodoPrintI);
+        Tipo tipoParametroMetodoPrintI = new TipoPrimitivo(intToken);
+        Parametro parametroI = new Parametro(tokenParametroI, tipoParametroMetodoPrintI);
+
+        metodoPrintI.insertarParametro(parametroI);
+        claseConcretaSystem.insertarMetodo(metodoPrintI);
     }
 
     private void insertarMetodoPrintC(ClaseConcreta claseConcretaSystem) {
+        Token voidToken = new Token("pr_void", "void", 0);
+        Token charToken = new Token("pr_char", "char", 0);
+        Token tokenParametroC = new Token("IdMetVar", "c", 0);
+        Tipo tipoMetodoPrintC = new TipoPrimitivo(voidToken);
+        Token tokenMetodoPrintC = new Token("IdMetVar", "printC", 0);
+        Metodo metodoPrintC = new Metodo(tokenMetodoPrintC, "static", tipoMetodoPrintC);
+        Tipo tipoParametroMetodoPrintC = new TipoPrimitivo(charToken);
+        Parametro parametroC = new Parametro(tokenParametroC, tipoParametroMetodoPrintC);
+
+        metodoPrintC.insertarParametro(parametroC);
+        claseConcretaSystem.insertarMetodo(metodoPrintC);
     }
 
     private void insertarMetodoPrintB(ClaseConcreta claseConcretaSystem) {
@@ -205,7 +292,7 @@ public class TablaSimbolos {
         Token intToken = new Token("pr_int", "int", 0);
         Tipo tipoMetodoRead = new TipoPrimitivo(intToken);
         Token tokenMetodoRead = new Token("IdMetVar", "read", 0);
-        Metodo metodoRead = new Metodo(tokenMetodoRead, "", tipoMetodoRead);
+        Metodo metodoRead = new Metodo(tokenMetodoRead, "static", tipoMetodoRead);
         claseConcretaSystem.insertarMetodo(metodoRead);
     }
 

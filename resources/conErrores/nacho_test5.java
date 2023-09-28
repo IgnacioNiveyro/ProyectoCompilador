@@ -1,4 +1,4 @@
-///[Error:A|10]
+///[Error:A|4]
 //clase con 2 constructores
 
 class A{

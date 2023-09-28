@@ -72,6 +72,7 @@ public class ClaseConcreta extends Clase {
                         Interface ancestro = obtenerInterfaceAncestro();
                     if(!ancestro.estaConsolidada)
                         ancestro.consolidar();
+                    consolidarMetodos(TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object"));
                     verificarMetodosInterfaces();
                     estaConsolidada = true;
             }
@@ -147,7 +148,7 @@ public class ClaseConcreta extends Clase {
             constructorClase = new Metodo(new Token("idClase", this.obtenerNombreClase(), 0), "public");
             tieneConstructor = true;
         }else
-            constructorClase.chequearConstructor(); /** preguntar profe*/
+            constructorClase.chequearConstructor();
     }
     public void chequearClaseAncestro(){
         if(tokenClaseAncestro!=null) {

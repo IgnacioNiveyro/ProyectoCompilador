@@ -102,7 +102,6 @@ public class AnalizadorSintactico {
             match("idClase");
             return tokenHerencia;
         }else{
-           /** lo cambie*/ //return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object").obtenerToken();
             throw new ExcepcionSintactica(tokenActual, "extends");
         }
 
@@ -117,7 +116,6 @@ public class AnalizadorSintactico {
             return tokenHerencia;
         }else
             throw new ExcepcionSintactica(tokenActual, "implements");
-            /** aca tmb retornaba object*/
     }
     /** 9 */
     private Token ExtiendeOpcional() throws ExcepcionSintactica, ExcepcionLexica, IOException{
