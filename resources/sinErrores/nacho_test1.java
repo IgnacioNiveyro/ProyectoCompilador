@@ -6,6 +6,7 @@ interface B{
     int m5();
 }
 
+class A{}
 class Init{
     static void main()
     { }

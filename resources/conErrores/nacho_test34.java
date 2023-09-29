@@ -1,4 +1,4 @@
-///[Error:Init|3]
+///[Error:Init|9]
 
 class Init{
     static void main()

@@ -39,12 +39,6 @@ public class Metodo {
         }
         if(!mismoParametro)
             listaParametros.add(parametroAInsertar);
-        /*if(!listaParametros.contains(parametroAInsertar)) {
-
-            listaParametros.add(parametroAInsertar);
-        }else
-            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(parametroAInsertar.obtenerTokenDelParametro(), "El parametro "+parametroAInsertar.obtenerNombreDelParametro()+" ya se encuentra declarado en el metodo "+tokenDelMetodo.getLexema()));
-    */
     }
 
     public String obtenerAlcance(){

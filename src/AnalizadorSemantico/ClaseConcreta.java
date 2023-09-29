@@ -39,7 +39,12 @@ public class ClaseConcreta extends Clase {
             tieneConstructor = true;
         }
         else
-            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenDeClase, "La clase "+obtenerNombreClase()+" ya posee constructor o definio mal el mismo"));
+            if(tieneConstructor)
+                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(constructorAInsertar.obtenerToken(), "La clase "+obtenerNombreClase()+" ya posee constructor."));
+            else
+                if(!constructorAInsertar.obtenerToken().getLexema().equals(tokenDeClase.getLexema())){
+                    TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(constructorAInsertar.obtenerToken(), "El constructor de la clase "+obtenerNombreClase()+" se encuentra mal definido."));
+                }
     }
     public Hashtable<String, Atributo> obtenerAtributos(){return atributos;}
     public boolean existeAtributo(Atributo atributoAInsertar){
