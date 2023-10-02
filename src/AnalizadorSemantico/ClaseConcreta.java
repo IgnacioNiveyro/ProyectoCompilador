@@ -20,10 +20,14 @@ public class ClaseConcreta extends Clase {
     }
 
     public void insertarMetodo(Metodo metodoAInsertar) {
-        if (!existeMetodo(metodoAInsertar))
-            metodos.put(metodoAInsertar.obtenerNombreMetodo(), metodoAInsertar);
-        else
-            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoAInsertar.obtenerToken(), "El metodo " + metodoAInsertar.obtenerNombreMetodo() + " ya existe en la clase " + obtenerNombreClase()));
+        if ((metodoAInsertar.obtenerNombreMetodo().equals("main")) && (!metodoAInsertar.obtenerAlcance().equals("static") || !metodoAInsertar.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void") || metodoAInsertar.tieneParametros()))
+            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoAInsertar.obtenerToken(), "El metodo main se encuentra mal declarado"));
+        else {
+            if (!existeMetodo(metodoAInsertar))
+                metodos.put(metodoAInsertar.obtenerNombreMetodo(), metodoAInsertar);
+            else
+                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoAInsertar.obtenerToken(), "El metodo " + metodoAInsertar.obtenerNombreMetodo() + " ya existe en la clase " + obtenerNombreClase()));
+        }
     }
     public boolean tieneConstructor(){return tieneConstructor;}
 
@@ -76,7 +80,7 @@ public class ClaseConcreta extends Clase {
                     if(obtenerInterfaceAncestro() != null){
                         Interface ancestro = obtenerInterfaceAncestro();
                     if(!ancestro.estaConsolidada)
-                        ancestro.consolidar();
+                        ancestro.consolidate();
                     consolidarMetodos(TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object"));
                     verificarMetodosInterfaces();
                     estaConsolidada = true;
@@ -107,7 +111,7 @@ public class ClaseConcreta extends Clase {
         }
     }
     public void verificarMetodosInterfaces(){
-        if(tokenClaseAncestro!=null){ /** && implementa*/
+        if(tokenClaseAncestro!=null){
             Interface interfaceVerificar = TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema());
             if(interfaceVerificar != null)
                 interfaceVerificar.verificarImplementacionMetodos(tokenClaseAncestro, this);
@@ -162,10 +166,6 @@ public class ClaseConcreta extends Clase {
             if (!interfaceDeclarada(nombreInterface) && !claseConcretaDeclarada(nombreInterface))
                 TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "La entidad " + tokenClaseAncestro.getLexema() + " no esta declarada."));
 
-           /** String nombreClaseExtiende = tokenClaseAncestro.getLexema();
-            if (!claseConcretaDeclarada(nombreClaseExtiende))
-                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "La clase " + tokenClaseAncestro.getLexema() + " no esta declarada."));
-        */
         }
     }
 

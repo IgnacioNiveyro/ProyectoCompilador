@@ -121,11 +121,15 @@ public class TablaSimbolos {
     }
     private void tieneMetodoMain(ClaseConcreta claseChequear){
         for(Metodo metodoChequear : claseChequear.metodos.values()) {
-            if (metodoChequear.obtenerAlcance().equals("static") && metodoChequear.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void") && metodoChequear.obtenerNombreMetodo().equals("main") && !metodoChequear.tieneParametros())
-                if (tieneMain)
-                    TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoChequear.obtenerToken(), "El metodo main ya fue declarado"));
-                else
-                    tieneMain = true;
+            if(metodoChequear.obtenerNombreMetodo().equals("main"))
+                if (metodoChequear.obtenerAlcance().equals("static") && metodoChequear.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void") && !metodoChequear.tieneParametros()) {
+                    if (tieneMain)
+                        TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoChequear.obtenerToken(), "El metodo main ya fue declarado"));
+                    else {
+                        tieneMain = true;
+                    }
+                }else
+                    TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoChequear.obtenerToken(), "El metodo main se encuentra mal declarado"));
         }
     }
     public void consolidate() throws ExcepcionSemantica {
