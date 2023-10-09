@@ -1,3 +1,5 @@
+package minijavaCompiler;
+
 import java.io.*;
 import java.util.ArrayList;
 

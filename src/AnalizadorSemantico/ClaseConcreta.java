@@ -19,6 +19,20 @@ public class ClaseConcreta extends Clase {
         atributos = new Hashtable<>();
     }
 
+    public boolean tieneInterfaceAncestro(String nombreInterfaceChequear){
+        boolean tieneInterfaceAncestro = false;
+        if(tokenClaseAncestro != null){
+            Interface i = TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema());
+            if(i != null){
+                if(i.obtenerNombreClase().equals(nombreInterfaceChequear))
+                    return true;
+                if(i.tieneInterfaceAncestro(nombreInterfaceChequear))
+                    tieneInterfaceAncestro = true;
+            }
+        }
+        return tieneInterfaceAncestro;
+    }
+
     public void insertarMetodo(Metodo metodoAInsertar) {
         if ((metodoAInsertar.obtenerNombreMetodo().equals("main")) && (!metodoAInsertar.obtenerAlcance().equals("static") || !metodoAInsertar.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void") || metodoAInsertar.tieneParametros()))
             TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoAInsertar.obtenerToken(), "El metodo main se encuentra mal declarado"));

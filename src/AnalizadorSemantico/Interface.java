@@ -19,6 +19,21 @@ public class Interface extends Clase{
 
     }
 
+    public boolean tieneInterfaceAncestro(String nombreInterface){
+        boolean toReturn = false;
+        if(tokenClaseAncestro != null){
+            Interface i = TablaSimbolos.obtenerInstancia().obtenerInterface(this.obtenerNombreClase());
+            if( i != null){
+                if(i.obtenerNombreClase().equals(nombreInterface)){
+                    return true;
+                }
+                if(i.tieneInterfaceAncestro(nombreInterface))
+                    toReturn = true;
+            }
+        }
+        return toReturn;
+    }
+
     public void insertarMetodo(Metodo metodoInsertar){
         if(metodoInsertar.obtenerAlcance().equals("static"))
             TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoInsertar.obtenerToken(), "Una interface no puede tener método static"));

@@ -1,6 +1,8 @@
 package AnalizadorSemantico;
 import java.util.ArrayList;
 import java.util.Hashtable;
+
+import AST.Sentencia.NodoBloque;
 import AnalizadorLexico.Token;
 
 public class TablaSimbolos {
@@ -13,6 +15,7 @@ public class TablaSimbolos {
     private Hashtable<String, Interface> tablaDeInterfaces;
     private Token tokenEOF;
     private ArrayList<ErrorSemantico> listaConErroresSemanticos;
+    private NodoBloque bloqueActual;
 
     public static TablaSimbolos obtenerInstancia(){
         if(instancia == null) {
@@ -300,4 +303,84 @@ public class TablaSimbolos {
         claseConcretaSystem.insertarMetodo(metodoRead);
     }
 
+    public void setBloqueActual(NodoBloque bloqueActual){
+        this.bloqueActual = bloqueActual;
+    }
+
+    public NodoBloque getBloqueActual(){
+        return this.bloqueActual;
+    }
+    public void chequearSentencias() throws ExcepcionSemanticaSimple{
+        for(ClaseConcreta claseConcreta: this.tablaDeClasesConcretas.values()){
+            this.claseActual = claseConcreta;
+            for(Metodo metodo : claseConcreta.obtenerMetodos().values()){
+                this.metodoActual = metodo;
+                if(!metodo.estaChequeado()){
+                    if(metodo.obtenerBloquePrincipal() != null){
+                        this.setBloqueActual(metodo.obtenerBloquePrincipal());
+                        metodo.obtenerBloquePrincipal().chequear();
+                    }
+                    metodo.setChequeado();
+                }
+            }
+        }
+    }
+    public boolean esParametroMetodo(String nombreVariable, Metodo metodo){
+        for(Parametro p : metodo.obtenerListaParametros())
+            if(p.obtenerNombreDelParametro().equals(nombreVariable))
+                return true;
+
+        return false;
+    }
+    public Tipo recuperarTipoParametro(String nombreVariable, Metodo metodo){
+        boolean encontreParametro = false;
+        ArrayList<Parametro> listaParametrosDelMetodo = metodo.obtenerListaParametros();
+        int indice = 0;
+        Tipo tipoARetornar = null;
+        while(!encontreParametro){
+            Parametro parametro = listaParametrosDelMetodo.get(indice);
+            if(parametro.obtenerNombreDelParametro().equals(nombreVariable)){
+                tipoARetornar = parametro.obtenerTipoDelParametro();
+                encontreParametro = true;
+            }
+            indice += 1;
+        }
+        return tipoARetornar;
+    }
+    public boolean esAtributo(String nombreVariable, ClaseConcreta claseConcreta){
+        if(claseConcreta.obtenerAtributos().containsKey(nombreVariable))
+            return true;
+        return false;
+    }
+    public Tipo recuperarAtributo(String nombreVariable, ClaseConcreta claseConcreta){
+        return claseConcreta.obtenerAtributos().get(nombreVariable).obtenerTipoAtributo();
+    }
+
+    public boolean esVariableLocalDelBloqueActual(String nombreVariable){
+        NodoBloque ancestroBloqueActual = this.bloqueActual;
+        if(!ancestroBloqueActual.obtenerTablaVariablesLocales().containsKey(nombreVariable))
+            while(ancestroBloqueActual.obtenerBloqueAncestro() != null){
+                ancestroBloqueActual = ancestroBloqueActual.obtenerBloqueAncestro();
+                if(ancestroBloqueActual.obtenerTablaVariablesLocales().containsKey(nombreVariable))
+                    return true;
+            }
+        else
+            return true;
+
+        return false;
+    }
+
+    public Tipo recuperarTipoVariableLocal(String nombreVariable){
+        NodoBloque ancestroBloqueActual = this.bloqueActual;
+        if(!ancestroBloqueActual.obtenerTablaVariablesLocales().containsKey(nombreVariable))
+            while(ancestroBloqueActual.obtenerBloqueAncestro() != null){
+                ancestroBloqueActual = ancestroBloqueActual.obtenerBloqueAncestro();
+                if(ancestroBloqueActual.obtenerTablaVariablesLocales().containsKey(nombreVariable))
+                    return ancestroBloqueActual.obtenerTablaVariablesLocales().get(nombreVariable).obtenerTipoVariableLocal();
+            }
+        else
+            return ancestroBloqueActual.obtenerTablaVariablesLocales().get(nombreVariable).obtenerTipoVariableLocal();
+
+        return null;
+    }
 }

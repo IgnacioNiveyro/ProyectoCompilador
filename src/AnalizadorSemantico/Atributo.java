@@ -20,6 +20,7 @@ public class Atributo {
     public Token obtenerToken(){
         return token;
     }
+    public String obtenerVisibilidad(){return esStatic;}
     public boolean esTipoStatic(){
         return esStatic == "static";
     }
