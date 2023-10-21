@@ -60,7 +60,7 @@ public class Main {
             analizadorLexico = new AnalizadorLexico(manejadorDeArchivo, palabrasClave);
             analizadorSintactico = new AnalizadorSintactico(analizadorLexico);
 
-            imprimir();
+            //imprimir();
 
             TablaSimbolos.obtenerInstancia().estaBienDeclarado();
             TablaSimbolos.obtenerInstancia().consolidate();

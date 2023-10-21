@@ -11,4 +11,8 @@ public abstract class NodoSentencia {
     }
 
     public abstract void chequear() throws ExcepcionSemanticaSimple;
+
+    public Token getToken(){
+        return token;
+    }
 }
