@@ -3,10 +3,7 @@ package AnalizadorSintactico;
 import AST.Acceso.NodoAcceso;
 import AST.Acceso.NodoAccesoVar;
 import AST.Expresion.*;
-import AST.Sentencia.NodoAsignacion;
-import AST.Sentencia.NodoBloque;
-import AST.Sentencia.NodoLlamada;
-import AST.Sentencia.NodoSentencia;
+import AST.Sentencia.*;
 import AnalizadorLexico.*;
 import AnalizadorSemantico.*;
 
@@ -413,7 +410,7 @@ public class AnalizadorSintactico {
 
             if(expresion instanceof NodoExpresionAsignacion){
                 NodoExpresionAsignacion nea1 = (NodoExpresionAsignacion) expresion;
-
+                /**
                 System.out.print(nea1.getLadoIzquierdo().obtenerToken());
                 System.out.print("=");
                 NodoExpresionAsignacion nea2 = (NodoExpresionAsignacion) nea1.getLadoDerecho();
@@ -426,7 +423,7 @@ public class AnalizadorSintactico {
                 System.out.print(nea3.getLadoIzquierdo().obtenerToken());
 
                 System.out.println();
-
+                */
 
                 nodoSentencia = new NodoAsignacion(expresion.obtenerToken(), ((NodoExpresionAsignacion) expresion).getLadoIzquierdo(), ((NodoExpresionAsignacion) expresion).getLadoDerecho());
             }else{
@@ -437,30 +434,37 @@ public class AnalizadorSintactico {
 
 
         } else if (tokenActual.getToken_id().equals("pr_var")) {
-            VarLocal();
+            nodoSentencia = VarLocal();
             match("punto_y_coma");
         } else if (tokenActual.getToken_id().equals("pr_return")) {
             Return();
             match("punto_y_coma");
         } else if (tokenActual.getToken_id().equals("pr_if")) {
-            If();
+            nodoSentencia = If();
+
         } else if (tokenActual.getToken_id().equals("pr_while")) {
             While();
         } else if (Arrays.asList("llave_abre").contains(tokenActual.getToken_id())){
-            Bloque(null);
+            NodoBloque bloqueActual = TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerBloqueActual();
+            NodoBloque bloqueNuevo = new NodoBloque(TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerToken(), bloqueActual);
+            nodoSentencia = Bloque(bloqueNuevo);
         }else
             throw new ExcepcionSintactica(tokenActual, ";, +, -, !, IdMetVar, new, idClase, (, null, true, false, intLiteral, charLiteral, stringLiteral, this, var, return, if, while, { ");
         return nodoSentencia;
     }
     /** 28 */
-    private void VarLocal() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private NodoDeclaracionVariableLocal VarLocal() throws ExcepcionSintactica, ExcepcionLexica, IOException{
         if(imprimir)
             System.out.println("VarLocal");
         if (tokenActual.getToken_id().equals("pr_var")){
             match("pr_var");
+            Token tokenVariable = tokenActual;
             match("IdMetVar");
+            Token operador = tokenActual;
             match("op=");
-            ExpresionCompuesta();
+            NodoExpresion nodoExpresion = ExpresionCompuesta();
+            NodoDeclaracionVariableLocal variable = new NodoDeclaracionVariableLocal(tokenVariable,nodoExpresion, operador);
+            return variable;
         } else
             throw new ExcepcionSintactica(tokenActual, "var");
     }
@@ -485,18 +489,22 @@ public class AnalizadorSintactico {
         }
     }
     /** 31 */
-    private void If() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private NodoIf If() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+        NodoIf nodoIf;
         if(imprimir)
             System.out.println("If");
         if(tokenActual.getToken_id().equals("pr_if")){
+            Token tokenIf = tokenActual;
             match("pr_if");
             match("parentesis_abre");
-            Expresion();
+            NodoExpresion condicion = Expresion();
             match("parentesis_cierra");
-            Sentencia();
+            NodoSentencia sentencia = Sentencia();
+            nodoIf = new NodoIf(tokenIf, condicion, sentencia);
             IfPrima();
         }else
             throw new ExcepcionSintactica(tokenActual, "if");
+        return nodoIf;
     }
     /** 32 */
     private void IfPrima() throws ExcepcionSintactica, ExcepcionLexica, IOException{
@@ -553,59 +561,88 @@ public class AnalizadorSintactico {
     }
     /** 36 */
     private NodoExpresion ExpresionCompuesta() throws ExcepcionSintactica, ExcepcionLexica, IOException{
-        NodoExpresion expresion =  null;
+        NodoExpresion expresionRetornar =  null;
         if(imprimir)
             System.out.println("ExpresionCompuesta");
         if(Arrays.asList("op+","op-","op!","pr_null", "pr_true", "pr_false", "intLiteral", "charLiteral", "stringLiteral","pr_this", "IdMetVar", "pr_new", "idClase", "punto", "parentesis_abre").contains(tokenActual.getToken_id())) {
-            expresion = ExpresionBasica();
-            ExpresionCompuestaPrima();
+            NodoExpresion expresion = ExpresionBasica();
+            expresionRetornar = ExpresionCompuestaPrima(expresion);
         }else throw new ExcepcionSintactica(tokenActual, "+,-,!,null,true,false,intLiteral,charLiteral,stringLiteral,this,IdMetVar,new,idClase,punto,(");
-        return expresion;
+        return expresionRetornar;
     }
     /** 37 */
-    private void ExpresionCompuestaPrima() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private NodoExpresion ExpresionCompuestaPrima(NodoExpresion ladoIzquierdo) throws ExcepcionSintactica, ExcepcionLexica, IOException{
         if(imprimir)
             System.out.println("ExpresionCompuestaPrima");
         if(Arrays.asList("op||","op&&","op==","op!=","menor","mayor","menor_igual","mayor_igual","op+","op-","op*","op/","op%").contains(tokenActual.getToken_id())) {
-            OperadorBinario();
-            ExpresionBasica();
-            ExpresionCompuestaPrima();
+            Token operadorBinario = OperadorBinario();
+            NodoExpresion ladoDerecho = ExpresionBasica();
+            NodoExpresionBinaria nodoExpresionBinaria = new NodoExpresionBinaria(operadorBinario,ladoIzquierdo,ladoDerecho);
+            return ExpresionCompuestaPrima(nodoExpresionBinaria);
         }else{
-            //Epsilon
+            return ladoIzquierdo;
         }
     }
     /** 38 */
-    private void OperadorBinario() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private Token OperadorBinario() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+        Token toReturn;
         if(imprimir)
             System.out.println("Operadorbinario");
-        if (tokenActual.getToken_id().equals("op||"))
-                match("op||");
-            else if (tokenActual.getToken_id().equals("op&&"))
-                match("op&&");
-            else if (tokenActual.getToken_id().equals("op=="))
-                match("op==");
-            else if (tokenActual.getToken_id().equals("op!="))
-                match("op!=");
-            else if (tokenActual.getToken_id().equals("menor"))
-                match("menor");
-            else if (tokenActual.getToken_id().equals("mayor"))
-                match("mayor");
-            else if (tokenActual.getToken_id().equals("menor_igual"))
-                match("menor_igual");
-            else if (tokenActual.getToken_id().equals("mayor_igual"))
-                match("mayor_igual");
-            else if (tokenActual.getToken_id().equals("op+"))
-                match("op+");
-            else if (tokenActual.getToken_id().equals("op-"))
-                match("op-");
-            else if (tokenActual.getToken_id().equals("op*"))
-                match("op*");
-            else if (tokenActual.getToken_id().equals("op/"))
-                match("op/");
-            else if (tokenActual.getToken_id().equals("op%"))
-                match("op%");
-            else
-                throw new ExcepcionSintactica(tokenActual, "||,&&,==,!=,<,>,<=,>=,+,-,*,/,%");
+        if (tokenActual.getToken_id().equals("op||")) {
+            toReturn = tokenActual;
+            match("op||");
+        }
+        else if (tokenActual.getToken_id().equals("op&&")) {
+            toReturn = tokenActual;
+            match("op&&");
+        }
+        else if (tokenActual.getToken_id().equals("op==")) {
+            toReturn = tokenActual;
+            match("op==");
+        }
+        else if (tokenActual.getToken_id().equals("op!=")) {
+            toReturn = tokenActual;
+            match("op!=");
+        }
+        else if (tokenActual.getToken_id().equals("menor")) {
+            toReturn = tokenActual;
+            match("menor");
+        }
+        else if (tokenActual.getToken_id().equals("mayor")) {
+            toReturn = tokenActual;
+            match("mayor");
+        }
+        else if (tokenActual.getToken_id().equals("menor_igual")) {
+            toReturn = tokenActual;
+            match("menor_igual");
+        }
+        else if (tokenActual.getToken_id().equals("mayor_igual")) {
+            toReturn = tokenActual;
+            match("mayor_igual");
+        }
+        else if (tokenActual.getToken_id().equals("op+")) {
+            toReturn = tokenActual;
+            match("op+");
+        }
+         else if (tokenActual.getToken_id().equals("op-")) {
+            toReturn = tokenActual;
+            match("op-");
+        }
+         else if (tokenActual.getToken_id().equals("op*")) {
+            toReturn = tokenActual;
+            match("op*");
+        }
+         else if (tokenActual.getToken_id().equals("op/")) {
+            toReturn = tokenActual;
+            match("op/");
+        }
+        else if (tokenActual.getToken_id().equals("op%")) {
+            toReturn = tokenActual;
+            match("op%");
+        }
+        else
+            throw new ExcepcionSintactica(tokenActual, "||,&&,==,!=,<,>,<=,>=,+,-,*,/,%");
+        return toReturn;
     }
     /** 39 */
     private NodoExpresion ExpresionBasica() throws ExcepcionSintactica, ExcepcionLexica, IOException{

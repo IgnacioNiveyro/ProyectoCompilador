@@ -60,7 +60,7 @@ public class Main {
             analizadorLexico = new AnalizadorLexico(manejadorDeArchivo, palabrasClave);
             analizadorSintactico = new AnalizadorSintactico(analizadorLexico);
 
-            //imprimir();
+            imprimir();
 
             TablaSimbolos.obtenerInstancia().estaBienDeclarado();
             TablaSimbolos.obtenerInstancia().consolidate();
@@ -95,7 +95,7 @@ public class Main {
                     System.out.println("");
                     if(metodo.obtenerBloquePrincipal() != null){
                         for(NodoSentencia sentencia : metodo.obtenerBloquePrincipal().obtenerListaSentencias())
-                            System.out.println("tengo sentencia");
+                            System.out.println(sentencia.getToken());
                     }else{
                         System.out.println("Bloque principal null");
                     }
