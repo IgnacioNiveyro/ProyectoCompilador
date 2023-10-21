@@ -1,5 +1,6 @@
 package AST.Expresion;
 
+import AST.Sentencia.NodoSentencia;
 import AnalizadorLexico.Token;
 import AnalizadorSemantico.Tipo;
 import AnalizadorSemantico.ExcepcionSemanticaSimple;

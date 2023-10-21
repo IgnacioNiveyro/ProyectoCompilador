@@ -14,12 +14,14 @@ public class NodoBloque extends NodoSentencia{
     private Hashtable<String, NodoDeclaracionVariableLocal> tablaVariablesLocales;
     private NodoBloque bloqueAncestro;
 
-    public NodoBloque(token token, NodoBloque bloqueAncestro){
+    public NodoBloque(Token token, NodoBloque bloqueAncestro){
         super(token);
         this.listaSentencias = new ArrayList<>();
         this.tablaVariablesLocales = new Hashtable<>();
+        this.bloqueAncestro = bloqueAncestro;
     }
     public void insertarVariableLocal(NodoDeclaracionVariableLocal nodoVariableLocal) throws ExcepcionSemanticaSimple{
+        System.out.println("entre a insertarVariableLocal con "+nodoVariableLocal.obtenerNombreVariable());
         if(this.bloqueAncestro != null){
             for(NodoDeclaracionVariableLocal variableLocalEnBloqueAncestro : bloqueAncestro.obtenerTablaVariablesLocales().values())
                 this.tablaVariablesLocales.put(variableLocalEnBloqueAncestro.obtenerNombreVariable(), variableLocalEnBloqueAncestro);

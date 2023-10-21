@@ -1,3 +1,4 @@
+import AST.Sentencia.NodoSentencia;
 import AnalizadorLexico.AnalizadorLexico;
 import AnalizadorSemantico.*;
 import AnalizadorSintactico.AnalizadorSintactico;
@@ -58,7 +59,30 @@ public class Main {
 
             analizadorLexico = new AnalizadorLexico(manejadorDeArchivo, palabrasClave);
             analizadorSintactico = new AnalizadorSintactico(analizadorLexico);
-        /*
+
+            //imprimir();
+
+            TablaSimbolos.obtenerInstancia().estaBienDeclarado();
+            TablaSimbolos.obtenerInstancia().consolidate();
+
+
+            if(TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().size() > 0)
+                throw new ExcepcionSemantica(TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos());
+
+        }catch(IOException | ExcepcionLexica | ExcepcionSintactica | ExcepcionSemantica | ExcepcionSemanticaSimple e){
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            TablaSimbolos.obtenerInstancia().chequearSentencias();
+            System.out.println("La compilacion fue exitosa\n");
+            System.out.println("[SinErrores]");
+        }catch(ExcepcionSemanticaSimple e){
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void imprimir(){
+
             System.out.println("Tamaño tabla de clases concretas: "+TablaSimbolos.obtenerInstancia().obtenerTablaDeClasesConcretas().size());
             for(ClaseConcreta clase : TablaSimbolos.obtenerInstancia().obtenerTablaDeClasesConcretas().values()) {
                 System.out.println("clase: "+clase.obtenerNombreClase()+" | ancestro: "+clase.obtenerNombreClaseAncestro()+" | cant. metodos: "+clase.obtenerMetodos().size()+" | cant. atributos: "+clase.obtenerAtributos().size()+" |Tiene construc: "+clase.tieneConstructor());
@@ -67,15 +91,23 @@ public class Main {
                     for(Parametro parametro : metodo.obtenerListaParametros()){
                         System.out.print(parametro.obtenerTipoDelParametro().obtenerNombreClase()+" "+parametro.obtenerNombreDelParametro()+",");
                     }
-                    System.out.print(")");
+                    System.out.print("){");
+                    System.out.println("");
+                    if(metodo.obtenerBloquePrincipal() != null){
+                        for(NodoSentencia sentencia : metodo.obtenerBloquePrincipal().obtenerListaSentencias())
+                            System.out.println("tengo sentencia");
+                    }else{
+                        System.out.println("Bloque principal null");
+                    }
                     System.out.println();
+                    System.out.println("}");
                 }
                 for(Atributo atributo: clase.obtenerAtributos().values()){
                     System.out.println(atributo.obtenerTipoAtributo().obtenerNombreClase()+" "+atributo.obtenerNombreAtributo());
                 }
             }
 
-            System.out.println("Tamaño tabla de Interfaces: "+TablaSimbolos.obtenerInstancia().obtenerTablaInterfaces().size());
+           /* System.out.println("Tamaño tabla de Interfaces: "+TablaSimbolos.obtenerInstancia().obtenerTablaInterfaces().size());
             for(Interface interface_test : TablaSimbolos.obtenerInstancia().obtenerTablaInterfaces().values()) {
 
                 if(interface_test.interfaceExtiende())
@@ -93,19 +125,5 @@ public class Main {
                 }
             }
 */
-            TablaSimbolos.obtenerInstancia().estaBienDeclarado();
-            TablaSimbolos.obtenerInstancia().consolidate();
-
-
-            if(TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().size() > 0)
-                throw new ExcepcionSemantica(TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos());
-
-            System.out.println("La compilacion fue exitosa\n");
-            System.out.println("[SinErrores]");
-
-        }catch(IOException | ExcepcionLexica | ExcepcionSintactica | ExcepcionSemantica e){
-            System.out.println(e.getMessage());
-        }
-
     }
 }

@@ -2,6 +2,9 @@ package AnalizadorSemantico;
 
 import java.util.ArrayList;
 import AnalizadorLexico.Token;
+import AST.Sentencia.NodoBloque;
+import AST.Sentencia.NodoDeclaracionVariableLocal;
+
 public class Metodo {
 
     private Token tokenDelMetodo;
@@ -9,13 +12,21 @@ public class Metodo {
     private Tipo tipoRetornoDelMetodo;
     private ArrayList<Parametro> listaParametros;
     private boolean esConstructor;
+    private NodoBloque bloqueActual;
+    private NodoBloque bloquePrincipal;
+    private boolean hereda;
+    private boolean bloquePrincipalChequeado;
+    private String nombreClase;
 
-    public Metodo(Token tokenDelMetodo, String alcanceDelMetodo, Tipo tipoRetornoDelMetodo){
+    public Metodo(Token tokenDelMetodo, String alcanceDelMetodo, Tipo tipoRetornoDelMetodo, String nombreClase){
         this.tokenDelMetodo = tokenDelMetodo;
         this.alcanceDelMetodo = alcanceDelMetodo;
         this.tipoRetornoDelMetodo = tipoRetornoDelMetodo;
         listaParametros = new ArrayList<>();
         esConstructor = false;
+        hereda = false;
+        bloquePrincipalChequeado = false;
+        this.nombreClase = nombreClase;
     }
     public Metodo(Token tokenDelMetodo, String visibilidad){
         this.tokenDelMetodo = tokenDelMetodo;
@@ -118,5 +129,32 @@ public class Metodo {
 
     private boolean tipoRetornoEstaDeclarado(){
         return TablaSimbolos.obtenerInstancia().claseConcretaDeclarada(tipoRetornoDelMetodo.obtenerNombreClase()) || TablaSimbolos.obtenerInstancia().interfaceDeclarada(tipoRetornoDelMetodo.obtenerNombreClase());
+    }
+    public void setBloquePrincipal(NodoBloque nodoBloque){
+        bloquePrincipal = nodoBloque;
+    }
+    public NodoBloque obtenerBloquePrincipal(){
+        return bloquePrincipal;
+    }
+    public void setBloqueActual(NodoBloque nodoBloque){
+        bloqueActual = nodoBloque;
+    }
+    public NodoBloque obtenerBloqueActual(){
+        return bloqueActual;
+    }
+    public void setChequeado(){
+        bloquePrincipalChequeado = true;
+    }
+    public boolean estaChequeado(){
+        return bloquePrincipalChequeado;
+    }
+    public boolean hereda(){
+        return hereda;
+    }
+    public void setHereda(){
+        hereda = true;
+    }
+    public ClaseConcreta obtenerClaseMetodo(){
+        return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(this.nombreClase);
     }
 }

@@ -6,11 +6,13 @@ public class Atributo {
     private String esStatic;
     private Token token;
     private Tipo tipoDelAtributo;
+    private boolean esHeredado;
 
     public Atributo(Token token, Tipo tipoDelAtributo, String esStatic){
         this.esStatic = esStatic;
         this.tipoDelAtributo = tipoDelAtributo;
         this.token = token;
+        this.esHeredado = false;
     }
 
     public String obtenerNombreAtributo(){
@@ -39,6 +41,11 @@ public class Atributo {
     private boolean esTipoPrimitivo(){
         return tipoDelAtributo.esTipoPrimitivo();
     }
-
+    public void setEsHeredado(){
+        esHeredado = true;
+    }
+    public boolean esHeredado(){
+        return esHeredado;
+    }
 
 }

@@ -197,4 +197,7 @@ public class ClaseConcreta extends Clase {
         for(Metodo m: metodos.values())
             m.estaBienDeclarado();
     }
+    public Metodo obtenerConstructorClase(){
+        return constructorClase;
+    }
 }

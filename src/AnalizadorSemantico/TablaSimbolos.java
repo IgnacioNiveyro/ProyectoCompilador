@@ -68,8 +68,8 @@ public class TablaSimbolos {
 
     public void agregarClasesPredefinidas(){
         insertarObjectClass();
-        insertarStringClass();
-        insertarSystemClass();
+        //insertarStringClass();
+        //insertarSystemClass();
     }
     private void insertarObjectClass(){
         Token tokenObject = new Token("idClase", "Object", 0);
@@ -81,10 +81,11 @@ public class TablaSimbolos {
         Tipo tipoMetododebugPrint = new TipoPrimitivo(voidToken);
         Tipo tipoParametroMetododebugPrint = new TipoPrimitivo(intToken);
 
-        Metodo debugPrint = new Metodo(tokenMetododebugPrint, "static", tipoMetododebugPrint);
+
         Parametro parametroMetodo = new Parametro(tokenParametro,tipoParametroMetododebugPrint);
         ClaseConcreta object = new ClaseConcreta(tokenObject, null);
         object.consolidar();
+        Metodo debugPrint = new Metodo(tokenMetododebugPrint, "static", tipoMetododebugPrint, object.obtenerNombreClase());
 
         debugPrint.insertarParametro(parametroMetodo);
         object.insertarMetodo(debugPrint);
@@ -180,7 +181,7 @@ public class TablaSimbolos {
         Token tokenParametroS = new Token("IdMetVar", "s", 0);
         Tipo tipoMetodoPrintS = new TipoPrimitivo(voidToken);
         Token tokenMetodoPrintS = new Token("IdMetVar", "printSln", 0);
-        Metodo metodoPrintS = new Metodo(tokenMetodoPrintS, "static", tipoMetodoPrintS);
+        Metodo metodoPrintS = new Metodo(tokenMetodoPrintS, "static", tipoMetodoPrintS, claseConcretaSystem.obtenerNombreClase());
         Tipo tipoParametroMetodoPrintS = new TipoPrimitivo(stringToken);
         Parametro parametroS = new Parametro(tokenParametroS, tipoParametroMetodoPrintS);
 
@@ -194,7 +195,7 @@ public class TablaSimbolos {
         Token tokenParametroI = new Token("IdMetVar", "i", 0);
         Tipo tipoMetodoPrintI = new TipoPrimitivo(voidToken);
         Token tokenMetodoPrintI = new Token("IdMetVar", "printIln", 0);
-        Metodo metodoPrintI = new Metodo(tokenMetodoPrintI, "static", tipoMetodoPrintI);
+        Metodo metodoPrintI = new Metodo(tokenMetodoPrintI, "static", tipoMetodoPrintI, claseConcretaSystem.obtenerNombreClase());
         Tipo tipoParametroMetodoPrintI = new TipoPrimitivo(intToken);
         Parametro parametroI = new Parametro(tokenParametroI, tipoParametroMetodoPrintI);
 
@@ -208,7 +209,7 @@ public class TablaSimbolos {
         Token tokenParametroC = new Token("IdMetVar", "c", 0);
         Tipo tipoMetodoPrintC = new TipoPrimitivo(voidToken);
         Token tokenMetodoPrintC = new Token("IdMetVar", "printCln", 0);
-        Metodo metodoPrintC = new Metodo(tokenMetodoPrintC, "static", tipoMetodoPrintC);
+        Metodo metodoPrintC = new Metodo(tokenMetodoPrintC, "static", tipoMetodoPrintC, claseConcretaSystem.obtenerNombreClase());
         Tipo tipoParametroMetodoPrintC = new TipoPrimitivo(charToken);
         Parametro parametroB = new Parametro(tokenParametroC, tipoParametroMetodoPrintC);
 
@@ -222,7 +223,7 @@ public class TablaSimbolos {
         Token tokenParametroB = new Token("IdMetVar", "b", 0);
         Tipo tipoMetodoPrintB = new TipoPrimitivo(voidToken);
         Token tokenMetodoPrintB = new Token("IdMetVar", "printBln", 0);
-        Metodo metodoPrintB = new Metodo(tokenMetodoPrintB, "static", tipoMetodoPrintB);
+        Metodo metodoPrintB = new Metodo(tokenMetodoPrintB, "static", tipoMetodoPrintB, claseConcretaSystem.obtenerNombreClase());
         Tipo tipoParametroMetodoPrintB = new TipoPrimitivo(booleanToken);
         Parametro parametroB = new Parametro(tokenParametroB, tipoParametroMetodoPrintB);
 
@@ -234,7 +235,7 @@ public class TablaSimbolos {
         Token voidToken = new Token("pr_void", "void", 0);
         Tipo tipoMetodoPrintln = new TipoPrimitivo(voidToken);
         Token tokenMetodoPrintln = new Token("IdMetVar", "println", 0);
-        Metodo metodoPrintln = new Metodo(tokenMetodoPrintln, "static", tipoMetodoPrintln);
+        Metodo metodoPrintln = new Metodo(tokenMetodoPrintln, "static", tipoMetodoPrintln, claseConcretaSystem.obtenerNombreClase());
 
         claseConcretaSystem.insertarMetodo(metodoPrintln);
     }
@@ -245,7 +246,7 @@ public class TablaSimbolos {
         Token tokenParametroS = new Token("IdMetVar", "s", 0);
         Tipo tipoMetodoPrintS = new TipoPrimitivo(voidToken);
         Token tokenMetodoPrintS = new Token("IdMetVar", "printS", 0);
-        Metodo metodoPrintS = new Metodo(tokenMetodoPrintS, "static", tipoMetodoPrintS);
+        Metodo metodoPrintS = new Metodo(tokenMetodoPrintS, "static", tipoMetodoPrintS, claseConcretaSystem.obtenerNombreClase());
         Tipo tipoParametroMetodoPrintS = new TipoPrimitivo(stringToken);
         Parametro parametroS = new Parametro(tokenParametroS, tipoParametroMetodoPrintS);
 
@@ -259,7 +260,7 @@ public class TablaSimbolos {
         Token tokenParametroI = new Token("IdMetVar", "i", 0);
         Tipo tipoMetodoPrintI = new TipoPrimitivo(voidToken);
         Token tokenMetodoPrintI = new Token("IdMetVar", "printI", 0);
-        Metodo metodoPrintI = new Metodo(tokenMetodoPrintI, "static", tipoMetodoPrintI);
+        Metodo metodoPrintI = new Metodo(tokenMetodoPrintI, "static", tipoMetodoPrintI, claseConcretaSystem.obtenerNombreClase());
         Tipo tipoParametroMetodoPrintI = new TipoPrimitivo(intToken);
         Parametro parametroI = new Parametro(tokenParametroI, tipoParametroMetodoPrintI);
 
@@ -273,7 +274,7 @@ public class TablaSimbolos {
         Token tokenParametroC = new Token("IdMetVar", "c", 0);
         Tipo tipoMetodoPrintC = new TipoPrimitivo(voidToken);
         Token tokenMetodoPrintC = new Token("IdMetVar", "printC", 0);
-        Metodo metodoPrintC = new Metodo(tokenMetodoPrintC, "static", tipoMetodoPrintC);
+        Metodo metodoPrintC = new Metodo(tokenMetodoPrintC, "static", tipoMetodoPrintC, claseConcretaSystem.obtenerNombreClase());
         Tipo tipoParametroMetodoPrintC = new TipoPrimitivo(charToken);
         Parametro parametroC = new Parametro(tokenParametroC, tipoParametroMetodoPrintC);
 
@@ -287,7 +288,7 @@ public class TablaSimbolos {
         Token tokenParametroB = new Token("IdMetVar", "b", 0);
         Tipo tipoMetodoPrintB = new TipoPrimitivo(voidToken);
         Token tokenMetodoPrintB = new Token("IdMetVar", "printB", 0);
-        Metodo metodoPrintB = new Metodo(tokenMetodoPrintB, "static", tipoMetodoPrintB);
+        Metodo metodoPrintB = new Metodo(tokenMetodoPrintB, "static", tipoMetodoPrintB, claseConcretaSystem.obtenerNombreClase());
         Tipo tipoParametroMetodoPrintB = new TipoPrimitivo(booleanToken);
         Parametro parametroB = new Parametro(tokenParametroB, tipoParametroMetodoPrintB);
         metodoPrintB.insertarParametro(parametroB);
@@ -299,10 +300,18 @@ public class TablaSimbolos {
         Token intToken = new Token("pr_int", "int", 0);
         Tipo tipoMetodoRead = new TipoPrimitivo(intToken);
         Token tokenMetodoRead = new Token("IdMetVar", "read", 0);
-        Metodo metodoRead = new Metodo(tokenMetodoRead, "static", tipoMetodoRead);
+        Metodo metodoRead = new Metodo(tokenMetodoRead, "static", tipoMetodoRead, claseConcretaSystem.obtenerNombreClase());
         claseConcretaSystem.insertarMetodo(metodoRead);
     }
-
+    public Clase obtenerClase(String nombre){
+        for(ClaseConcreta claseConcreta: this.tablaDeClasesConcretas.values())
+            if(claseConcreta.obtenerNombreClase().equals(nombre))
+                return claseConcreta;
+        for(Interface i: this.tablaDeInterfaces.values())
+            if(i.obtenerNombreClase().equals(nombre))
+                return i;
+        return null;
+    }
     public void setBloqueActual(NodoBloque bloqueActual){
         this.bloqueActual = bloqueActual;
     }
@@ -312,13 +321,15 @@ public class TablaSimbolos {
     }
     public void chequearSentencias() throws ExcepcionSemanticaSimple{
         for(ClaseConcreta claseConcreta: this.tablaDeClasesConcretas.values()){
+            //System.out.println("Estoy en clase concreta: "+claseConcreta.obtenerNombreClase());
             this.claseActual = claseConcreta;
             for(Metodo metodo : claseConcreta.obtenerMetodos().values()){
+                //System.out.println("Estoy en metodo: "+metodo.obtenerNombreMetodo());
                 this.metodoActual = metodo;
                 if(!metodo.estaChequeado()){
                     if(metodo.obtenerBloquePrincipal() != null){
                         this.setBloqueActual(metodo.obtenerBloquePrincipal());
-                        metodo.obtenerBloquePrincipal().chequear();
+                        //metodo.obtenerBloquePrincipal().chequear();
                     }
                     metodo.setChequeado();
                 }
