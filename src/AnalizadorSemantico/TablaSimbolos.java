@@ -329,7 +329,7 @@ public class TablaSimbolos {
                 if(!metodo.estaChequeado()){
                     if(metodo.obtenerBloquePrincipal() != null){
                         this.setBloqueActual(metodo.obtenerBloquePrincipal());
-                        //metodo.obtenerBloquePrincipal().chequear();
+                        metodo.obtenerBloquePrincipal().chequear();
                     }
                     metodo.setChequeado();
                 }

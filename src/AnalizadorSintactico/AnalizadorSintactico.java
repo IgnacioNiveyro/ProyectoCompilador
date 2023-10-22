@@ -407,16 +407,14 @@ public class AnalizadorSintactico {
 
         } else if (Arrays.asList("op+", "op-", "op!", "IdMetVar", "pr_new", "idClase", "parentesis_abre", "pr_null", "pr_true", "pr_false", "intLiteral", "charLiteral", "stringLiteral", "pr_this").contains(tokenActual.getToken_id())) {
 
-            NodoExpresion expresion = Expresion();
+            NodoExpresionAsignacion expresion = (NodoExpresionAsignacion) Expresion();
 
+            if(expresion.getLadoDerecho() != null){ /** En la expresión si o si hay un "op=" */
 
-            if(true){
-                System.out.println("Es instancia de NodoExpresionAsignacion");
-                NodoExpresionAsignacion nea1 = (NodoExpresionAsignacion) expresion;
+                nodoSentencia = new NodoAsignacion(expresion.obtenerToken(), expresion.getLadoIzquierdo(), expresion.getLadoDerecho());
 
-                nodoSentencia = new NodoAsignacion(expresion.obtenerToken(), ((NodoExpresionAsignacion) expresion).getLadoIzquierdo(), ((NodoExpresionAsignacion) expresion).getLadoDerecho());
-            }else{
-                //nodoSentencia = new NodoLlamada();
+            }else{ /** Acá no tiene lado derecho pero el lado izq puede ser ExpresionBinaria, ExpresionUnaria, ..., ¿Que Sentencia le corresponde a dichas expresiones? */
+                nodoSentencia = new NodoLlamada(expresion.obtenerToken(), (NodoAcceso) expresion.getLadoIzquierdo());
             }
 
             match("punto_y_coma");
@@ -484,6 +482,12 @@ public class AnalizadorSintactico {
             System.out.println("ExpresionOpcional");
         if(Arrays.asList("op+","op-","op!","pr_null", "pr_true", "pr_false", "intLiteral", "charLiteral", "stringLiteral","pr_this", "IdMetVar", "pr_new", "idClase", "parentesis_abre").contains(tokenActual.getToken_id())){
             nodoExpresion = Expresion();
+            NodoExpresionAsignacion nodoExpresionEA = (NodoExpresionAsignacion) nodoExpresion;
+            if(nodoExpresionEA.getLadoDerecho() != null)
+                System.out.println("El return no puede contener una asignacion");
+
+            nodoExpresion = nodoExpresionEA.getLadoIzquierdo();
+
         }else{
             if(tokenActual.getToken_id().equals("punto_y_coma"))
                 nodoExpresion = new NodoExpresionVacia(tokenActual);
@@ -500,9 +504,12 @@ public class AnalizadorSintactico {
             match("pr_if");
             match("parentesis_abre");
             NodoExpresion condicion = Expresion();
+            NodoExpresionAsignacion condicionEA = (NodoExpresionAsignacion) condicion;
+            if(condicionEA.getLadoDerecho() != null)
+                System.out.println("If con lado derecho es algo de tipo Asignacion, esto deberia ser una Excepcion");
             match("parentesis_cierra");
             NodoSentencia sentencia = Sentencia();
-            nodoIf = new NodoIf(tokenIf, condicion, sentencia);
+            nodoIf = new NodoIf(tokenIf, condicionEA.getLadoIzquierdo(), sentencia);
             IfPrima();
         }else
             throw new ExcepcionSintactica(tokenActual, "if");
@@ -529,9 +536,12 @@ public class AnalizadorSintactico {
             match("pr_while");
             match("parentesis_abre");
             NodoExpresion condicion = Expresion();
+            NodoExpresionAsignacion nodoEA = (NodoExpresionAsignacion) condicion;
+            if(nodoEA.getLadoDerecho() != null)
+                System.out.println("El while no puede tener una asignación en la condición");
             match("parentesis_cierra");
             NodoSentencia sentencia = Sentencia();
-            nodoWhile = new NodoWhile(tokenWhile,condicion,sentencia);
+            nodoWhile = new NodoWhile(tokenWhile,nodoEA.getLadoIzquierdo(),sentencia);
         }else
             throw new ExcepcionSintactica(tokenActual, "while");
         return nodoWhile;
@@ -545,7 +555,7 @@ public class AnalizadorSintactico {
 
             nodoExpresionAsignacion.setLadoIzquierdo(ExpresionCompuesta());
 
-            nodoExpresionAsignacion.setLadoDerecho(ExpresionPrima());
+            nodoExpresionAsignacion.setLadoDerecho(ExpresionPrima(nodoExpresionAsignacion));
 
         }else
             throw new ExcepcionSintactica(tokenActual, "+,-,!,null,true,false,intLiteral,charLiteral,stringLiteral,this,IdMetVar,new,idClase,(");
@@ -554,10 +564,11 @@ public class AnalizadorSintactico {
     }
 
     /** 35 */
-    private NodoExpresion ExpresionPrima() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private NodoExpresion ExpresionPrima(NodoExpresionAsignacion nodoExpresionAsignacion) throws ExcepcionSintactica, ExcepcionLexica, IOException{
         if(imprimir)
             System.out.println("ExpresionPrima");
         if(tokenActual.getToken_id().equals("op=")) {
+            nodoExpresionAsignacion.setToken(tokenActual);
             match("op=");
             return Expresion();
         }else{
@@ -656,7 +667,6 @@ public class AnalizadorSintactico {
         if(imprimir)
             System.out.println("ExpresionBasica");
         if(Arrays.asList("op+", "op-", "op!").contains(tokenActual.getToken_id())){
-            System.out.println("Entre acá");
             Token operador = OperadorUnario();
             NodoOperando nodoOperando = Operando();
             nodoExpresion = new NodoExpresionUnaria(operador, nodoOperando);
@@ -703,16 +713,19 @@ public class AnalizadorSintactico {
     }
     /** 42 */
     private NodoOperandoLiteral Literal() throws ExcepcionSintactica, ExcepcionLexica, IOException{
-        NodoOperandoLiteral nodoOperandoLiteral = null;
+        NodoOperandoLiteral nodoOperandoLiteral;
         if(imprimir)
             System.out.println("Literal");
         if (tokenActual.getToken_id().equals("pr_null")) {
+            nodoOperandoLiteral = new NodoNull(tokenActual);
             match("pr_null");
         }
         else if (tokenActual.getToken_id().equals("pr_true")) {
+            nodoOperandoLiteral = new NodoBoolean(tokenActual);
             match("pr_true");
         }
         else if (tokenActual.getToken_id().equals("pr_false")) {
+            nodoOperandoLiteral = new NodoBoolean(tokenActual);
             match("pr_false");
         }
         else if (tokenActual.getToken_id().equals("intLiteral")) {
@@ -720,9 +733,11 @@ public class AnalizadorSintactico {
             match("intLiteral");
         }
         else if (tokenActual.getToken_id().equals("charLiteral")) {
+            nodoOperandoLiteral = new NodoChar(tokenActual);
             match("charLiteral");
         }
         else if (tokenActual.getToken_id().equals("stringLiteral")) {
+            nodoOperandoLiteral = new NodoString(tokenActual);
             match("stringLiteral");
         }
         else

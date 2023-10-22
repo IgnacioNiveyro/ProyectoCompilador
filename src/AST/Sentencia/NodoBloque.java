@@ -38,8 +38,12 @@ public class NodoBloque extends NodoSentencia{
     }
     public void chequear() throws ExcepcionSemanticaSimple{
         TablaSimbolos.obtenerInstancia().setBloqueActual(this);
-        for(NodoSentencia nodoSentencia: this.listaSentencias)
-            nodoSentencia.chequear();
+        for(NodoSentencia nodoSentencia: this.listaSentencias) {
+            if(nodoSentencia == null)
+                System.out.println("Mi nodo sentencia es NULO.");
+            else
+                nodoSentencia.chequear();
+        }
         if(this.obtenerBloqueAncestro() != null)
             TablaSimbolos.obtenerInstancia().setBloqueActual(this.bloqueAncestro);
     }

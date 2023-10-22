@@ -14,6 +14,14 @@ public class NodoExpresionBinaria extends NodoExpresion{
     }
 
     public Tipo chequear() throws ExcepcionSemanticaSimple{
+        System.out.println(ladoIzquierdo);
+        System.out.println(ladoDerecho);
+        System.out.println(token);
+        return null;
+    }
+
+    public Tipo chequea2r() throws ExcepcionSemanticaSimple{
+
         Tipo tipoLadoIzquierdo = ladoIzquierdo.chequear();
         Tipo tipoLadoDerecho = ladoDerecho.chequear();
         String operador = this.token.getLexema();

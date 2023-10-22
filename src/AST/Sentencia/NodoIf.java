@@ -18,7 +18,20 @@ public class NodoIf extends NodoSentencia{
     public void setSentenciaElse(NodoSentencia sentenciaElse){
         this.sentenciaElse = sentenciaElse;
     }
+
     public void chequear() throws ExcepcionSemanticaSimple{
+        System.out.println("-if");
+        System.out.println(condicion);
+        System.out.println(sentencia);
+        System.out.println(token);
+        System.out.println("-if");
+        System.out.println("-expresion binaria-");
+        System.out.println(condicion.chequear());
+        System.out.println("-expresion binaria-");
+
+    }
+
+    public void cheque2ar() throws ExcepcionSemanticaSimple{
         Tipo tipoCondicion = condicion.chequear();
         if(tipoCondicion != null)
             if(tipoCondicion.esTipoPrimitivo() && tipoCondicion.obtenerNombreClase().equals("boolean"))
