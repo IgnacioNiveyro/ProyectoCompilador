@@ -9,23 +9,28 @@ public class NodoAccesoVar extends NodoAcceso{
         this.esAsignable = true;
     }
     public Tipo chequear() throws ExcepcionSemanticaSimple{
-        Tipo tipoVariable = null;
+        Tipo tipoVariable;
         String nombreVariable = this.token.getLexema();
         Metodo metodoActual = TablaSimbolos.obtenerInstancia().obtenerMetodoActual();
-        if(TablaSimbolos.obtenerInstancia().esParametroMetodo(nombreVariable,metodoActual))
+        if(TablaSimbolos.obtenerInstancia().esParametroMetodo(nombreVariable,metodoActual)) {
+            //System.out.println("Es un parametro del metodo");
             tipoVariable = TablaSimbolos.obtenerInstancia().recuperarTipoParametro(nombreVariable, metodoActual);
-        else
-            if(TablaSimbolos.obtenerInstancia().esVariableLocalDelBloqueActual(nombreVariable))
+        }else
+            if(TablaSimbolos.obtenerInstancia().esVariableLocalDelBloqueActual(nombreVariable)) {
+                //System.out.println("Es una variable local del bloque del metodo");
                 tipoVariable = TablaSimbolos.obtenerInstancia().recuperarTipoVariableLocal(nombreVariable);
+            }
             else {
+                //System.out.println("Es un atributo de la clase (propio o heredado)");
                 ClaseConcreta claseConcreta = metodoActual.obtenerClaseMetodo();
+                //System.out.println("Clase del método "+metodoActual.obtenerNombreMetodo()+" es "+claseConcreta.obtenerNombreClase());
                 if (TablaSimbolos.obtenerInstancia().esAtributo(nombreVariable, claseConcreta)) {
-                    Atributo atributo = claseConcreta.obtenerAtributos().get(this.token.getLexema());
-                    if (atributo.esHeredado())
-                        if (!TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerAlcance().equals("static"))
-                            tipoVariable = TablaSimbolos.obtenerInstancia().recuperarAtributo(nombreVariable, claseConcreta);
-                        else
-                            throw new ExcepcionSemanticaSimple(this.token, "Los atributos de instancia no pueden ser accedidos por un método static");
+                    //System.out.println("Entre al if de es un atributo "+nombreVariable+" de la clase "+claseConcreta.obtenerNombreClase());
+                    //Atributo atributo = claseConcreta.obtenerAtributos().get(this.token.getLexema());
+                    if (!TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerAlcance().equals("static"))
+                        tipoVariable = TablaSimbolos.obtenerInstancia().recuperarAtributo(nombreVariable, claseConcreta);
+                    else
+                        throw new ExcepcionSemanticaSimple(this.token, "Los atributos de instancia no pueden ser accedidos por un método static");
                 } else if (!TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerAlcance().equals("static"))
                     throw new ExcepcionSemanticaSimple(this.token, " La entidad " + this.token.getLexema() + " no es una variable local, un parametro del método ni un atributo de la clase");
                 else
@@ -37,6 +42,7 @@ public class NodoAccesoVar extends NodoAcceso{
                 else
                     throw new ExcepcionSemanticaSimple(this.token, "El encadenado posee un lado izquierdo de tipo primitivo.");
         }
+        //System.out.println("El tipo de la variable "+nombreVariable+" es: "+tipoVariable.obtenerNombreClase());
         return tipoVariable;
     }
     public boolean esAsignable(){

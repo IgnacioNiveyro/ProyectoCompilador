@@ -9,7 +9,7 @@ public class ExcepcionSemanticaSimple extends Exception{
         this.tokenError = tokenError;
         this.mensajeError = mensajeError;
     }
-    public String getMensajeError(){
+    public String getMessage(){
         return "Error Semantico en la linea "
                 +this.tokenError.getNro_linea()
                 +": "

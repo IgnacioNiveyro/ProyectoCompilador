@@ -19,7 +19,7 @@ public class NodoIf extends NodoSentencia{
         this.sentenciaElse = sentenciaElse;
     }
 
-    public void chequear() throws ExcepcionSemanticaSimple{
+    public void cheque2ar() throws ExcepcionSemanticaSimple{
         System.out.println("-if");
         System.out.println(condicion);
         System.out.println(sentencia);
@@ -31,7 +31,7 @@ public class NodoIf extends NodoSentencia{
 
     }
 
-    public void cheque2ar() throws ExcepcionSemanticaSimple{
+    public void chequear() throws ExcepcionSemanticaSimple{
         Tipo tipoCondicion = condicion.chequear();
         if(tipoCondicion != null)
             if(tipoCondicion.esTipoPrimitivo() && tipoCondicion.obtenerNombreClase().equals("boolean"))

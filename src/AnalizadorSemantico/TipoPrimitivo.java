@@ -14,10 +14,10 @@ public class TipoPrimitivo extends Tipo{
     }
 
     public void establecerNombreClase(Token token){
-        if(Arrays.asList("op&&", "op!", "op||", "menor", "mayor", "menor_igual", "mayor_igual", "op==", "op!=").contains(token.getLexema()))
+        if(Arrays.asList("op&&", "op!", "op||", "menor", "mayor", "menor_igual", "mayor_igual", "op==", "op!=").contains(token.getToken_id()))
             this.nombreClase = "boolean";
         else
-            if(Arrays.asList("op-", "op+", "op*", "op/", "op%").contains(token.getLexema()))
+            if(Arrays.asList("op-", "op+", "op*", "op/", "op%").contains(token.getToken_id()))
                 this.nombreClase = "int";
     }
 
