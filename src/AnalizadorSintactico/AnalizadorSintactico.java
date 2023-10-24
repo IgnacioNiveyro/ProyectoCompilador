@@ -412,9 +412,13 @@ public class AnalizadorSintactico {
 
             NodoExpresionAsignacion expresion = (NodoExpresionAsignacion) Expresion();
 
+            //System.out.println("li "+expresion.getLadoIzquierdo());
+            //System.out.println("ld "+expresion.getLadoDerecho());
+
+
             if(expresion.getLadoDerecho() != null){ /** En la expresión si o si hay un "op=" */
 
-                nodoSentencia = new NodoAsignacion(expresion.obtenerToken(), expresion.getLadoIzquierdo(), expresion.getLadoDerecho());
+                nodoSentencia = new NodoAsignacion(expresion.obtenerToken(), (NodoAcceso) expresion.getLadoIzquierdo(), expresion.getLadoDerecho());
 
             }else{ /** Acá no tiene lado derecho pero el lado izq puede ser ExpresionBinaria, ExpresionUnaria, ..., ¿Que Sentencia le corresponde a dichas expresiones? */
                 nodoSentencia = new NodoLlamada(expresion.obtenerToken(), (NodoAcceso) expresion.getLadoIzquierdo());

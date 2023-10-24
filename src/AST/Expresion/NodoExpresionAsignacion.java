@@ -1,6 +1,7 @@
 package AST.Expresion;
 
 
+import AST.Encadenado.Encadenado;
 import AnalizadorLexico.Token;
 import AnalizadorSemantico.ExcepcionSemanticaSimple;
 import AnalizadorSemantico.Tipo;
@@ -34,6 +35,17 @@ public class NodoExpresionAsignacion extends NodoExpresion {
 
     @Override
     public Tipo chequear() throws ExcepcionSemanticaSimple {
-        return null;
+        System.out.println("estoy chequeando una expresion Asignacion");
+        System.out.println("LD: chequear nodo asignacion: "+ladoDerecho);
+        System.out.println("LI: chequear nodo asignacion: "+ladoIzquierdo);
+        Tipo toReturn = null;
+        if(ladoIzquierdo != null){
+            toReturn = ladoIzquierdo.chequear();
+            if(ladoDerecho == null)
+                return toReturn;
+            else
+                toReturn = ladoDerecho.chequear();
+        }
+        return toReturn;
     }
 }

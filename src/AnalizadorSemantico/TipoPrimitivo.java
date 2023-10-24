@@ -25,6 +25,9 @@ public class TipoPrimitivo extends Tipo{
         return this.nombreClase;
     }
     public boolean esCompatibleConElOperador(String operador){
+
+        System.out.println("Entre a esCompatibleConElOperador "+operador);
+
         if(Arrays.asList("op-", "op+", "op*", "op/", "menor", "mayor", "menor_igual", "mayor_igual", "op==", "op!=", "op=", "op%").contains(operador) && this.obtenerNombreClase().equals("int"))
             return true;
         else

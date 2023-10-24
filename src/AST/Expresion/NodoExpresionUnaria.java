@@ -12,7 +12,7 @@ public class NodoExpresionUnaria extends NodoExpresion {
 
     public Tipo chequear() throws ExcepcionSemanticaSimple{
         Tipo tipoOperando = nodoOperando.chequear();
-        String operador = this.token.getLexema();
+        String operador = this.token.getToken_id();
         if(tipoOperando.esCompatibleConElOperador(operador))
             return tipoOperando;
         else
