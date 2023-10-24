@@ -1,13 +1,18 @@
 package AST.Acceso;
 
+import AST.Expresion.NodoExpresion;
 import AnalizadorLexico.Token;
 import AnalizadorSemantico.*;
+
+import java.util.ArrayList;
 
 
 public class AccesoConstructor extends NodoAcceso{
 
-    public AccesoConstructor(Token token){
+    ArrayList<NodoExpresion> listaExpresiones;
+    public AccesoConstructor(Token token, ArrayList<NodoExpresion> listaExpresiones){
         super(token);
+        this.listaExpresiones = listaExpresiones;
     }
 
     public boolean esAsignable(){
