@@ -20,6 +20,12 @@ public class NodoBloque extends NodoSentencia{
         this.tablaVariablesLocales = new Hashtable<>();
         this.bloqueAncestro = bloqueAncestro;
     }
+    public boolean esVariableLocal(String nombreVariable){
+        if(tablaVariablesLocales.containsKey(nombreVariable))
+            return true;
+        else
+            return false;
+    }
     public void insertarVariableLocal(NodoDeclaracionVariableLocal nodoVariableLocal) throws ExcepcionSemanticaSimple{
         //System.out.println("entre a insertarVariableLocal con "+nodoVariableLocal.obtenerNombreVariable());
         if(this.bloqueAncestro != null){

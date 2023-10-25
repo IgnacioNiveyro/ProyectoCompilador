@@ -320,14 +320,25 @@ public class TablaSimbolos {
         return this.bloqueActual;
     }
     public void chequearSentencias() throws ExcepcionSemanticaSimple{
-        for(ClaseConcreta claseConcreta: this.tablaDeClasesConcretas.values()){
+        for(ClaseConcreta claseConcreta: this.tablaDeClasesConcretas.values()) {
             //System.out.println("Estoy en clase concreta: "+claseConcreta.obtenerNombreClase());
             this.claseActual = claseConcreta;
-            for(Metodo metodo : claseConcreta.obtenerMetodos().values()){
+            for (Metodo metodo : claseConcreta.obtenerMetodos().values()) {
                 //System.out.println("Estoy en metodo: "+metodo.obtenerNombreMetodo());
                 this.metodoActual = metodo;
-                if(!metodo.estaChequeado()){
-                    if(metodo.obtenerBloquePrincipal() != null){
+                if (!metodo.estaChequeado()) {
+                    if (metodo.obtenerBloquePrincipal() != null) {
+                        this.setBloqueActual(metodo.obtenerBloquePrincipal());
+                        metodo.obtenerBloquePrincipal().chequear();
+                    }
+                    metodo.setChequeado();
+                }
+            }
+            if (claseConcreta.tieneConstructor()) {
+                Metodo metodo = claseConcreta.obtenerConstructorClase();
+                this.metodoActual = metodo;
+                if (!metodo.estaChequeado()) {
+                    if (metodo.obtenerBloquePrincipal() != null) {
                         this.setBloqueActual(metodo.obtenerBloquePrincipal());
                         metodo.obtenerBloquePrincipal().chequear();
                     }

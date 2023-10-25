@@ -433,6 +433,7 @@ public class AnalizadorSintactico {
                 else {
                     if(expresion.getLadoIzquierdo().obtenerToken() != null)
                         throw new ExcepcionSemanticaSimple(expresion.getLadoIzquierdo().obtenerToken(), "Expresion mal formada.");
+
                 }
             }
 
@@ -850,7 +851,7 @@ public class AnalizadorSintactico {
             NodoExpresion expresion = expresionA.getLadoIzquierdo();
 
             match("parentesis_cierra");
-            NodoExpresionParentizada nodoExpresionParentizada = new NodoExpresionParentizada(null, expresion);
+            NodoExpresionParentizada nodoExpresionParentizada = new NodoExpresionParentizada(expresionA.getLadoIzquierdo().obtenerToken(), expresion);
             nodoExpresionParentizada.setNoEsAsignable();
             return nodoExpresionParentizada;
         }else

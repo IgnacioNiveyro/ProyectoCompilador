@@ -1,5 +1,5 @@
-///[Error:x|7]
-//n2n: NumberToNumberBinaryExpression
+///[Error:A|7]
+
 class Main {
     static void main() {}
 

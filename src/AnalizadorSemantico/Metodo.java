@@ -11,7 +11,7 @@ public class Metodo {
     private String alcanceDelMetodo;
     private Tipo tipoRetornoDelMetodo;
     private ArrayList<Parametro> listaParametros;
-    private boolean esConstructor;
+    protected boolean esConstructor;
     private NodoBloque bloqueActual;
     private NodoBloque bloquePrincipal;
     private boolean hereda;
@@ -34,6 +34,9 @@ public class Metodo {
         this.tipoRetornoDelMetodo = null;
         listaParametros = new ArrayList<>();
         esConstructor = true;
+    }
+    public boolean getEsConstructor(){
+        return esConstructor;
     }
     public void insertarParametro(Parametro parametroAInsertar){
         boolean mismoParametro = false;

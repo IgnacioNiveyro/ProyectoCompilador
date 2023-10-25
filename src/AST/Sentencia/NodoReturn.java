@@ -16,6 +16,8 @@ public class NodoReturn extends NodoSentencia{
     public void chequear() throws ExcepcionSemanticaSimple{
         Tipo tipoExpresion = nodoExpresion.chequear();
         Metodo metodo = TablaSimbolos.obtenerInstancia().obtenerMetodoActual();
+        if(metodo.getEsConstructor())
+            throw new ExcepcionSemanticaSimple(this.token, "El constructor no puede tener retorno");
         Tipo tipoRetornoMetodo = metodo.obtenerTipoRetornoMetodo();
         if(tipoExpresion == null && !tipoRetornoMetodo.obtenerNombreClase().equals("void"))
             throw new ExcepcionSemanticaSimple(this.token, "El metodo debe retornar una expresión de tipo: "+tipoRetornoMetodo.obtenerNombreClase());
@@ -24,7 +26,7 @@ public class NodoReturn extends NodoSentencia{
                 if(!tipoRetornoMetodo.obtenerNombreClase().equals("void"))
                     throw new ExcepcionSemanticaSimple(this.token, "El metodo debe retornar una expresión de tipo: "+tipoRetornoMetodo.obtenerNombreClase());
                 else
-                    throw new ExcepcionSemanticaSimple(this.token, "El metodo no tiene retorno");
+                    throw new ExcepcionSemanticaSimple(this.token, "El metodo no deberia tener retorno");
 
         }
     }
