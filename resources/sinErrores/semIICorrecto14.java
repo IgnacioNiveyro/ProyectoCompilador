@@ -20,5 +20,10 @@ class A extends B {
 
 class C {
     C x;
+
     int y;
+
+    static void main() {}
 }
+
+class B{}

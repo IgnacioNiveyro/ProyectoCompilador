@@ -1,8 +1,8 @@
 ///[SinErrores]
 class Main {
-    public static void main() {}
+    static void main() {}
 
-    public void m() {
+    void m() {
         var bool = false;
         if(bool = true) {
             //hello!

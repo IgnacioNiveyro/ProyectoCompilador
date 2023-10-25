@@ -422,6 +422,8 @@ public class AnalizadorSintactico {
                 if(expresion.getLadoIzquierdo() != null && expresion.getLadoIzquierdo() instanceof NodoExpresionBinaria){
                     throw new ExcepcionSemanticaSimple(expresion.obtenerToken(), "Una asignacion no puede tener como lado izquierdo una expresion binaria");
                 }else {
+                    if(expresion.getLadoIzquierdo() instanceof NodoExpresionParentizada)
+                        ((NodoExpresionParentizada) expresion.getLadoIzquierdo()).setEsAsignable();
                     nodoSentencia = new NodoAsignacion(expresion.obtenerToken(), (NodoAcceso) expresion.getLadoIzquierdo(), expresion.getLadoDerecho());
                 }
             }else{ /** Acá no tiene lado derecho */
@@ -523,24 +525,25 @@ public class AnalizadorSintactico {
             NodoExpresion condicion = Expresion();
             NodoExpresionAsignacion condicionEA = (NodoExpresionAsignacion) condicion;
             if(condicionEA.getLadoDerecho() != null)
-                System.out.println("If con lado derecho es algo de tipo Asignacion, esto deberia ser una Excepcion");
+                throw new ExcepcionSemanticaSimple(condicionEA.getLadoDerecho().obtenerToken(), "Condicion if mal definida.");
             match("parentesis_cierra");
             NodoSentencia sentencia = Sentencia();
             nodoIf = new NodoIf(tokenIf, condicionEA.getLadoIzquierdo(), sentencia);
-            IfPrima();
+            NodoSentencia elseOpt = IfPrima();
+            nodoIf.setSentenciaElse(elseOpt);
         }else
             throw new ExcepcionSintactica(tokenActual, "if");
         return nodoIf;
     }
     /** 32 */
-    private void IfPrima() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemanticaSimple {
+    private NodoSentencia IfPrima() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemanticaSimple {
         if(imprimir)
             System.out.println("IfPrima");
         if(tokenActual.getToken_id().equals("pr_else")){
             match("pr_else");
-            Sentencia();
+            return Sentencia();
         }else {
-            //Epsilon
+            return null;
         }
     }
     /** 33 */
@@ -845,6 +848,7 @@ public class AnalizadorSintactico {
             match("parentesis_abre");
             NodoExpresionAsignacion expresionA = (NodoExpresionAsignacion) Expresion();
             NodoExpresion expresion = expresionA.getLadoIzquierdo();
+
             match("parentesis_cierra");
             NodoExpresionParentizada nodoExpresionParentizada = new NodoExpresionParentizada(null, expresion);
             nodoExpresionParentizada.setNoEsAsignable();

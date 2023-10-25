@@ -1,9 +1,9 @@
 ///[SinErrores]
 class Main {
-    private int x;
-    public static void main() {}
+    int x;
+    static void main() {}
 
-    public void m() {
+    void m() {
         if(4 >= 2)
             x = x + 1;
         else

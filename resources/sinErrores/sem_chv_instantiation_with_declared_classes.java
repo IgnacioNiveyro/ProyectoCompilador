@@ -1,12 +1,12 @@
 ///[SinErrores]
-class G<A, B> {}
+class G {}
 
 class C {
-    public void m() {
-        var g = new G<String, String>();
+    void m() {
+        var g = new G();
     }
 }
 
 class Main {
-    public static void main() {}
+    static void main() {}
 }

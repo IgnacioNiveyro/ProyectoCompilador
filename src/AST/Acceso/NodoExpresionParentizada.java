@@ -15,16 +15,19 @@ public class NodoExpresionParentizada extends NodoAcceso{
     }
 
     public Tipo chequear() throws ExcepcionSemanticaSimple{
+
         Tipo tipoExpresion = this.expresion.chequear();
         if(this.encadenado != null){
             if(tipoExpresion.esTipoPrimitivo())
                 throw new ExcepcionSemanticaSimple(this.expresion.obtenerToken(), "El lado izquierdo del encadenado es un tipo primitivo");
             return this.encadenado.chequear(tipoExpresion);
         }
+
         return tipoExpresion;
     }
+    public void setEsAsignable(){esAsignable = true;}
     public boolean esAsignable(){
-        return false;
+        return esAsignable;
     }
     public boolean esInvocable(){
         return false;

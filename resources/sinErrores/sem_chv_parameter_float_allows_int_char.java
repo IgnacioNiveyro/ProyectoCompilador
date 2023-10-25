@@ -1,13 +1,12 @@
 ///[SinErrores]
 class Main {
-    public static void main() {}
+    static void main() {}
 
-    public float m() {
+    int m() {
         method(1);
-        method('1');
     }
 
-    public void method(float f) {
+    void method(int f) {
 
     }
 }

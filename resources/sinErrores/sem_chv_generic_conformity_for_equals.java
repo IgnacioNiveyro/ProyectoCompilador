@@ -1,11 +1,11 @@
 ///[SinErrores]
-class A<E> {}
-class B<X> extends A<X> {}
+class A {}
+class B extends A {}
 
 class User {
-    public void method() {
-        var a = new A<String>();
-        var b = new B<String>();
+    void method() {
+        var a = new A();
+        var b = new B();
 
         var b1 = a == b;
         var b2 = a != b;
@@ -20,5 +20,5 @@ class User {
 }
 
 class Main {
-    public static void main() {}
+    static void main() {}
 }

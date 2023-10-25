@@ -1,29 +1,29 @@
 ///[SinErrores]
-class Generic<E> {
-    public E attr;
+class Generic {
+    String attr;
 
-    public E getAttr() {
+    String getAttr() {
         return attr;
     }
 
-    public void setAttr(E e) {
+    void setAttr(String e) {
         attr = e;
     }
 }
 
 class Client {
-    private String s1;
-    private String s2;
-    public void m() {
+    String s1;
+    String s2;
+    void m() {
         s1 = "s1";
         s2 = "s2";
 
-        var g = new Generic<String>();
+        var g = new Generic();
 
         s1 = g.getAttr();
     }
 }
 
 class Main {
-    public static void main() {}
+    static void main() {}
 }
