@@ -35,9 +35,9 @@ public class NodoExpresionAsignacion extends NodoExpresion {
 
     @Override
     public Tipo chequear() throws ExcepcionSemanticaSimple {
-        System.out.println("estoy chequeando una expresion Asignacion");
-        System.out.println("LD: chequear nodo asignacion: "+ladoDerecho);
-        System.out.println("LI: chequear nodo asignacion: "+ladoIzquierdo);
+        //System.out.println("estoy chequeando una expresion Asignacion");
+        //System.out.println("LD: chequear nodo asignacion: "+ladoDerecho);
+        //System.out.println("LI: chequear nodo asignacion: "+ladoIzquierdo);
         Tipo toReturn = null;
         if(ladoIzquierdo != null){
             toReturn = ladoIzquierdo.chequear();

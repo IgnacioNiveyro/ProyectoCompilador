@@ -37,7 +37,7 @@ public class NodoAsignacion extends NodoSentencia{
 
     private boolean ningunLadoEsComparableConElOperador(Tipo tipoAsignacionLadoIzquierdo, Tipo tipoAsignacionLadoDerecho){
         String operador = this.token.getToken_id();
-        System.out.println("operador "+operador);
+        //System.out.println("operador "+operador);
         return tipoAsignacionLadoIzquierdo.esCompatibleConElOperador(operador) && tipoAsignacionLadoDerecho.esCompatibleConElOperador(operador);
     }
     private boolean ladoIzquierdoEsAsignable(){

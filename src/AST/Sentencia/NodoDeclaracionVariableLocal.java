@@ -19,12 +19,17 @@ public class NodoDeclaracionVariableLocal extends NodoSentencia{
     }
 
     public void chequear() throws ExcepcionSemanticaSimple{
+        //System.out.println("chequear NodoDeclaracionVarLocal - nodoExpresion "+nodoExpresion);
+        //System.out.println("chequear NodoDeclaracionVarLocal - tipoVarLocal "+tipoVarLocal);
+        //System.out.println("chequear NodoDeclaracionVarLocal - token "+token.getLexema());
+
         Metodo metodoActual = TablaSimbolos.obtenerInstancia().obtenerMetodoActual();
         if(!TablaSimbolos.obtenerInstancia().esParametroMetodo(this.token.getLexema(), metodoActual)){
             Tipo tipoVariableLocal = this.nodoExpresion.chequear();
-            if(tipoVariableLocal.obtenerNombreClase().equals("null"))
+            //System.out.println("chequear NodoDeclaracionVarLocal - tipoVariableLocal "+tipoVariableLocal.obtenerNombreClase());
+            if(tipoVariableLocal.obtenerNombreClase().equals("null") || tipoVariableLocal.obtenerNombreClase().equals("void"))
                 throw new ExcepcionSemanticaSimple(this.tokenOperador, "no se puede inferir el tipo de la variable");
-            this.setTipo(tipoVarLocal);
+            this.setTipo(tipoVariableLocal);
             TablaSimbolos.obtenerInstancia().getBloqueActual().insertarVariableLocal(this);
         }
         else

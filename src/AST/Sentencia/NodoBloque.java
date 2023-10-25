@@ -21,7 +21,7 @@ public class NodoBloque extends NodoSentencia{
         this.bloqueAncestro = bloqueAncestro;
     }
     public void insertarVariableLocal(NodoDeclaracionVariableLocal nodoVariableLocal) throws ExcepcionSemanticaSimple{
-        System.out.println("entre a insertarVariableLocal con "+nodoVariableLocal.obtenerNombreVariable());
+        //System.out.println("entre a insertarVariableLocal con "+nodoVariableLocal.obtenerNombreVariable());
         if(this.bloqueAncestro != null){
             for(NodoDeclaracionVariableLocal variableLocalEnBloqueAncestro : bloqueAncestro.obtenerTablaVariablesLocales().values())
                 this.tablaVariablesLocales.put(variableLocalEnBloqueAncestro.obtenerNombreVariable(), variableLocalEnBloqueAncestro);

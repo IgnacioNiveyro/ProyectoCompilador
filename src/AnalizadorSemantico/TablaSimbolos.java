@@ -68,8 +68,8 @@ public class TablaSimbolos {
 
     public void agregarClasesPredefinidas(){
         insertarObjectClass();
-        //insertarStringClass();
-        //insertarSystemClass();
+        insertarStringClass();
+        insertarSystemClass();
     }
     private void insertarObjectClass(){
         Token tokenObject = new Token("idClase", "Object", 0);
