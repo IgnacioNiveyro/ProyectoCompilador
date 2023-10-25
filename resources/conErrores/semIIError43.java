@@ -8,6 +8,9 @@ class A {
         return y * x;
     }
 
+
+    static void main() {
+    }
 }
 
 class X {

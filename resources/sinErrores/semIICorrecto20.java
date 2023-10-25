@@ -1,4 +1,4 @@
-///[Error:new|10]
+///[SinErrores]
 class G {
     boolean b() {
         return true;
@@ -8,7 +8,7 @@ class G {
 class A {
     void m() {
         if((new G()).b()) {
-            //do something
+            //toGustavo()
         }
     }
 }

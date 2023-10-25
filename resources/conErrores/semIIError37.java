@@ -8,4 +8,7 @@ class X {
     void met() {
         this.x;
     }
+
+    static void main() {
+    }
 }

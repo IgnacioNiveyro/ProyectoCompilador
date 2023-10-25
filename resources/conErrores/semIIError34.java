@@ -9,7 +9,8 @@ class A {
 }
 
 class B {
-
+    static void main() {
+    }
     static int met(String x, A a) {
 
     }

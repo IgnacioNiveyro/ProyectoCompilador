@@ -41,7 +41,7 @@ public class NodoExpresionBinaria extends NodoExpresion{
                 return tipoPrimitivo;
             }
             else {
-                throw new ExcepcionSemanticaSimple(this.token, "El tipo " + tipoLadoDerecho.obtenerNombreClase() + " no es compatible con el tipo " + tipoLadoDerecho.obtenerNombreClase());
+                throw new ExcepcionSemanticaSimple(this.token, "El tipo " + tipoLadoIzquierdo.obtenerNombreClase() + " no es compatible con el tipo " + tipoLadoDerecho.obtenerNombreClase());
             }
         }
         else

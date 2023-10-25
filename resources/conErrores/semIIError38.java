@@ -10,5 +10,6 @@ class X {
                 .x;
     }
 
-
+    static void main() {
+    }
 }

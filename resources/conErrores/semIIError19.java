@@ -1,4 +1,4 @@
-///[Error:a1|13]
+///[Error:while|13]
 //condicion del while de tipo int
 class A {
 

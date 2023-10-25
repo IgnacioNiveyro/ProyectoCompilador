@@ -10,14 +10,16 @@ public class ClaseConcreta extends Clase {
     private Hashtable<String, Atributo> atributos;
     private Metodo constructorClase;
     private boolean tieneConstructor;
-    private boolean implementa;
+    private boolean implementaClaseConcreta;
 
     public ClaseConcreta(Token tokenClase, Token tokenAncestro) {
         super(tokenClase);
         tieneConstructor = false;
         tokenClaseAncestro = tokenAncestro;
         atributos = new Hashtable<>();
+        implementaClaseConcreta = false;
     }
+
 
     public boolean tieneInterfaceAncestro(String nombreInterfaceChequear){
         boolean tieneInterfaceAncestro = false;
@@ -132,11 +134,17 @@ public class ClaseConcreta extends Clase {
         }
     }
     public void estaBienDeclarado() throws ExcepcionSemantica{
+        chequearImplementaClaseConcreta();
         chequearHerenciaCircular();
         chequearConstructor();
         chequearClaseAncestro();
         chequearAtributosDeclarados();
         chequearMetodosDeclarados();
+    }
+    public void chequearImplementaClaseConcreta() throws ExcepcionSemantica{
+        if(implementaClaseConcreta){
+            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "Una clase concreta no puede implementar otra clase concreta"));
+        }
     }
     public Token obtenerTokenClaseAncestro(){
         if(tokenClaseAncestro==null)

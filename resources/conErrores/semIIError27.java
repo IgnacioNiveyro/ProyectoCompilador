@@ -6,9 +6,13 @@ class B {
     void m() {
         A.f();
     }
+    static void main() {
+    }
 }
 
 interface A  {
 
     void f();
+
+
 }

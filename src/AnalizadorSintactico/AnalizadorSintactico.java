@@ -35,7 +35,7 @@ public class AnalizadorSintactico {
             throw new ExcepcionSintactica(tokenActual, nombreToken);
     }
     /** 1 */
-    private void Inicial() throws ExcepcionLexica, ExcepcionSintactica, IOException, ExcepcionSemantica {
+    private void Inicial() throws ExcepcionLexica, ExcepcionSintactica, IOException, ExcepcionSemantica, ExcepcionSemanticaSimple {
         if(imprimir)
             System.out.println("Inicial");
 
@@ -45,7 +45,7 @@ public class AnalizadorSintactico {
         match("EOF");
     }
     /** 2 */
-    private void ListaClases() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
+    private void ListaClases() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica, ExcepcionSemanticaSimple {
         if(imprimir)
             System.out.println("ListaClases");
         if(Arrays.asList("pr_class", "pr_interface").contains(tokenActual.getToken_id())){
@@ -56,7 +56,7 @@ public class AnalizadorSintactico {
         }
     }
     /** 3 */
-    private void Clase() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
+    private void Clase() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica, ExcepcionSemanticaSimple {
         if(imprimir)
             System.out.println("Clase");
         if(tokenActual.getToken_id().equals("pr_class")) {
@@ -67,7 +67,7 @@ public class AnalizadorSintactico {
             throw new ExcepcionSintactica(tokenActual, "class o interface");
     }
     /** 4 */
-    private void ClaseConcreta() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
+    private void ClaseConcreta() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica, ExcepcionSemanticaSimple {
         if(imprimir)
             System.out.println("ClaseConcreta");
         if(tokenActual.getToken_id().equals("pr_class")){
@@ -159,7 +159,7 @@ public class AnalizadorSintactico {
         return tokenExtiende;
     }
     /** 10 */
-    private void ListaMiembros() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
+    private void ListaMiembros() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica, ExcepcionSemanticaSimple {
         if(imprimir)
             System.out.println("ListaMiembros");
         if(Arrays.asList("pr_static", "pr_public", "idClase", "pr_void", "pr_boolean", "pr_char", "pr_int").contains(tokenActual.getToken_id())){
@@ -183,7 +183,7 @@ public class AnalizadorSintactico {
     }
 
     /** 12 */
-    private void Miembro() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
+    private void Miembro() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica, ExcepcionSemanticaSimple {
         if(imprimir)
             System.out.println("Miembro");
         if(Arrays.asList("pr_static", "pr_void", "idClase", "pr_boolean" , "pr_char", "pr_int").contains(tokenActual.getToken_id())){
@@ -198,7 +198,7 @@ public class AnalizadorSintactico {
             throw new ExcepcionSintactica(tokenActual, "static, void, idClase, boolean, char, int");
     }
     /** 13 */
-    private void AtributoOMetodo(String esStatic, Tipo tipoAtributoOMetodo, Token tokenAtributoOMetodo) throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica {
+    private void AtributoOMetodo(String esStatic, Tipo tipoAtributoOMetodo, Token tokenAtributoOMetodo) throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemantica, ExcepcionSemanticaSimple {
         if(imprimir)
             System.out.println("AtributoOMetodo");
         if(tokenActual.getToken_id().equals("parentesis_abre")){
@@ -239,7 +239,7 @@ public class AnalizadorSintactico {
             throw new ExcepcionSintactica(tokenActual, "static, void, idClase, boolean, char, int");
     }
     /** 15 */
-    private void ConstructorLL1() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private void ConstructorLL1() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemanticaSimple {
         if(imprimir)
             System.out.println("ConstructorLL1");
         if(tokenActual.getToken_id().equals("pr_public")){
@@ -373,7 +373,7 @@ public class AnalizadorSintactico {
             throw new ExcepcionSintactica(tokenActual, "boolean, char, int, idClase");
     }
     /** 25 */
-    private NodoBloque Bloque(NodoBloque nodoBloque) throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private NodoBloque Bloque(NodoBloque nodoBloque) throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemanticaSimple {
         NodoBloque bloqueRetornar = nodoBloque;
         TablaSimbolos.obtenerInstancia().obtenerMetodoActual().setBloqueActual(nodoBloque);
         if(imprimir)
@@ -389,7 +389,7 @@ public class AnalizadorSintactico {
         return bloqueRetornar;
     }
     /** 26 */
-    private void ListaSentencias() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private void ListaSentencias() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemanticaSimple {
         if(imprimir)
             System.out.println("ListaSentencias");
         if(Arrays.asList("punto_y_coma", "op+", "op-", "op!", "pr_var", "IdMetVar", "pr_return", "pr_null", "pr_true", "pr_false", "intLiteral" , "charLiteral", "stringLiteral", "pr_new", "idClase","pr_if","pr_while","llave_abre","pr_this","parentesis_abre").contains(tokenActual.getToken_id())){
@@ -401,7 +401,7 @@ public class AnalizadorSintactico {
         }
     }
     /** 27 */
-    private NodoSentencia Sentencia() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private NodoSentencia Sentencia() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemanticaSimple {
         NodoSentencia nodoSentencia = null;
         if(imprimir)
             System.out.println("Sentencia");
@@ -419,11 +419,19 @@ public class AnalizadorSintactico {
 
 
             if(expresion.getLadoDerecho() != null){ /** En la expresión si o si hay un "op=" */
-
-                nodoSentencia = new NodoAsignacion(expresion.obtenerToken(), (NodoAcceso) expresion.getLadoIzquierdo(), expresion.getLadoDerecho());
-
-            }else{ /** Acá no tiene lado derecho pero el lado izq puede ser ExpresionBinaria, ExpresionUnaria, ..., ¿Que Sentencia le corresponde a dichas expresiones? */
-                nodoSentencia = new NodoLlamada(expresion.obtenerToken(), (NodoAcceso) expresion.getLadoIzquierdo());
+                if(expresion.getLadoIzquierdo() != null && expresion.getLadoIzquierdo() instanceof NodoExpresionBinaria){
+                    throw new ExcepcionSemanticaSimple(expresion.obtenerToken(), "Una asignacion no puede tener como lado izquierdo una expresion binaria");
+                }else {
+                    nodoSentencia = new NodoAsignacion(expresion.obtenerToken(), (NodoAcceso) expresion.getLadoIzquierdo(), expresion.getLadoDerecho());
+                }
+            }else{ /** Acá no tiene lado derecho */
+                if(expresion.getLadoIzquierdo() instanceof NodoAcceso && !(expresion.getLadoIzquierdo() instanceof NodoExpresionParentizada)) {
+                    nodoSentencia = new NodoLlamada(expresion.obtenerToken(), (NodoAcceso) expresion.getLadoIzquierdo());
+                }
+                else {
+                    if(expresion.getLadoIzquierdo().obtenerToken() != null)
+                        throw new ExcepcionSemanticaSimple(expresion.getLadoIzquierdo().obtenerToken(), "Expresion mal formada.");
+                }
             }
 
             match("punto_y_coma");
@@ -504,7 +512,7 @@ public class AnalizadorSintactico {
         return nodoExpresion;
     }
     /** 31 */
-    private NodoIf If() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private NodoIf If() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemanticaSimple {
         NodoIf nodoIf;
         if(imprimir)
             System.out.println("If");
@@ -525,7 +533,7 @@ public class AnalizadorSintactico {
         return nodoIf;
     }
     /** 32 */
-    private void IfPrima() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private void IfPrima() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemanticaSimple {
         if(imprimir)
             System.out.println("IfPrima");
         if(tokenActual.getToken_id().equals("pr_else")){
@@ -536,7 +544,7 @@ public class AnalizadorSintactico {
         }
     }
     /** 33 */
-    private NodoWhile While() throws ExcepcionSintactica, ExcepcionLexica, IOException{
+    private NodoWhile While() throws ExcepcionSintactica, ExcepcionLexica, IOException, ExcepcionSemanticaSimple {
         NodoWhile nodoWhile;
         if(imprimir)
             System.out.println("While");

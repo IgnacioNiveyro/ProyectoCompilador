@@ -12,3 +12,5 @@ class B implements Y{
 }
 
 class A implements Y {}
+
+interface Y{}
