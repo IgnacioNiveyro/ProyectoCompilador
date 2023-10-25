@@ -1,8 +1,8 @@
 ///[Error:m2|10]
 // Tipos incompatibles en el pasaje de parametros: B no conforma con String - ln: 10
 class A {
-     int a1;
-     int v1;
+    int a1;
+    int v1;
     
 
      void m1(int p1) 

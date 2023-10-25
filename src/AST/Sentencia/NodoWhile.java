@@ -19,7 +19,7 @@ public class NodoWhile extends NodoSentencia{
             if(tipoDeLaCondicion.esTipoPrimitivo() && tipoDeLaCondicion.obtenerNombreClase().equals("boolean"))
                 sentencia.chequear();
             else
-                throw new ExcepcionSemanticaSimple(this.token, "La condicion del ciclo While debe ser Boolean.");
+                throw new ExcepcionSemanticaSimple(condicion.obtenerToken(), "La condicion del ciclo While debe ser Boolean.");
         }
     }
 }

@@ -252,7 +252,9 @@ public class AnalizadorSintactico {
             TablaSimbolos.obtenerInstancia().setMetodoActual(metodoConstructor);
             match("idClase");
             ArgsFormales();
-            Bloque(null);
+            NodoBloque bloquePrincipal = new NodoBloque(null,null);
+            TablaSimbolos.obtenerInstancia().obtenerMetodoActual().setBloquePrincipal(bloquePrincipal);
+            Bloque(bloquePrincipal);
             ClaseConcreta claseAInsertarConstructor = (ClaseConcreta) TablaSimbolos.obtenerInstancia().getClaseActual();
             claseAInsertarConstructor.insertarConstructor(metodoConstructor);
         }else

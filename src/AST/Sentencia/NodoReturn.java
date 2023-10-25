@@ -15,8 +15,6 @@ public class NodoReturn extends NodoSentencia{
 
     public void chequear() throws ExcepcionSemanticaSimple{
         Tipo tipoExpresion = nodoExpresion.chequear();
-        System.out.println("nodo expresion: "+nodoExpresion);
-        System.out.println("tipo expresion es: "+tipoExpresion);
         Metodo metodo = TablaSimbolos.obtenerInstancia().obtenerMetodoActual();
         Tipo tipoRetornoMetodo = metodo.obtenerTipoRetornoMetodo();
         if(tipoExpresion == null && !tipoRetornoMetodo.obtenerNombreClase().equals("void"))
@@ -27,6 +25,7 @@ public class NodoReturn extends NodoSentencia{
                     throw new ExcepcionSemanticaSimple(this.token, "El metodo debe retornar una expresión de tipo: "+tipoRetornoMetodo.obtenerNombreClase());
                 else
                     throw new ExcepcionSemanticaSimple(this.token, "El metodo no tiene retorno");
+
         }
     }
 }

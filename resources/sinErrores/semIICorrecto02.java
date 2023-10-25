@@ -1,7 +1,7 @@
 // Prueba una expresion con operadores binarios y unarios
 
 class A {
-    int a1;
+   int a1;
     
      void m1(boolean x)
     {

@@ -22,7 +22,8 @@ public class Interface extends Clase{
     public boolean tieneInterfaceAncestro(String nombreInterface){
         boolean toReturn = false;
         if(tokenClaseAncestro != null){
-            Interface i = TablaSimbolos.obtenerInstancia().obtenerInterface(this.obtenerNombreClase());
+            //Interface i = TablaSimbolos.obtenerInstancia().obtenerInterface(this.obtenerNombreClase());
+            Interface i = TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema());
             if( i != null){
                 if(i.obtenerNombreClase().equals(nombreInterface)){
                     return true;

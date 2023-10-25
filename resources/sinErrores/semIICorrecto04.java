@@ -1,4 +1,4 @@
-// mediante la llamada a un metodo directo accede encadenadamente a una var
+// mediante la llamada a un metodo directo accede encadenadamente a una public
 class A {
     int a1;
     

@@ -1,12 +1,13 @@
 // Acceso simple a una variable de instancia
-// Este caso tambien chequea la asignacion multiple
+// Este caso tambien ejercita que no chequen los metodos mas de una vez cuando
+// son heredados
 
 class A {
     int a1;
-    int a2;
+    
     
      void m1(){
-        a2 = a1 = 10;
+        a1 = a1;
     }
     
 
