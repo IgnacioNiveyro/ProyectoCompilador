@@ -1,23 +1,23 @@
 ///[SinErrores]
 class Main {
-    public static void main() {}
+    static void main() {}
 }
 
 class A {
-    public int i;
+    int i;
 }
 
 class B {
-    public A a;
+    A a;
 }
 
 class C {
-    private B bb;
-    public B b() {return bb;}
+    B bb;
+    B b() {return bb;}
 }
 
 class D {
-    public void m() {
+    void m() {
         var x = new C();
         var e = x.b().a.i;
     }

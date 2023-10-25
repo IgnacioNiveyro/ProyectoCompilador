@@ -1,13 +1,13 @@
 ///[SinErrores]
 class Main {
-    private int x;
-    public static void main() {}
+    int x;
+    static void main() {}
 
-    public int get3() {
+    int get3() {
         return 3;
     }
 
-    public void m() {
+    void m() {
         var m = 3 + this.get3();
     }
 }

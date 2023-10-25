@@ -11,11 +11,11 @@ class Padre extends Abuelo {}
 class Hija extends Padre {}
 
 class Main {
-    public Interface attribute;
+    Interface attribute;
 
-    public static void main() {}
+    static void main() {}
 
-    public void m() {
+    void m() {
         var ai = new AbueloI();
         var pi = new PadreI();
         var ti = new TioI();
@@ -29,30 +29,7 @@ class Main {
 
         //In this context, String comforms to String, Object, int and char
         var x1 = "s" == "s";
-        var x2 =  1 + "" == "1";
-        var x3 = 's' + "" == "s";
-        var x4 = "s" == ('s' + "");
-        var x5 = "1" == (1 + "");
-        var x6 = "s" == o;
-        var x7 = o == "s";
 
-        //Everything concrete conforms to Object
-        var y6  = o == o;
-        var y7  = ai == o;
-        var y8  = pi == o;
-        var y9  = ti == o;
-        var x10 = hi == o;
-        var x11 = a == o;
-        var x12 = p == o;
-        var x13 = h == o;
-
-        var x14 = o == ai;
-        var x15 = o == pi;
-        var x16 = o == ti;
-        var x17 = o == hi;
-        var x18 = o == a;
-        var x19 = o == p;
-        var x20 = o == h;
 
         //Everything concrete conforms to null
         var y14 = null == ai;

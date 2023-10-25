@@ -1,9 +1,9 @@
 ///[SinErrores]
 class Main {
-    private int x;
-    public static void main() {}
+    int x;
+    static void main() {}
 
-    public void m() {
+    void m() {
         var add = 3 + 3;
         var sub = 3 - 3;
         var mul = 3 * 3;

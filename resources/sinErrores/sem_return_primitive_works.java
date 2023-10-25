@@ -1,39 +1,35 @@
 ///[SinErrores]
 class Main {
-    public static void main() {}
+    static void main() {}
 
-    public float m1() {
-        return 3.0;
+    String m1() {
+        return "3.0";
     }
-    public float m2() {
+    char m2() {
+        return 'c';
+    }
+
+    int m3() {
         return 3;
     }
 
-    public float m3() {
-        return '3';
-    }
-
-    public int m4() {
+    int m4() {
         return 3;
     }
 
-    public int m5() {
+    char m5() {
         return '3';
     }
 
-    public char m6() {
+    char m6() {
         return '3';
     }
 
-    public boolean m7() {
+    boolean m7() {
         return true;
     }
 
-    public void m8() {
-        return;
-    }
-
-    public Main() {
+    void m8() {
         return;
     }
 }

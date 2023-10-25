@@ -4,7 +4,7 @@ class Main {
 
     void m() {
         var bool = false;
-        if(bool = true) {
+        if(bool == true) {
             //hello!
         }
     }

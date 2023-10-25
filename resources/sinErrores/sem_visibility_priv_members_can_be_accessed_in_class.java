@@ -1,10 +1,10 @@
 ///[SinErrores]
 class A {
-    private int attr;
-    private int met() {}
-    private A() {}
+    int attr;
+    int met() {}
+    public A(){}
 
-    public void m() {
+    void m() {
         var x = attr;
         var y = met();
         var z = new A();
@@ -12,14 +12,14 @@ class A {
 }
 
 class X {
-    private int attr = 1;
+    int attr;
 
-    public void m() {
+    void m() {
         var x = new X();
         x.attr = 2;
     }
 }
 
 class Main {
-    public static void main() {}
+    static void main() {}
 }

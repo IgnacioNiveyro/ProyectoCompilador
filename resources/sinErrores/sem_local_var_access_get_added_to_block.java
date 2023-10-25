@@ -1,15 +1,15 @@
 ///[SinErrores]
 class A {
-    public static int a() {
+    static int a() {
         return 3;
     }
 }
 
 class Main {
-    private int x;
-    public static void main() {}
+    int x;
+    static void main() {}
 
-    public void m() {
+    void m() {
         var thisAccess = this;
         var variableAccess = x;
         var constructorAccess = new A();

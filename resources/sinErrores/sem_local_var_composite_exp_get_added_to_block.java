@@ -6,10 +6,10 @@ class A {
 }
 
 class Main {
-    private int x;
-    public static void main() {}
+    int x;
+    static void main() {}
 
-    public void m() {
+    void m() {
         var x1 = 3 + 3 + 3;
         var x2 = 3 + -1;
         var x3 = true || (1 > 2);

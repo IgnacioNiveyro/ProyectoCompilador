@@ -1,17 +1,17 @@
 ///[SinErrores]
 class Main {
-    private int x;
-    public static void main() {}
+    int x;
+    static void main() {}
 
-    public void m() {
+    void m() {
         var a = new A();
         var m = 3 + a.get3();
     }
 }
 
 class A {
-    public static int get4() {return 4;}
-    public int get3() {
+    static int get4() {return 4;}
+    int get3() {
         return 3;
     }
 }

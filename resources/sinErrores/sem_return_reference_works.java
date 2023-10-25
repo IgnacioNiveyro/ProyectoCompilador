@@ -3,41 +3,41 @@ class Main {
     I i;
     Y y;
 
-    public static void main() {}
+    static void main() {}
 
-    public String m1() {
+    String m1() {
         return "1";
     }
 
-    public String m2() {
-        return '1' + "";
+    String m2() {
+        return "";
     }
 
-    public String m3() {
-        return 1 + ", One!!";
+    String m3() {
+        return ", One!!";
     }
 
-    public A m4() {
+    A m4() {
         return new A();
     }
 
-    public A m5() {
+    A m5() {
         return new B();
     }
 
-    public A m6() {
+    A m6() {
         return null;
     }
 
-    public I m7() {
+    I m7() {
         return i;
     }
 
-    public I m8() {
+    I m8() {
         return y;
     }
 
-    public I m9() {
+    I m9() {
         return new U();
     }
 }

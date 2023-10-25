@@ -1,13 +1,13 @@
 ///[SinErrores]
 class Main {
-    public static void main() {}
+    static void main() {}
 
-    public static int x;
-    public static int m() {
+    static int x;
+    static int m() {
         return 3;
     }
 
-    public static void m2() {
+    static void m2() {
         x = m();
         m();
     }

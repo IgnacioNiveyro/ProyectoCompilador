@@ -525,7 +525,7 @@ public class AnalizadorSintactico {
             NodoExpresion condicion = Expresion();
             NodoExpresionAsignacion condicionEA = (NodoExpresionAsignacion) condicion;
             if(condicionEA.getLadoDerecho() != null)
-                throw new ExcepcionSemanticaSimple(condicionEA.getLadoDerecho().obtenerToken(), "Condicion if mal definida.");
+                throw new ExcepcionSemanticaSimple(condicionEA.obtenerToken(), "Condicion if mal definida.");
             match("parentesis_cierra");
             NodoSentencia sentencia = Sentencia();
             nodoIf = new NodoIf(tokenIf, condicionEA.getLadoIzquierdo(), sentencia);

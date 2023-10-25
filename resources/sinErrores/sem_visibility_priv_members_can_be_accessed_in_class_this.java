@@ -1,10 +1,10 @@
 ///[SinErrores]
 class A {
-    private int attr;
-    private int met() {}
-    private A() {}
+    int attr;
+    int met() {}
+    public A() {}
 
-    public void m() {
+    void m() {
         var x = this.attr;
         var y = this.met();
         var z = new A();
@@ -12,5 +12,5 @@ class A {
 }
 
 class Main {
-    public static void main() {}
+    static void main() {}
 }

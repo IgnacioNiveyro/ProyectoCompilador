@@ -1,10 +1,10 @@
 ///[SinErrores]
 class Main {
-    public static void main() {}
+    static void main() {}
 }
 
 class A {
-    public int m() {
+    int m() {
         return 3;
     }
 }
