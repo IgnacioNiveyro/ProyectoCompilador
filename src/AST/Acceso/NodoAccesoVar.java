@@ -8,10 +8,13 @@ public class NodoAccesoVar extends NodoAcceso{
         super(token);
         this.esAsignable = true;
     }
+
     public Tipo chequear() throws ExcepcionSemanticaSimple{
         Tipo tipoVariable;
         String nombreVariable = this.token.getLexema();
         Metodo metodoActual = TablaSimbolos.obtenerInstancia().obtenerMetodoActual();
+
+
         if(TablaSimbolos.obtenerInstancia().esParametroMetodo(nombreVariable,metodoActual)) {
             //System.out.println("Es un parametro del metodo");
             tipoVariable = TablaSimbolos.obtenerInstancia().recuperarTipoParametro(nombreVariable, metodoActual);
@@ -22,6 +25,7 @@ public class NodoAccesoVar extends NodoAcceso{
             }
             else {
                 //System.out.println("Es un atributo de la clase (propio o heredado)");
+
                 ClaseConcreta claseConcreta = metodoActual.obtenerClaseMetodo();
                 //System.out.println(metodoActual.obtenerAlcance());
                 //System.out.println("Clase del método "+metodoActual.obtenerNombreMetodo()+" es "+claseConcreta.obtenerNombreClase());
@@ -35,10 +39,15 @@ public class NodoAccesoVar extends NodoAcceso{
                             tipoVariable = TablaSimbolos.obtenerInstancia().recuperarAtributo(nombreVariable, claseConcreta);
                         else
                                 throw new ExcepcionSemanticaSimple(this.token, "Los atributos de instancia no pueden ser accedidos por un método static");
-                } else if (!TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerAlcance().equals("static"))
-                    throw new ExcepcionSemanticaSimple(this.token, " La entidad " + this.token.getLexema() + " no es una variable local, un parametro del método ni un atributo de la clase");
+                }
                 else
-                    throw new ExcepcionSemanticaSimple(this.token, " La entidad " + this.token.getLexema() + " no es una variable local ni un parametro del método");
+                    if (!TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerAlcance().equals("static"))
+                        if(TablaSimbolos.obtenerInstancia().obtenerMetodoActual().getEsConstructor())
+                            throw new ExcepcionSemanticaSimple(this.token, " La entidad " + this.token.getLexema() + " no es una variable local, un parametro del constructor ni un atributo de la clase");
+                        else
+                            throw new ExcepcionSemanticaSimple(this.token, " La entidad " + this.token.getLexema() + " no es una variable local, un parametro del metodo ni un atributo de la clase");
+                    else
+                        throw new ExcepcionSemanticaSimple(this.token, " La entidad " + this.token.getLexema() + " no es una variable local ni un parametro del método");
             }
             if(this.encadenado != null){
                 if(!tipoVariable.esTipoPrimitivo())

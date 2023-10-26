@@ -160,4 +160,7 @@ public class Metodo {
     public ClaseConcreta obtenerClaseMetodo(){
         return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(this.nombreClase);
     }
+    public void setNombreClase(String nombreClase){
+        this.nombreClase = nombreClase;
+    }
 }

@@ -23,18 +23,19 @@ public class AccesoConstructor extends NodoAcceso{
     }
     public Tipo chequear() throws ExcepcionSemanticaSimple{
 
-
         Tipo tipoConstructor;
         if(this.encadenado == null){
             ClaseConcreta claseConcreta = TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(this.token.getLexema());
             if(claseConcreta != null){
+                if(!claseConcreta.tieneConstructor())
+                    return new TipoClase(claseConcreta.obtenerToken());
                 if(!claseConcreta.obtenerConstructorClase().obtenerToken().getLexema().equals(this.token.getLexema()))
                     throw new ExcepcionSemanticaSimple(this.token, " no es un constructor de la clase "+this.token.getLexema());
                 else {
                     tipoConstructor = new TipoClase(this.token);
                     ClaseConcreta claseConcretaConstructor = (ClaseConcreta) TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(tipoConstructor.obtenerNombreClase());
                     Metodo constructor = claseConcretaConstructor.obtenerConstructorClase();
-                    if(constructor.tieneParametros())
+                    if(constructor.tieneParametros() || listaExpresiones!=null)
                         chequearArgumentosConstructor(constructor);
                 }
             }

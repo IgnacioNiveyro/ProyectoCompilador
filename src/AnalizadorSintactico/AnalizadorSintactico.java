@@ -18,6 +18,7 @@ public class AnalizadorSintactico {
     private AnalizadorLexico analizadorLexico;
     private Token tokenActual;
     private boolean imprimir = false;
+    private boolean implementa;
 
     public AnalizadorSintactico(AnalizadorLexico analizadorLexico) throws ExcepcionLexica, ExcepcionSintactica, IOException, ExcepcionSemantica, ExcepcionSemanticaSimple {
         this.analizadorLexico = analizadorLexico;
@@ -78,6 +79,9 @@ public class AnalizadorSintactico {
             ClaseConcreta claseActual = new ClaseConcreta(tokenClaseActual,tokenClaseAncestro);
             TablaSimbolos.obtenerInstancia().setClaseActual(claseActual);
             TablaSimbolos.obtenerInstancia().insertarClaseConcreta(claseActual);
+            if(implementa)
+                claseActual.implementa();
+            implementa = false;
             match("llave_abre");
             ListaMiembros();
             match("llave_cierra");
@@ -140,6 +144,7 @@ public class AnalizadorSintactico {
             match("pr_implements");
             tokenHerencia = tokenActual;
             match("idClase");
+            implementa = true;
             return tokenHerencia;
         }else
             throw new ExcepcionSintactica(tokenActual, "implements");
@@ -250,6 +255,7 @@ public class AnalizadorSintactico {
             //TablaSimbolos.obtenerInstancia().setMetodoActual(constructor);
             Metodo metodoConstructor = new Metodo(tokenConstructor,visibilidad);
             TablaSimbolos.obtenerInstancia().setMetodoActual(metodoConstructor);
+            metodoConstructor.setNombreClase(TablaSimbolos.obtenerInstancia().getClaseActual().obtenerNombreClase());
             match("idClase");
             ArgsFormales();
             NodoBloque bloquePrincipal = new NodoBloque(null,null);

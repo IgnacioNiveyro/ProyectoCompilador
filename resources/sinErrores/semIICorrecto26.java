@@ -1,9 +1,12 @@
 ///[SinErrores]
-class G {}
 
-class C {
-    void m() {
-        var g = new G();
+class X{
+
+}
+
+class B{
+    void m(){
+        var wa = new X();
     }
 }
 

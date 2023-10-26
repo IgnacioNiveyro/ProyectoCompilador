@@ -35,6 +35,10 @@ public class ClaseConcreta extends Clase {
         return tieneInterfaceAncestro;
     }
 
+    public void implementa(){
+        implementaClaseConcreta = true;
+    }
+
     public void insertarMetodo(Metodo metodoAInsertar) {
         if ((metodoAInsertar.obtenerNombreMetodo().equals("main")) && (!metodoAInsertar.obtenerAlcance().equals("static") || !metodoAInsertar.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void") || metodoAInsertar.tieneParametros()))
             TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoAInsertar.obtenerToken(), "El metodo main se encuentra mal declarado"));
@@ -134,18 +138,13 @@ public class ClaseConcreta extends Clase {
         }
     }
     public void estaBienDeclarado() throws ExcepcionSemantica{
-        chequearImplementaClaseConcreta();
         chequearHerenciaCircular();
         chequearConstructor();
         chequearClaseAncestro();
         chequearAtributosDeclarados();
         chequearMetodosDeclarados();
     }
-    public void chequearImplementaClaseConcreta() throws ExcepcionSemantica{
-        if(implementaClaseConcreta){
-            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "Una clase concreta no puede implementar otra clase concreta"));
-        }
-    }
+
     public Token obtenerTokenClaseAncestro(){
         if(tokenClaseAncestro==null)
             return new Token("Object", "Object",-1);
@@ -184,7 +183,16 @@ public class ClaseConcreta extends Clase {
     public void chequearClaseAncestro(){
         if(tokenClaseAncestro!=null) {
             String nombreInterface = tokenClaseAncestro.getLexema();
-
+            if(implementaClaseConcreta){
+                if(claseConcretaDeclarada(nombreInterface)){
+                    TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "Una clase concreta no puede implementar a otra clase concreta"));
+                }
+            }
+            else{
+                if(interfaceDeclarada(nombreInterface)){
+                    TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "Una clase concreta no puede extender a una interface"));
+                }
+            }
             if (!interfaceDeclarada(nombreInterface) && !claseConcretaDeclarada(nombreInterface))
                 TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenClaseAncestro, "La entidad " + tokenClaseAncestro.getLexema() + " no esta declarada."));
 

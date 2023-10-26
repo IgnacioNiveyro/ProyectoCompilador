@@ -19,7 +19,7 @@ public class NodoAsignacion extends NodoSentencia{
     }
     public void chequear() throws ExcepcionSemanticaSimple{
         Tipo tipoLadoIzquierdo;
-        if(this.ladoIzquierdoEsAsignable())
+        if(ladoIzquierdo != null && this.ladoIzquierdoEsAsignable())
             tipoLadoIzquierdo = ladoIzquierdo.chequear();
         else
             throw new ExcepcionSemanticaSimple(token, "El lado izquierdo de la asignación no es asignable");
