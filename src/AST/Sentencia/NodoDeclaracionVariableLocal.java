@@ -34,6 +34,7 @@ public class NodoDeclaracionVariableLocal extends NodoSentencia{
 
             if(esUnaVariableDeclaradaBloquePrincipal(TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerBloqueActual(), this.token.getLexema()))
                 throw new ExcepcionSemanticaSimple(this.token, "El nombre para la variable "+this.token.getLexema()+" fue previamente declarada.");
+
             this.setTipo(tipoVariableLocal);
             TablaSimbolos.obtenerInstancia().getBloqueActual().insertarVariableLocal(this);
         }
