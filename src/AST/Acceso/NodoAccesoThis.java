@@ -2,6 +2,9 @@ package AST.Acceso;
 
 import AnalizadorLexico.Token;
 import AnalizadorSemantico.*;
+import GeneradorInstrucciones.GeneradorInstrucciones;
+
+import java.io.IOException;
 
 public class NodoAccesoThis extends NodoAcceso{
     private String nombreClase;
@@ -24,5 +27,10 @@ public class NodoAccesoThis extends NodoAcceso{
     }
     public boolean esInvocable(){
         return false;
+    }
+    public void generarCodigo() throws IOException{
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3              ; Se apila this");
+        if(encadenado != null)
+            encadenado.generarCodigo();
     }
 }

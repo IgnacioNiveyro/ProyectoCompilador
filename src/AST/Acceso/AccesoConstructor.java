@@ -3,7 +3,9 @@ package AST.Acceso;
 import AST.Expresion.NodoExpresion;
 import AnalizadorLexico.Token;
 import AnalizadorSemantico.*;
+import GeneradorInstrucciones.GeneradorInstrucciones;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -49,6 +51,26 @@ public class AccesoConstructor extends NodoAcceso{
                 throw new ExcepcionSemanticaSimple(this.token, this.token.getLexema() + " no es una clase concreta declarada");
             return tipoConstructor;
     }
+
+    @Override
+    public void generarCodigo() throws IOException {
+        ClaseConcreta claseConcreta = TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(this.token.getLexema());
+        int tamanioCIR = claseConcreta.obtenerTamanioCIR();
+
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RMEM 1 ; Retorno acceso constructor");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH " + tamanioCIR + "; Tamaño del CIR (cant atributos + 1)");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH simple_malloc ; Se pone la dirección de la rutina malloc en el tope de la pila");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("CALL ; Se realiza la llamada a la rutina malloc");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("DUP ; Se duplica el tope de la pila");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH " + claseConcreta.getVTLabel() + "       ; Se apila la dirección del comienzo de la virtual table");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREREF 0 ; Se guarda la referencia a la virtual table en el CIR creado (el offset es 0)" );
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH Constructor_" + this.token.getLexema() + " ; Se apila la dirección del comienzo del constructor de clase " + this.token.getLexema());
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("CALL ; Se invoca la unidad en el tope de la pila (dirección de comienzo de generación de código del constructor de la clase " + this.token.getLexema() + ") ");
+
+        if(this.encadenado != null)
+            encadenado.generarCodigo();
+    }
+
     private void chequearArgumentosConstructor(Metodo metodo) throws ExcepcionSemanticaSimple{
         if(this.listaExpresiones == null || this.listaExpresiones.size() != metodo.obtenerListaParametros().size())
             throw new ExcepcionSemanticaSimple(this.token, "La cantidad de parametros del constructor invocado es incorrecta");

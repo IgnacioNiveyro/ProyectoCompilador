@@ -1,9 +1,16 @@
 package AST.Acceso;
 
+import AST.Sentencia.NodoDeclaracionVariableLocal;
 import AnalizadorLexico.Token;
 import AnalizadorSemantico.*;
+import GeneradorInstrucciones.GeneradorInstrucciones;
+
+import java.io.IOException;
 
 public class NodoAccesoVar extends NodoAcceso{
+    private NodoDeclaracionVariableLocal variableLocal;
+    private Atributo atributo;
+    private Parametro parametro;
     public NodoAccesoVar(Token token){
         super(token);
         this.esAsignable = true;
@@ -18,10 +25,12 @@ public class NodoAccesoVar extends NodoAcceso{
         if(TablaSimbolos.obtenerInstancia().esParametroMetodo(nombreVariable,metodoActual)) {
             //System.out.println("Es un parametro del metodo");
             tipoVariable = TablaSimbolos.obtenerInstancia().recuperarTipoParametro(nombreVariable, metodoActual);
+            parametro = TablaSimbolos.obtenerInstancia().recuperarParametro(nombreVariable, metodoActual);
         }else
             if(TablaSimbolos.obtenerInstancia().esVariableLocalDelBloqueActual(nombreVariable)) {
                 //System.out.println("Es una variable local del bloque del metodo");
-                tipoVariable = TablaSimbolos.obtenerInstancia().recuperarTipoVariableLocal(nombreVariable);
+                variableLocal = TablaSimbolos.obtenerInstancia().recuperarVariableLocal(nombreVariable);
+                tipoVariable = variableLocal.obtenerTipoVariableLocal();
             }
             else {
                 //System.out.println("Es un atributo de la clase (propio o heredado)");
@@ -31,7 +40,7 @@ public class NodoAccesoVar extends NodoAcceso{
                 //System.out.println("Clase del método "+metodoActual.obtenerNombreMetodo()+" es "+claseConcreta.obtenerNombreClase());
                 if (TablaSimbolos.obtenerInstancia().esAtributo(nombreVariable, claseConcreta)) {
                     //System.out.println("Entre al if de es un atributo "+nombreVariable+" de la clase "+claseConcreta.obtenerNombreClase());
-                    //Atributo atributo = claseConcreta.obtenerAtributos().get(this.token.getLexema());
+                    atributo = claseConcreta.obtenerAtributos().get(this.token.getLexema());
                     if (!TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerAlcance().equals("static"))
                         tipoVariable = TablaSimbolos.obtenerInstancia().recuperarAtributo(nombreVariable, claseConcreta);
                     else
@@ -63,5 +72,27 @@ public class NodoAccesoVar extends NodoAcceso{
     }
     public boolean esInvocable(){
         return false;
+    }
+
+    public void generarCodigo() throws IOException{
+        if(variableLocal != null){
+            if(!esLadoIzquierdo() || encadenado != null)
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD "+variableLocal.obtenerOffsetVariable()+" ; Se apila el valor de la variable local "+variableLocal.obtenerNombreVariable());
+            else
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STORE "+variableLocal.obtenerOffsetVariable());
+        }
+
+        if(parametro != null){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
+            if(!esLadoIzquierdo() || encadenado != null){
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADREF "+atributo.getOffset()+"              ; Se apila el valor del atributo "+atributo.obtenerNombreAtributo());
+            }
+            else{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREREF "+atributo.getOffset());
+            }
+        }
+        if(encadenado != null)
+            encadenado.generarCodigo();
     }
 }

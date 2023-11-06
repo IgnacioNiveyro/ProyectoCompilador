@@ -1,7 +1,9 @@
 package AnalizadorSemantico;
 
 import AnalizadorLexico.Token;
+import GeneradorInstrucciones.GeneradorInstrucciones;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -11,6 +13,12 @@ public class ClaseConcreta extends Clase {
     private Metodo constructorClase;
     private boolean tieneConstructor;
     private boolean implementaClaseConcreta;
+    private boolean offsetMetodosGenerados;
+    private boolean offsetAtributosGenerados;
+    private int tamanioCIR;
+    private int tamanioVT;
+    private Hashtable<Integer, Metodo> offsetMetodosDinamicos;
+    private boolean tamanioVTseteado;
 
     public ClaseConcreta(Token tokenClase, Token tokenAncestro) {
         super(tokenClase);
@@ -18,8 +26,17 @@ public class ClaseConcreta extends Clase {
         tokenClaseAncestro = tokenAncestro;
         atributos = new Hashtable<>();
         implementaClaseConcreta = false;
+        offsetAtributosGenerados = false;
+        offsetMetodosGenerados = false;
+        tamanioCIR = 1;
+        tamanioVT = 0;
+        tamanioVTseteado = false;
+        offsetMetodosDinamicos = new Hashtable<>();
     }
 
+    public int getTamanioVT(){
+        return tamanioVT;
+    }
 
     public boolean tieneInterfaceAncestro(String nombreInterfaceChequear){
         boolean tieneInterfaceAncestro = false;
@@ -110,8 +127,10 @@ public class ClaseConcreta extends Clase {
     public void consolidarAtributos(ClaseConcreta ancestro){
         for(Atributo atributoAncestro: ancestro.obtenerAtributos().values()){
             String nombreAtributoAncestro = atributoAncestro.obtenerNombreAtributo();
-            if(!this.obtenerAtributos().containsKey(nombreAtributoAncestro))
+            if(!this.obtenerAtributos().containsKey(nombreAtributoAncestro)) {
                 insertarAtributo(atributoAncestro);
+                setAtributoComoHeredado(atributoAncestro.obtenerNombreAtributo());
+            }
             else{
                 Atributo atributoDeMiClase = this.obtenerAtributos().get(nombreAtributoAncestro);
                 TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(atributoDeMiClase.obtenerToken(), "El atributo "+atributoDeMiClase.obtenerNombreAtributo()+" ya fue declarado en una clase ancestro"));
@@ -215,5 +234,144 @@ public class ClaseConcreta extends Clase {
     }
     public Metodo obtenerConstructorClase(){
         return constructorClase;
+    }
+    public void generarOffsets(){
+        generarOffsetsAtributos();
+        generarOffsetMetodosClase();
+    }
+    public void generarOffsetsAtributos(){
+        if(obtenerClaseAncestro() != null)
+            if(!obtenerClaseAncestro().obtenerNombreClase().equals("Object"))
+                if(!obtenerClaseAncestro().tieneOffsetAtributosGenerados())
+                    obtenerClaseAncestro().generarOffsets();
+
+        if(obtenerClaseAncestro() != null){
+            for(Atributo atributoAncestro : obtenerClaseAncestro().obtenerAtributos().values()){
+                for(Atributo atributo: atributos.values())
+                    if(atributoAncestro.obtenerNombreAtributo().equals(atributo.obtenerNombreAtributo())){
+                        atributo.setOffset(atributoAncestro.getOffset());
+                    }
+            }
+            tamanioCIR = obtenerClaseAncestro().obtenerTamanioCIR();
+        }
+        for(Atributo atributo : atributos.values()){
+            if(!atributo.esHeredado()){
+                atributo.setOffset(this.obtenerTamanioCIR());
+                this.tamanioCIR += 1;
+            }
+        }
+        this.offsetAtributosGenerados = true;
+
+    }
+    public void generarOffsetMetodosClase(){
+        if(obtenerClaseAncestro()!= null)
+            if(!obtenerClaseAncestro().tieneOffsetMetodosGenerados())
+                obtenerClaseAncestro().generarOffsetMetodosClase();
+
+        if(obtenerClaseAncestro() != null)
+            if(!obtenerClaseAncestro().obtenerNombreClase().equals("Object")){
+                for(Metodo metodoAncestro : obtenerClaseAncestro().obtenerMetodos().values())
+                    for(Metodo metodo : metodos.values())
+                        if(!metodo.esMetodoInterface())
+                            if(metodoAncestro.obtenerNombreMetodo().equals(metodo.obtenerNombreMetodo())){
+                                metodo.setOffset(metodoAncestro.getOffset());
+                                metodo.setOffset();
+                            }
+                tamanioVT = obtenerClaseAncestro().getTamanioVT();
+            }
+
+        for(Metodo metodo : metodos.values()){
+            if(!metodo.obtenerAlcance().equals("static"))
+                if(!metodo.esMetodoInterface()){
+                    if(!metodo.tieneOffset()){
+                        metodo.setOffset(this.tamanioVT);
+                        metodo.setOffset();
+                        tamanioVT += 1;
+                    }
+                    offsetMetodosDinamicos.put(metodo.getOffset(), metodo);
+                }
+        }
+        this.offsetMetodosGenerados = true;
+    }
+    public void generarOffsetMetodosInterface(){
+        for(Metodo metodoInterfaceASetearOffset : this.metodos.values()){
+            if(metodoInterfaceASetearOffset.esMetodoInterface()) {
+                Interface interfaceMetodo = metodoInterfaceASetearOffset.getMetodoInterface();
+                Metodo metodoEnInterface = interfaceMetodo.obtenerMetodo(metodoInterfaceASetearOffset.obtenerNombreMetodo());
+                metodoInterfaceASetearOffset.setOffset(metodoEnInterface.getOffset());
+                this.offsetMetodosDinamicos.put(metodoInterfaceASetearOffset.getOffset(), metodoInterfaceASetearOffset);
+                metodoInterfaceASetearOffset.setOffset();
+            }
+        }
+        tamanioVT = this.obtenerMayorOffset();
+    }
+    public void generarOffsetMetodosHeredadosParaVT(){
+        if(obtenerClaseAncestro() != null && obtenerClaseAncestro().obtenerNombreClase().equals("Object"))
+            for(Metodo metodo : obtenerClaseAncestro().obtenerMetodos().values()){
+                if(!metodo.obtenerAlcance().equals("static")){
+                    int offsetMetodoAncestro = metodo.getOffset();
+                    if(!this.offsetMetodosDinamicos.containsKey(offsetMetodoAncestro)){
+                        Metodo metodoDeEstaClase = TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(this.obtenerNombreClase()).obtenerMetodo(metodo.obtenerNombreMetodo());
+                        this.offsetMetodosDinamicos.put(offsetMetodoAncestro, metodoDeEstaClase);
+                    }
+                }
+            }
+    }
+    private int obtenerMayorOffset(){
+        int mayorOffset = 0;
+        for(Metodo metodo : this.metodos.values()){
+            if(metodo.getOffset() > mayorOffset)
+                mayorOffset = metodo.getOffset();
+        }
+        return mayorOffset;
+    }
+    public void generarVT() throws IOException{
+        GeneradorInstrucciones.obtenerInstancia().setModoData();
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("VT_Clase"+this.obtenerNombreClase()+":");
+        String instruccionVT = "DW";
+
+        //System.out.println("Clase: "+this.obtenerNombreClase()+"Tamaño es: "+offsetMetodosDinamicos.size()+" tamaño vt "+tamanioVT);
+        //System.out.println("offsetMetodosDinamicos.size() "+offsetMetodosDinamicos.size());
+        if(offsetMetodosDinamicos.size() > 0){
+            for(int offset = 0; offset<=tamanioVT; offset++){
+                Metodo metodo = this.offsetMetodosDinamicos.get(offset);
+                if(metodo != null)
+                    instruccionVT += " " +metodo.obtenerLabelMetodo() + ",";
+                else
+                    instruccionVT += " 0,";
+            }
+            instruccionVT = instruccionVT.substring(0, instruccionVT.length() - 1);
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion(instruccionVT);
+        }else
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("NOP ; La clase no posee métodos dinámicos");
+    }
+    private void setAtributoComoHeredado(String nombreAtributo){
+        for(Atributo atributo : atributos.values())
+            if(atributo.obtenerNombreAtributo().equals(nombreAtributo)) {
+                atributo.setEsHeredado();
+                break;
+            }
+    }
+    public void generarCodigo() throws IOException{
+        GeneradorInstrucciones.obtenerInstancia().setModoCode();
+        for(Metodo metodo : this.metodos.values())
+            if(!metodo.codigoGenerado()){
+                metodo.generarCodigo();
+                metodo.setCodigoGenerado();
+            }
+        GeneradorInstrucciones.obtenerInstancia().setModoCode();
+        constructorClase.generarCodigo();
+    }
+    public int obtenerTamanioCIR(){
+        return tamanioCIR;
+    }
+    public String getVTLabel(){
+        return "VT_Clase"+this.obtenerNombreClase();
+    }
+    public boolean tieneOffsetAtributosGenerados(){
+        return offsetAtributosGenerados;
+    }
+    public boolean tieneOffsetMetodosGenerados(){
+        return offsetMetodosGenerados;
     }
 }

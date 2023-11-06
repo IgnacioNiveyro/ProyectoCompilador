@@ -3,11 +3,13 @@ package AnalizadorSemantico;
 import AnalizadorLexico.Token;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Interface extends Clase{
 
     Token tokenClaseAncestro;
     boolean extiende;
+    private boolean offsetGenerado;
 
     public Interface(Token tokenDeInterface,Token tokenClaseAncestro){
         super(tokenDeInterface);
@@ -16,9 +18,24 @@ public class Interface extends Clase{
         else
             extiende = false;
         this.tokenClaseAncestro = tokenClaseAncestro;
+        offsetGenerado = false;
 
     }
-
+    public boolean tieneOffsetGenerado(){
+        return offsetGenerado;
+    }
+    public void setOffsetGenerado(){
+        offsetGenerado = true;
+    }
+    public int getMayorOffset(){
+        int mayorOffset = -1;
+        for(Metodo metodo: metodos.values()){
+            if(metodo.tieneOffset())
+                if(metodo.getOffset() > mayorOffset)
+                    mayorOffset = metodo.getOffset();
+        }
+        return mayorOffset;
+    }
     public boolean tieneInterfaceAncestro(String nombreInterface){
         boolean toReturn = false;
         if(tokenClaseAncestro != null){
@@ -57,11 +74,15 @@ public class Interface extends Clase{
         for(Metodo metodo : metodos.values()){
             if(claseConcretaChequear.obtenerMetodos().containsKey(metodo.obtenerNombreMetodo())){
                 String nombreMetodo = metodo.obtenerNombreMetodo();
-                if(!metodo.chequearHeadersIguales(claseConcretaChequear.obtenerMetodo(nombreMetodo)))
+                Metodo metodoEnClaseConcreta = claseConcretaChequear.obtenerMetodo(nombreMetodo);
+                if(!metodo.chequearHeadersIguales(metodoEnClaseConcreta))
                     TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(claseConcretaChequear.obtenerMetodo(metodo.obtenerNombreMetodo()).obtenerToken(), "El metodo "+metodo.obtenerNombreMetodo()+" no respeta el encabezado definido en la interface "+this.obtenerNombreClase() ));
+                metodoEnClaseConcreta.setEsMetodoInterface();
+                metodoEnClaseConcreta.setInterface(this);
             }
             else {
                 TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenInferface, "La clase "+claseConcretaChequear.obtenerNombreClase()+" no implementa todos los metodos de la interface "+this.obtenerNombreClase()));
+                break;
             }
         }
     }
@@ -75,6 +96,16 @@ public class Interface extends Clase{
         chequearDeclaracionMetodos();
         chequearHerenciaCircular();
 
+    }
+    public HashSet<Interface> obtenerInterfacesAncestro(){
+        HashSet<Interface> interfacesAncestro = new HashSet<>();
+        while(tokenClaseAncestro != null){
+            if(TablaSimbolos.obtenerInstancia().interfaceDeclarada(tokenClaseAncestro.getLexema()))
+                interfacesAncestro.add(TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema()));
+            else
+                tokenClaseAncestro = TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(tokenClaseAncestro.getLexema()).obtenerToken();
+        }
+        return interfacesAncestro;
     }
     public void chequearHerenciaCircular(){
         ArrayList<String> listaAncestros = new ArrayList<>();
@@ -144,5 +175,12 @@ public class Interface extends Clase{
 
     public boolean estaConsolidada(){
         return estaConsolidada;
+    }
+    public boolean tieneAncestros(){
+        boolean tiene = false;
+        if(tokenClaseAncestro != null && TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema()) != null)
+            tiene = true;
+
+        return tiene;
     }
 }

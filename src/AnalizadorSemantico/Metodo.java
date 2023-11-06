@@ -1,9 +1,11 @@
 package AnalizadorSemantico;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import AnalizadorLexico.Token;
 import AST.Sentencia.NodoBloque;
 import AST.Sentencia.NodoDeclaracionVariableLocal;
+import GeneradorInstrucciones.GeneradorInstrucciones;
 
 public class Metodo {
 
@@ -17,6 +19,11 @@ public class Metodo {
     private boolean hereda;
     private boolean bloquePrincipalChequeado;
     private String nombreClase;
+    private boolean codigoGenerado;
+    private int offset;
+    private boolean tieneOffset;
+    private boolean esMetodoInterface;
+    private Interface metodoInterface;
 
     public Metodo(Token tokenDelMetodo, String alcanceDelMetodo, Tipo tipoRetornoDelMetodo, String nombreClase){
         this.tokenDelMetodo = tokenDelMetodo;
@@ -27,6 +34,9 @@ public class Metodo {
         hereda = false;
         bloquePrincipalChequeado = false;
         this.nombreClase = nombreClase;
+        codigoGenerado = false;
+        tieneOffset = false;
+        esMetodoInterface = false;
     }
     public Metodo(Token tokenDelMetodo, String visibilidad){
         this.tokenDelMetodo = tokenDelMetodo;
@@ -160,7 +170,138 @@ public class Metodo {
     public ClaseConcreta obtenerClaseMetodo(){
         return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(this.nombreClase);
     }
+    public int getReturnOffset(){
+        if(alcanceDelMetodo.equals("static")){
+            if(listaParametros != null)
+                return listaParametros.size();
+            else
+                return 0;
+        }
+        else
+            if(listaParametros!= null)
+                return listaParametros.size() + 1;
+            else
+                return 1;
+    }
     public void setNombreClase(String nombreClase){
         this.nombreClase = nombreClase;
     }
+    public String obtenerLabelMetodo(){
+        return this.obtenerNombreMetodo() + "_Clase"+ nombreClase;
+    }
+    public void generarCodigo() throws IOException{
+        if(!esConstructor) {
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion(obtenerLabelMetodo() + ":");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADFP ; Guardo el ED del RA del llamador");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADSP ; Se apila el RA de la unidad llamada");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP ; Se actualiza el Frame Pointer para apuntar al RA actual");
+
+            if (listaParametros.size() > 0) {
+
+            }
+            if (bloquePrincipal != null) {
+                bloquePrincipal.generarCodigo();
+                codigoGenerado = true;
+            } else
+                generarCodigoParaMetodoPredefinido();
+
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP ; Actualiza FramePointer");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RET " + this.getReturnOffset() + " ; Retorna lo propio de la unidad y la libera " + this.getReturnOffset() + " lugares");
+        }else{
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("Constructor_"+this.tokenDelMetodo.getLexema()+":");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADFP");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADSP");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RET 0");
+        }
+    }
+    public int getOffsetAlmacenadoReturn(){
+        if(obtenerNombreMetodo().equals("static"))
+            return 3+listaParametros.size();
+        else
+            return 3+listaParametros.size()+1;
+    }
+
+    private void generarCodigoParaMetodoPredefinido() throws IOException{
+        if(obtenerNombreMetodo().equals("debugPrint")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("IPRINT");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PRNLN");
+        }
+        if(obtenerNombreMetodo().equals("read")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("READ");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STORE 3");
+        }
+        if(obtenerNombreMetodo().equals("printB")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("BPRINT");
+        }
+        if(obtenerNombreMetodo().equals("printC")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("CPRINT");
+        }
+        if(obtenerNombreMetodo().equals("printI")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("IPRINT");
+        }
+        if(obtenerNombreMetodo().equals("printS")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SPRINT");
+        }
+        if(obtenerNombreMetodo().equals("println")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PRNLN");
+        }
+        if(obtenerNombreMetodo().equals("printBln")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("BPRINT");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PRNLN");
+        }
+        if(obtenerNombreMetodo().equals("printCln")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("CPRINT");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PRNLN");
+        }
+        if(obtenerNombreMetodo().equals("printIln")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("IPRINT");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PRNLN");
+        }
+        if(obtenerNombreMetodo().equals("printSln")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SPRINT");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PRNLN");
+        }
+    }
+    public boolean codigoGenerado(){
+        return codigoGenerado;
+    }
+    public void setCodigoGenerado(){
+        codigoGenerado = true;
+    }
+    public boolean tieneOffset(){
+        return tieneOffset;
+    }
+    public void setOffset(int offset){
+        this.offset = offset;
+    }
+    public void setOffset(){
+        tieneOffset = true;
+    }
+    public int getOffset(){
+        return offset;
+    }
+    public boolean esMetodoInterface(){
+        return esMetodoInterface;
+    }
+    public void setEsMetodoInterface(){
+        esMetodoInterface = true;
+    }
+    public void setInterface(Interface metodoInterface){
+        this.metodoInterface = metodoInterface;
+    }
+    public Interface getMetodoInterface(){
+        return this.metodoInterface;
+    }
+
 }

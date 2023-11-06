@@ -2,6 +2,10 @@ package AST.Expresion;
 import AST.Expresion.NodoExpresion;
 import AnalizadorLexico.Token;
 import AnalizadorSemantico.*;
+import GeneradorInstrucciones.GeneradorInstrucciones;
+
+import java.io.IOException;
+
 public class NodoExpresionUnaria extends NodoExpresion {
     private NodoExpresion nodoOperando;
 
@@ -17,5 +21,12 @@ public class NodoExpresionUnaria extends NodoExpresion {
             return tipoOperando;
         else
             throw new ExcepcionSemanticaSimple(this.token, "El operador "+operador+" no es compatible con el tipo "+tipoOperando.obtenerNombreClase());
+    }
+    public void generarCodigo() throws IOException{
+        nodoOperando.generarCodigo();
+        if(token.getLexema().equals("op!"))
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("NOT");
+        if(token.getLexema().equals("op-"))
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("NEG");
     }
 }

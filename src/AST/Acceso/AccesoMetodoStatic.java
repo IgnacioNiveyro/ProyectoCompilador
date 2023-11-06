@@ -3,12 +3,15 @@ package AST.Acceso;
 import AST.Expresion.NodoExpresion;
 import AnalizadorLexico.Token;
 import AnalizadorSemantico.*;
+import GeneradorInstrucciones.GeneradorInstrucciones;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class AccesoMetodoStatic extends NodoAcceso {
     protected Token nombreMetodo;
     protected ArrayList<NodoExpresion> listaExpresiones;
+    private Metodo metodoStatic;
 
     public AccesoMetodoStatic(Token nombreClase, Token nombreMetodo, ArrayList<NodoExpresion> listaExpresiones){
         super(nombreClase);
@@ -20,7 +23,7 @@ public class AccesoMetodoStatic extends NodoAcceso {
         ClaseConcreta claseConcreta = TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(this.token.getLexema());
         if(claseConcreta == null)
             throw new ExcepcionSemanticaSimple(this.token, "La entidad "+this.token.getLexema()+" no es una clase concreta declarada.");
-        Metodo metodoStatic = claseConcreta.obtenerMetodo(this.nombreMetodo.getLexema());
+        metodoStatic = claseConcreta.obtenerMetodo(this.nombreMetodo.getLexema());
         if(metodoStatic == null)
             throw new ExcepcionSemanticaSimple(this.nombreMetodo, "El metodo "+this.nombreMetodo.getLexema()+" no se encuentra declarado en la clase "+claseConcreta.obtenerToken().getLexema());
         if(!metodoStatic.obtenerAlcance().equals("static"))
@@ -56,5 +59,22 @@ public class AccesoMetodoStatic extends NodoAcceso {
             if(!tipoParametro.esCompatibleConElTipo(tipoExpresion))
                 throw new ExcepcionSemanticaSimple(nombreMetodo, "Los parametros poseen un tipo incompatible");
         }
+    }
+    public void generarCodigo() throws IOException{
+        if(metodoStatic.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void"))
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RMEM 1 ; Reserva lugar para el retorno");
+
+        generarCodigoParametros();
+
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH "+metodoStatic.obtenerLabelMetodo());
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("CALL");
+
+        if(encadenado != null)
+            encadenado.generarCodigo();
+    }
+    private void generarCodigoParametros() throws IOException{
+        if(listaExpresiones != null)
+            for(int index = listaExpresiones.size() -1; index >=0; index--)
+                listaExpresiones.get(index).generarCodigo();
     }
 }

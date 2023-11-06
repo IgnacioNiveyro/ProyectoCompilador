@@ -1,8 +1,11 @@
 package AnalizadorSemantico;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import AST.Acceso.NodoAccesoThis;
 import AST.Sentencia.NodoBloque;
+import AST.Sentencia.NodoDeclaracionVariableLocal;
 import AnalizadorLexico.Token;
 
 public class TablaSimbolos {
@@ -16,6 +19,8 @@ public class TablaSimbolos {
     private Token tokenEOF;
     private ArrayList<ErrorSemantico> listaConErroresSemanticos;
     private NodoBloque bloqueActual;
+    private Metodo metodoMain;
+    private int offsetMetodoInterface;
 
     public static TablaSimbolos obtenerInstancia(){
         if(instancia == null) {
@@ -131,22 +136,111 @@ public class TablaSimbolos {
                         TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoChequear.obtenerToken(), "El metodo main ya fue declarado"));
                     else {
                         tieneMain = true;
+                        metodoMain = metodoChequear;
                     }
                 }else
                     TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(metodoChequear.obtenerToken(), "El metodo main se encuentra mal declarado"));
         }
     }
     public void consolidate() throws ExcepcionSemantica {
-        for(Interface interfaceConsolidar : tablaDeInterfaces.values())
+        for(Interface interfaceConsolidar : tablaDeInterfaces.values()) {
             interfaceConsolidar.consolidate();
+        }
         for(ClaseConcreta claseConcretaConsolidar : tablaDeClasesConcretas.values()) {
             claseConcretaConsolidar.consolidate();
         }
-        if(!tieneMain)
-            if(this.getClaseActual()!=null && tablaDeClasesConcretas.containsKey(claseActual.obtenerNombreClase()))
+        if(!tieneMain) {
+            if (this.getClaseActual() != null && tablaDeClasesConcretas.containsKey(claseActual.obtenerNombreClase()))
                 TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(claseActual.tokenDeClase, "No se encontro el metodo main"));
             else
                 TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(tokenEOF, "No se encontro el metodo main"));
+        }
+        generarOffsetMetodos();
+    }
+    private void generarOffsetMetodos(){
+        for(ClaseConcreta claseConcreta: tablaDeClasesConcretas.values()){
+            claseConcreta.generarOffsetsAtributos();
+            claseConcreta.generarOffsetMetodosClase();
+        }
+        generarOffsetMetodosInterface();
+
+        for(ClaseConcreta claseConcreta : tablaDeClasesConcretas.values())
+            claseConcreta.generarOffsetMetodosInterface();
+
+        for(ClaseConcreta claseConcreta : tablaDeClasesConcretas.values())
+            claseConcreta.generarOffsetMetodosHeredadosParaVT();
+    }
+    private void generarOffsetMetodosInterface(){
+        offsetMetodoInterface = obtenerMayorVT();
+
+        for(Interface interfaceSinAncestro : tablaDeInterfaces.values())
+            if(!interfaceSinAncestro.tieneAncestros())
+                generarOffsetMetodosInterface(interfaceSinAncestro);
+
+        for(Interface interfaceConAncestro : tablaDeInterfaces.values())
+            if(interfaceConAncestro.tieneAncestros())
+                generarOffsetMetodosParaInterfacesConAncestros(interfaceConAncestro);
+
+    }
+    private void generarOffsetMetodosInterface(Interface interfaceAGenerarOffset){
+        for(Metodo metodoInterface : interfaceAGenerarOffset.obtenerMetodos().values()){
+            if(!metodoInterface.tieneOffset()){
+                metodoInterface.setOffset(offsetMetodoInterface);
+                metodoInterface.setOffset();
+                offsetMetodoInterface = offsetMetodoInterface + 1;
+            }
+        }
+        interfaceAGenerarOffset.setOffsetGenerado();
+    }
+    private void generarOffsetMetodosParaInterfacesConAncestros(Interface interfaceConAncestros){
+        for(Interface interfaceAncestro : interfaceConAncestros.obtenerInterfacesAncestro()){
+            Interface interfaceAncestroInST = TablaSimbolos.obtenerInstancia().obtenerInterface(interfaceAncestro.obtenerNombreClase());
+            if(interfaceAncestroInST.tieneOffsetGenerado())
+                this.copiarOffsetMetodos(interfaceAncestroInST, interfaceAncestro);
+            else
+                generarOffsetMetodosParaInterfacesConAncestros(interfaceAncestroInST);
+        }
+        generarOffsetMetodosInterface(interfaceConAncestros);
+        interfaceConAncestros.setOffsetGenerado();
+    }
+    private void copiarOffsetMetodos(Interface interfaceConOffset, Interface interfaceACopiarOffsets){
+        for(Metodo metodoInterfaceConOffset : interfaceConOffset.obtenerMetodos().values()){
+            Metodo metodoASetearOffset = interfaceACopiarOffsets.obtenerMetodo(metodoInterfaceConOffset.obtenerNombreMetodo());
+            metodoASetearOffset.setOffset(metodoInterfaceConOffset.getOffset());
+            metodoASetearOffset.setOffset();
+        }
+    }
+    private int obtenerMayorVT(){
+        int mayorVT = 0;
+        for(ClaseConcreta claseConcreta:tablaDeClasesConcretas.values()){
+            if(claseConcreta.obtenerInterfaceAncestro() != null){
+                if(claseConcreta.getTamanioVT() > mayorVT)
+                    mayorVT = claseConcreta.getTamanioVT();
+            }
+        }
+        return mayorVT + 1;
+    }
+    public void imprimirOffsetClasesEInterfaces() throws IOException{
+        System.out.println("-");
+        for(ClaseConcreta claseConcreta: tablaDeClasesConcretas.values()){
+            if(!claseConcreta.obtenerNombreClase().equals("Object"))
+                if(!claseConcreta.obtenerNombreClase().equals("System"))
+                    if(!claseConcreta.obtenerNombreClase().equals("String")){
+                        System.out.println("--");
+                        System.out.println("Clase: "+claseConcreta.obtenerNombreClase());
+                        for(Metodo metodo : claseConcreta.obtenerMetodos().values()){
+                            if(!metodo.obtenerAlcance().equals("static"))
+                                System.out.println("metodo: "+metodo.obtenerNombreMetodo()+" con offset: "+metodo.getOffset());
+                        }
+                    }
+        }
+        System.out.println("---");
+        for(Interface i: tablaDeInterfaces.values()){
+            System.out.println("----");
+            System.out.println("Interface "+i.obtenerNombreClase());
+            for(Metodo metodo : i.obtenerMetodos().values())
+                System.out.println("metodo "+metodo.obtenerNombreMetodo()+" con offset: "+metodo.getReturnOffset());
+        }
     }
     private void insertarStringClass(){
         Token stringToken = new Token("idClase", "String", 0);
@@ -354,6 +448,34 @@ public class TablaSimbolos {
 
         return false;
     }
+    public NodoDeclaracionVariableLocal recuperarVariableLocal(String nombreVariable){
+        NodoBloque bloqueAncestroActual = bloqueActual;
+        if(!bloqueAncestroActual.obtenerTablaVariablesLocales().containsKey(nombreVariable))
+            while(bloqueAncestroActual.obtenerBloqueAncestro() != null){
+                bloqueAncestroActual = bloqueAncestroActual.obtenerBloqueAncestro();
+                if(bloqueAncestroActual.obtenerTablaVariablesLocales().containsKey(nombreVariable))
+                    return bloqueAncestroActual.obtenerTablaVariablesLocales().get(nombreVariable);
+            }
+        else
+            return bloqueAncestroActual.obtenerTablaVariablesLocales().get(nombreVariable);
+
+        return null;
+
+    }
+    public Parametro recuperarParametro(String nombreVariable, Metodo metodo){
+        boolean encontreParametro = false;
+        ArrayList<Parametro> parametrosDelMetodo = metodo.obtenerListaParametros();
+        int index = 0;
+        while(!encontreParametro){
+            Parametro parametro = parametrosDelMetodo.get(index);
+            if(parametro.obtenerNombreDelParametro().equals(nombreVariable)){
+                encontreParametro = true;
+                return parametro;
+            }
+            index += 1;
+        }
+        return null;
+    }
     public Tipo recuperarTipoParametro(String nombreVariable, Metodo metodo){
         boolean encontreParametro = false;
         ArrayList<Parametro> listaParametrosDelMetodo = metodo.obtenerListaParametros();
@@ -404,5 +526,8 @@ public class TablaSimbolos {
             return ancestroBloqueActual.obtenerTablaVariablesLocales().get(nombreVariable).obtenerTipoVariableLocal();
 
         return null;
+    }
+    public Metodo obtenerMetodoMain(){
+        return metodoMain;
     }
 }

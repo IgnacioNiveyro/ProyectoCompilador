@@ -5,6 +5,8 @@ import AnalizadorLexico.Token;
 import AnalizadorSemantico.ExcepcionSemanticaSimple;
 import AnalizadorSemantico.Tipo;
 
+import java.io.IOException;
+
 public class NodoExpresionParentizada extends NodoAcceso{
 
     protected NodoExpresion expresion;
@@ -31,5 +33,10 @@ public class NodoExpresionParentizada extends NodoAcceso{
     }
     public boolean esInvocable(){
         return false;
+    }
+    public void generarCodigo() throws IOException{
+        expresion.generarCodigo();
+        if(encadenado != null)
+            encadenado.generarCodigo();
     }
 }

@@ -4,7 +4,9 @@ import AnalizadorLexico.Token;
 import AnalizadorSemantico.Metodo;
 import AnalizadorSemantico.ExcepcionSemanticaSimple;
 import AnalizadorSemantico.TablaSimbolos;
+import GeneradorInstrucciones.GeneradorInstrucciones;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -13,12 +15,38 @@ public class NodoBloque extends NodoSentencia{
     private ArrayList<NodoSentencia> listaSentencias;
     private Hashtable<String, NodoDeclaracionVariableLocal> tablaVariablesLocales;
     private NodoBloque bloqueAncestro;
+    private int cantidadTotalVariables;
+    private int offsetDisponibleVariablesLocales;
 
     public NodoBloque(Token token, NodoBloque bloqueAncestro){
         super(token);
         this.listaSentencias = new ArrayList<>();
         this.tablaVariablesLocales = new Hashtable<>();
         this.bloqueAncestro = bloqueAncestro;
+        offsetDisponibleVariablesLocales = 1;
+        cantidadTotalVariables = 0;
+    }
+    public int obtenerCantidadTotalVariables(){
+        return cantidadTotalVariables;
+    }
+    public int obtenerOffsetDisponibleVariablesLocales(){
+        return offsetDisponibleVariablesLocales;
+    }
+    private void setOffsetDisponibleVariablesLocales(NodoDeclaracionVariableLocal nodoDeclaracionVariableLocal){
+        if(bloqueAncestro != null && offsetDisponibleVariablesLocales == 1)
+            offsetDisponibleVariablesLocales = obtenerOffsetAncestroDisponible();
+
+        nodoDeclaracionVariableLocal.setOffsetVariable(offsetDisponibleVariablesLocales - 1);
+        offsetDisponibleVariablesLocales -= 1;
+    }
+    private int obtenerOffsetAncestroDisponible(){
+        NodoBloque ancestro = this.bloqueAncestro;
+        while(ancestro != null){
+            if(ancestro.obtenerOffsetDisponibleVariablesLocales() != 1)
+                return ancestro.obtenerOffsetAncestroDisponible();
+            ancestro = ancestro.obtenerBloqueAncestro();
+        }
+        return 1;
     }
     public boolean esVariableLocal(String nombreVariable){
         if(tablaVariablesLocales.containsKey(nombreVariable))
@@ -45,9 +73,7 @@ public class NodoBloque extends NodoSentencia{
     public void chequear() throws ExcepcionSemanticaSimple{
         TablaSimbolos.obtenerInstancia().setBloqueActual(this);
         for(NodoSentencia nodoSentencia: this.listaSentencias) {
-            if(nodoSentencia == null)
-                System.out.println("Mi nodo sentencia es NULO.");
-            else
+            if(nodoSentencia != null)
                 nodoSentencia.chequear();
         }
         if(this.obtenerBloqueAncestro() != null)
@@ -64,6 +90,17 @@ public class NodoBloque extends NodoSentencia{
     }
     public ArrayList<NodoSentencia> obtenerListaSentencias(){
         return this.listaSentencias;
+    }
+    public void generarCodigo() throws IOException {
+        for(NodoSentencia nodoSentencia: listaSentencias)
+            nodoSentencia.generarCodigo();
+        liberarMemoria();
+    }
+    private void liberarMemoria() throws IOException{
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("FMEM "+cantidadTotalVariables);
+    }
+    public void incrementarTotalVariablesBloque(){
+        cantidadTotalVariables += 1;
     }
 
 }

@@ -2,9 +2,13 @@ package AST.Encadenado;
 import AST.Expresion.NodoExpresion;
 import AnalizadorLexico.Token;
 import AnalizadorSemantico.*;
+import GeneradorInstrucciones.GeneradorInstrucciones;
+
+import java.io.IOException;
 import java.util.ArrayList;
 public class LlamadaEncadenada extends Encadenado{
     private ArrayList<NodoExpresion>  listaExpresiones;
+    private Metodo metodo;
 
     public LlamadaEncadenada(Token token, ArrayList<NodoExpresion> listaExpresiones){
         super(token);
@@ -17,7 +21,7 @@ public class LlamadaEncadenada extends Encadenado{
         if(!claseOInterface.obtenerMetodos().containsKey(this.token.getLexema()))
             throw new ExcepcionSemanticaSimple(this.token, this.token.getLexema()+" no es un metodo de "+claseOInterface.obtenerNombreClase());
         else{
-            Metodo metodo = claseOInterface.obtenerMetodos().get(this.token.getLexema());
+            metodo = claseOInterface.obtenerMetodos().get(this.token.getLexema());
             if(metodo.obtenerListaParametros().size()>0 || listaExpresiones != null)
                 chequearArgumentos(metodo);
             tipoMetodo = metodo.obtenerTipoRetornoMetodo();
@@ -29,6 +33,47 @@ public class LlamadaEncadenada extends Encadenado{
         }
         return tipoMetodo;
     }
+    public void generarCodigo() throws IOException{
+        if(metodo.obtenerAlcance().equals("static"))
+            generarCodigoMetodoStatic();
+        else
+            generarCodigoMetodoDinamico();
+
+        if(encadenado != null)
+            encadenado.generarCodigo();
+    }
+
+    private void generarCodigoMetodoStatic() throws IOException{
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("POP");
+        if(!metodo.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void"))
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RMEM 1 ; Reserva lugar retorno");
+
+        this.generarCodigoParametros();
+
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH "+metodo.obtenerLabelMetodo());
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("CALL");
+    }
+    private void generarCodigoMetodoDinamico() throws IOException{
+        if(!metodo.obtenerTipoRetornoMetodo().equals("void")){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RMEM 1 ; Reserva lugar retorno");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
+        }
+        this.generarCodigoParametros();
+
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("DUP ; Se duplica el this porque al hacer LOADREF se pierde");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADREF 0 ; Se carga la VT");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADREF "+metodo.getOffset()+" ; Se carga en la VT la direccion del metodo");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("CALL");
+    }
+    private void generarCodigoParametros() throws IOException{
+        if(listaExpresiones != null)
+            for(int index = listaExpresiones.size() - 1; index>=0; index--){
+                listaExpresiones.get(index).generarCodigo();
+                if(!metodo.obtenerAlcance().equals("static"))
+                    GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
+            }
+    }
+
     private void chequearArgumentos(Metodo metodo) throws ExcepcionSemanticaSimple{
         if(listaExpresiones == null || listaExpresiones.size() != metodo.obtenerListaParametros().size())
             throw new ExcepcionSemanticaSimple(this.token, "La cantidad de parametros del metodo invocado es incorrecta");

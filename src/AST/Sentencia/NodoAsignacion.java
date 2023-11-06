@@ -7,6 +7,8 @@ import AnalizadorLexico.Token;
 import AnalizadorSemantico.ExcepcionSemanticaSimple;
 import AnalizadorSemantico.Tipo;
 
+import java.io.IOException;
+
 public class NodoAsignacion extends NodoSentencia{
 
     private NodoAcceso ladoIzquierdo;
@@ -24,10 +26,6 @@ public class NodoAsignacion extends NodoSentencia{
         else
             throw new ExcepcionSemanticaSimple(token, "El lado izquierdo de la asignación no es asignable");
         Tipo tipoAsignacionLadoDerecho = this.ladoDerecho.chequear();
-        //System.out.println("NodoAsignacion - LD: chequear nodo asignacion: "+ladoDerecho);
-        //System.out.println("LI: chequear nodo asignacion: "+ladoIzquierdo);
-        //System.out.println("NodoAsignacion - tipoLadoIzquierdo "+tipoLadoIzquierdo.obtenerToken()); // NodoAsignacion - tipoLadoIzquierdo (idClase,X,4)
-        //System.out.println("NodoAsignacion - tipoAsignacionLadoDerecho "+tipoAsignacionLadoDerecho.obtenerToken()); // NodoAsignacion - tipoLadoIzquierdo (idClase,X,4)
 
         if(tipoAsignacionLadoDerecho != null) {
             if (!tipoAsignacionLadoDerecho.esCompatibleConElTipo(tipoLadoIzquierdo)) {
@@ -39,9 +37,22 @@ public class NodoAsignacion extends NodoSentencia{
 
     }
 
+    @Override
+    protected void generarCodigo() throws IOException {
+        if(this.token.getLexema().equals("op=")){
+            ladoDerecho.generarCodigo();
+            setLadoIzquierdoComoLadoIzquierdo();
+            ladoIzquierdo.generarCodigo();
+        }
+    }
+    private void setLadoIzquierdoComoLadoIzquierdo(){
+        if(ladoIzquierdo.obtenerEncadenado() != null)
+            ladoIzquierdo.obtenerEncadenado().setComoLadoIzquierdo();
+        else
+            ladoIzquierdo.setComoLadoIzquierdo();
+    }
     private boolean ningunLadoEsComparableConElOperador(Tipo tipoAsignacionLadoIzquierdo, Tipo tipoAsignacionLadoDerecho){
         String operador = this.token.getToken_id();
-        //System.out.println("operador "+operador);
         return tipoAsignacionLadoIzquierdo.esCompatibleConElOperador(operador) && tipoAsignacionLadoDerecho.esCompatibleConElOperador(operador);
     }
     private boolean ladoIzquierdoEsAsignable(){

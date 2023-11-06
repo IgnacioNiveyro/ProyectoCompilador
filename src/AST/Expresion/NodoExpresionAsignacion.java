@@ -6,6 +6,8 @@ import AnalizadorLexico.Token;
 import AnalizadorSemantico.ExcepcionSemanticaSimple;
 import AnalizadorSemantico.Tipo;
 
+import java.io.IOException;
+
 public class NodoExpresionAsignacion extends NodoExpresion {
 
     protected NodoExpresion ladoIzquierdo;
@@ -35,9 +37,6 @@ public class NodoExpresionAsignacion extends NodoExpresion {
 
     @Override
     public Tipo chequear() throws ExcepcionSemanticaSimple {
-        //System.out.println("estoy chequeando una expresion Asignacion");
-        //System.out.println("LD: chequear nodo asignacion: "+ladoDerecho);
-        //System.out.println("LI: chequear nodo asignacion: "+ladoIzquierdo);
         Tipo toReturn = null;
         if(ladoIzquierdo != null){
             toReturn = ladoIzquierdo.chequear();
@@ -47,5 +46,12 @@ public class NodoExpresionAsignacion extends NodoExpresion {
                 toReturn = ladoDerecho.chequear();
         }
         return toReturn;
+    }
+
+    @Override
+    public void generarCodigo() throws IOException {
+        ladoIzquierdo.generarCodigo();
+        ladoDerecho.generarCodigo();
+
     }
 }

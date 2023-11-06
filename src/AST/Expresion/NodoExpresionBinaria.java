@@ -2,6 +2,9 @@ package AST.Expresion;
 
 import AnalizadorLexico.Token;
 import AnalizadorSemantico.*;
+import GeneradorInstrucciones.GeneradorInstrucciones;
+
+import java.io.IOException;
 
 public class NodoExpresionBinaria extends NodoExpresion{
     private NodoExpresion ladoIzquierdo;
@@ -50,5 +53,64 @@ public class NodoExpresionBinaria extends NodoExpresion{
             else
                 throw new ExcepcionSemanticaSimple(this.token, "El operador "+this.token.getLexema()+ " no es compatible con el tipo "+tipoLadoIzquierdo.obtenerNombreClase());
 
+    }
+    public void generarCodigo() throws IOException{
+        ladoIzquierdo.generarCodigo();
+        ladoDerecho.generarCodigo();
+        String operador = this.token.getLexema();
+        switch (operador){
+            case "op==":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("EQ");
+                break;
+            }
+            case "op!=":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("NE");
+                break;
+            }
+            case "op+":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("ADD");
+                break;
+            }
+            case "op-":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SUB");
+                break;
+            }
+            case "op*":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("MUL");
+                break;
+            }
+            case "op/":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("DIV");
+                break;
+            }
+            case "op%":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("MOD");
+                break;
+            }
+            case "menor_igual":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LE");
+                break;
+            }
+            case "mayor_igual":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("GE");
+                break;
+            }
+            case "menor":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LT");
+                break;
+            }
+            case "mayor":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("GT");
+                break;
+            }
+            case "op||":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("OR");
+                break;
+            }
+            case "op&&":{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("AND");
+                break;
+            }
+        }
     }
 }

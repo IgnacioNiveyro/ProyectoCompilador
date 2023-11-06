@@ -7,6 +7,7 @@ public class Atributo {
     private Token token;
     private Tipo tipoDelAtributo;
     private boolean esHeredado;
+    private int offset;
 
     public Atributo(Token token, Tipo tipoDelAtributo, String esStatic){
         this.esStatic = esStatic;
@@ -14,7 +15,12 @@ public class Atributo {
         this.token = token;
         this.esHeredado = false;
     }
-
+    public void setOffset(int offset){
+        this.offset = offset;
+    }
+    public int getOffset(){
+        return this.offset;
+    }
     public String obtenerNombreAtributo(){
         return token.getLexema();
     }

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import GeneradorInstrucciones.GeneradorInstrucciones;
 
 public class Main {
     public static void main(String[] args) {
@@ -19,12 +20,16 @@ public class Main {
 
         ManejadorDeArchivo manejadorDeArchivo = null;
 
+        String nombreArchivoSalida = "";
+
         try{
             file = new File(args[0]);
         }catch (ArrayIndexOutOfBoundsException e){
             e.printStackTrace();
         }
-        
+
+        nombreArchivoSalida = args[1];
+
         try{
             manejadorDeArchivo = new ManejadorDeArchivo(file);
         } catch (IOException e) {
@@ -65,6 +70,7 @@ public class Main {
             TablaSimbolos.obtenerInstancia().estaBienDeclarado();
             TablaSimbolos.obtenerInstancia().consolidate();
 
+            //TablaSimbolos.obtenerInstancia().imprimirOffsetClasesEInterfaces();
 
             if(TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().size() > 0)
                 throw new ExcepcionSemantica(TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos());
@@ -75,10 +81,14 @@ public class Main {
 
         try {
             TablaSimbolos.obtenerInstancia().chequearSentencias();
+            GeneradorInstrucciones.obtenerInstancia().setNombreArchivoSalida(nombreArchivoSalida);
+            GeneradorInstrucciones.obtenerInstancia().generarInstrucciones();
             System.out.println("La compilacion fue exitosa\n");
             System.out.println("[SinErrores]");
         }catch(ExcepcionSemanticaSimple e){
             System.out.println(e.getMessage());
+        } catch (IOException e){
+            e.printStackTrace();
         }
     }
     private static void imprimir(){
