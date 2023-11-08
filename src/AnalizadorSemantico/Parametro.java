@@ -5,6 +5,7 @@ import AnalizadorLexico.Token;
 public class Parametro {
     private Token tokenDelParametro;
     private Tipo tipoDelParametro;
+    private int offset;
 
     public Parametro(Token tokenDelParametro, Tipo tipoDelParametro){
         this.tokenDelParametro = tokenDelParametro;
@@ -19,6 +20,11 @@ public class Parametro {
     public Tipo obtenerTipoDelParametro(){
         return tipoDelParametro;
     }
-
+    public int getOffset(){
+        return offset;
+    }
+    public void setOffset(int offset){
+        this.offset = offset;
+    }
 
 }

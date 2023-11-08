@@ -81,8 +81,13 @@ public class NodoAccesoVar extends NodoAcceso{
             else
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STORE "+variableLocal.obtenerOffsetVariable());
         }
-
         if(parametro != null){
+            if(!esLadoIzquierdo() || encadenado != null)
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD "+this.parametro.getOffset()+" ; Se apila el valor del parametro "+this.parametro.obtenerNombreDelParametro());
+            else
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STORE "+parametro.getOffset());
+        }
+        if(atributo != null){
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
             if(!esLadoIzquierdo() || encadenado != null){
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADREF "+atributo.getOffset()+"              ; Se apila el valor del atributo "+atributo.obtenerNombreAtributo());

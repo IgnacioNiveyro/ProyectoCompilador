@@ -50,8 +50,10 @@ public class NodoExpresionAsignacion extends NodoExpresion {
 
     @Override
     public void generarCodigo() throws IOException {
-        ladoIzquierdo.generarCodigo();
-        ladoDerecho.generarCodigo();
+        if(ladoIzquierdo != null)
+            ladoIzquierdo.generarCodigo();
+        if(ladoDerecho != null)
+            ladoDerecho.generarCodigo();
 
     }
 }

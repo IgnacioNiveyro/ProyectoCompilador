@@ -82,8 +82,9 @@ public class AccesoConstructor extends NodoAcceso{
             tipoParametro = listaParametros.get(index).obtenerTipoDelParametro();
             tipoExpresion = nodoExpresion.chequear();
             index+=1;
-            if(!tipoExpresion.esCompatibleConElTipo(tipoParametro))
+            if(!tipoExpresion.esCompatibleConElTipo(tipoParametro)) {
                 throw new ExcepcionSemanticaSimple(this.token, "Los parametros poseen un tipo incompatible");
+            }
         }
     }
 }

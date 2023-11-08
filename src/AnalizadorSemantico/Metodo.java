@@ -197,7 +197,15 @@ public class Metodo {
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP ; Se actualiza el Frame Pointer para apuntar al RA actual");
 
             if (listaParametros.size() > 0) {
-
+                int offsetParametro;
+                if(!this.obtenerAlcance().equals("static"))
+                    offsetParametro = 3;
+                else
+                    offsetParametro = 2;
+                for(Parametro parametro : this.listaParametros){
+                    offsetParametro += 1;
+                    parametro.setOffset(offsetParametro);
+                }
             }
             if (bloquePrincipal != null) {
                 bloquePrincipal.generarCodigo();

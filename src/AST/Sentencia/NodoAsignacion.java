@@ -39,7 +39,7 @@ public class NodoAsignacion extends NodoSentencia{
 
     @Override
     protected void generarCodigo() throws IOException {
-        if(this.token.getLexema().equals("op=")){
+        if(this.token.getLexema().equals("=")){
             ladoDerecho.generarCodigo();
             setLadoIzquierdoComoLadoIzquierdo();
             ladoIzquierdo.generarCodigo();

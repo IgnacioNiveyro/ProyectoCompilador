@@ -26,9 +26,12 @@ public class AccesoMetodoStatic extends NodoAcceso {
         metodoStatic = claseConcreta.obtenerMetodo(this.nombreMetodo.getLexema());
         if(metodoStatic == null)
             throw new ExcepcionSemanticaSimple(this.nombreMetodo, "El metodo "+this.nombreMetodo.getLexema()+" no se encuentra declarado en la clase "+claseConcreta.obtenerToken().getLexema());
+        System.out.println("Alcance del metodo "+metodoStatic.obtenerNombreMetodo()+" es: "+metodoStatic.obtenerAlcance());
         if(!metodoStatic.obtenerAlcance().equals("static"))
             throw new ExcepcionSemanticaSimple(this.nombreMetodo, "El alcance del método "+nombreMetodo.getLexema()+" no es estatico");
         Tipo tipoMetodoStatic = metodoStatic.obtenerTipoRetornoMetodo();
+        System.out.println("Tipo de retorno del metodo es: "+tipoMetodoStatic.obtenerNombreClase());
+        System.out.println("Entro al if? "+(metodoStatic.obtenerListaParametros().size() > 0 || listaExpresiones != null));
         if(metodoStatic.obtenerListaParametros().size() > 0 || listaExpresiones != null)
             this.chequearArgumentos(metodoStatic);
         if(this.encadenado != null){
@@ -54,14 +57,21 @@ public class AccesoMetodoStatic extends NodoAcceso {
         int index = 0;
         for(NodoExpresion nodoExpresion: listaExpresiones){
             tipoParametro = listaParametros.get(index).obtenerTipoDelParametro();
+            System.out.println("Tipo del parametro obtenido es: "+tipoParametro.obtenerNombreClase());
             tipoExpresion = nodoExpresion.chequear();
+            System.out.println("Tipo de la expresion obtenida es: "+tipoExpresion.obtenerNombreClase());
             index += 1;
-            if(!tipoParametro.esCompatibleConElTipo(tipoExpresion))
-                throw new ExcepcionSemanticaSimple(nombreMetodo, "Los parametros poseen un tipo incompatible");
+            System.out.println("primer if : ?"+!tipoParametro.obtenerNombreClase().equals(tipoExpresion.obtenerNombreClase())+ " | 2do if"+!tipoParametro.esCompatibleConElTipo(tipoExpresion));
+            if(!tipoParametro.obtenerNombreClase().equals(tipoExpresion.obtenerNombreClase()))
+                if(!tipoParametro.esCompatibleConElTipo(tipoExpresion))
+                    throw new ExcepcionSemanticaSimple(nombreMetodo, "Los parametros poseen un tipo incompatible");
+
+                //System.out.println("tiro en AccesoMetodoStatic la excepcion");
+                //throw new ExcepcionSemanticaSimple(nombreMetodo, "Los parametros poseen un tipo incompatible");
         }
     }
     public void generarCodigo() throws IOException{
-        if(metodoStatic.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void"))
+        if(!metodoStatic.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void"))
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RMEM 1 ; Reserva lugar para el retorno");
 
         generarCodigoParametros();

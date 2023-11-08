@@ -34,6 +34,7 @@ public class LlamadaEncadenada extends Encadenado{
         return tipoMetodo;
     }
     public void generarCodigo() throws IOException{
+
         if(metodo.obtenerAlcance().equals("static"))
             generarCodigoMetodoStatic();
         else
@@ -54,7 +55,7 @@ public class LlamadaEncadenada extends Encadenado{
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("CALL");
     }
     private void generarCodigoMetodoDinamico() throws IOException{
-        if(!metodo.obtenerTipoRetornoMetodo().equals("void")){
+        if(!metodo.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void")){
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RMEM 1 ; Reserva lugar retorno");
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
         }
