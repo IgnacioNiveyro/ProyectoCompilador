@@ -41,6 +41,7 @@ public class NodoAccesoVar extends NodoAcceso{
                 if (TablaSimbolos.obtenerInstancia().esAtributo(nombreVariable, claseConcreta)) {
                     //System.out.println("Entre al if de es un atributo "+nombreVariable+" de la clase "+claseConcreta.obtenerNombreClase());
                     atributo = claseConcreta.obtenerAtributos().get(this.token.getLexema());
+
                     if (!TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerAlcance().equals("static"))
                         tipoVariable = TablaSimbolos.obtenerInstancia().recuperarAtributo(nombreVariable, claseConcreta);
                     else

@@ -16,6 +16,7 @@ public class NodoDeclaracionVariableLocal extends NodoSentencia{
     private Tipo tipoVarLocal;
     private Token tokenOperador;
     private int offsetVariable;
+    private NodoBloque nodoBloque;
     public NodoDeclaracionVariableLocal(Token tokenNodo, NodoExpresion nodoExpresion, Token tokenOperador){
         super(tokenNodo);
         this.nodoExpresion = nodoExpresion;
@@ -34,7 +35,9 @@ public class NodoDeclaracionVariableLocal extends NodoSentencia{
                 throw new ExcepcionSemanticaSimple(this.token, "El nombre para la variable "+this.token.getLexema()+" fue previamente declarada.");
 
             this.setTipo(tipoVariableLocal);
-            TablaSimbolos.obtenerInstancia().getBloqueActual().insertarVariableLocal(this);
+            this.nodoBloque = TablaSimbolos.obtenerInstancia().getBloqueActual();
+            this.nodoBloque.insertarVariableLocal(this);
+            //TablaSimbolos.obtenerInstancia().getBloqueActual().insertarVariableLocal(this);
         }
         else
             throw new ExcepcionSemanticaSimple(this.token, "El nombre para la variable ya esta utilizado en un parametro");
@@ -43,7 +46,7 @@ public class NodoDeclaracionVariableLocal extends NodoSentencia{
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RMEM 1 ; Se reserva espacio para una variable local");
         nodoExpresion.generarCodigo();
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STORE " +offsetVariable+" ; Se guarda el valor de la expresion en la variable "+ this.token.getLexema());
-        TablaSimbolos.obtenerInstancia().getBloqueActual().incrementarTotalVariablesBloque();
+        this.nodoBloque.incrementarTotalVariablesBloque();
     }
     private boolean esUnaVariableDeclaradaBloquePrincipal(NodoBloque bloqueActual, String nombreVariable){
 

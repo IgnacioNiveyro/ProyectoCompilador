@@ -59,55 +59,55 @@ public class NodoExpresionBinaria extends NodoExpresion{
         ladoDerecho.generarCodigo();
         String operador = this.token.getLexema();
         switch (operador){
-            case "op==":{
+            case "==":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("EQ");
                 break;
             }
-            case "op!=":{
+            case "!=":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("NE");
                 break;
             }
-            case "op+":{
+            case "+":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("ADD");
                 break;
             }
-            case "op-":{
+            case "-":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SUB");
                 break;
             }
-            case "op*":{
+            case "*":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("MUL");
                 break;
             }
-            case "op/":{
+            case "/":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("DIV");
                 break;
             }
-            case "op%":{
+            case "%":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("MOD");
                 break;
             }
-            case "menor_igual":{
+            case "<=":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LE");
                 break;
             }
-            case "mayor_igual":{
+            case ">=":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("GE");
                 break;
             }
-            case "menor":{
+            case "<":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LT");
                 break;
             }
-            case "mayor":{
+            case ">":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("GT");
                 break;
             }
-            case "op||":{
+            case "||":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("OR");
                 break;
             }
-            case "op&&":{
+            case "&&":{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("AND");
                 break;
             }

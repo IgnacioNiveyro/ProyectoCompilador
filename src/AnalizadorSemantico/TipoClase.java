@@ -25,9 +25,6 @@ public class TipoClase extends Tipo{
     }
     public boolean esCompatibleConElTipo(Tipo tipoAComparar){
 
-        System.out.println("Entre a TipoClase - con this | tipoAComparar "+this.obtenerNombreClase()+ "| "+tipoAComparar.obtenerNombreClase());
-        System.out.println("es tipo primitivo? "+tipoAComparar.esTipoPrimitivo());
-        System.out.println("tercer if - this.lexema == tipoAComparar.obtenerNombreClase? "+this.token.getLexema()+"=="+tipoAComparar.obtenerNombreClase()+"rta del if "+this.token.getLexema().equals(tipoAComparar.obtenerNombreClase()));
         if(tipoAComparar.esTipoPrimitivo())
             return false;
         if(this.token.getLexema().equals("null") || tipoAComparar.obtenerNombreClase().equals("null"))

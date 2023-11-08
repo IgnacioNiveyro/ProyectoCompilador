@@ -68,11 +68,12 @@ public class ClaseConcreta extends Clase {
     }
     public boolean tieneConstructor(){return tieneConstructor;}
 
-    public void insertarAtributo(Atributo atributoAInsertar){
-        if(!existeAtributo(atributoAInsertar))
-            atributos.put(atributoAInsertar.obtenerNombreAtributo(),atributoAInsertar);
-        else
-            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(atributoAInsertar.obtenerToken(), "El atributo "+atributoAInsertar.obtenerNombreAtributo()+" ya existe en la clase "+obtenerNombreClase()));
+    public void insertarAtributo(Atributo atributo){
+        if(!this.atributos.containsKey(atributo.obtenerNombreAtributo())) {
+            Atributo atributoAInsertar = new Atributo(atributo.obtenerToken(), atributo.obtenerTipoAtributo(), atributo.obtenerVisibilidad());
+            atributos.put(atributoAInsertar.obtenerNombreAtributo(), atributoAInsertar);
+        }else
+            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(atributo.obtenerToken(), "El atributo "+atributo.obtenerNombreAtributo()+" ya existe en la clase "+obtenerNombreClase()));
     }
     public void insertarConstructor(Metodo constructorAInsertar){
         if((!tieneConstructor) && constructorAInsertar.obtenerToken().getLexema().equals(tokenDeClase.getLexema())) {
@@ -254,6 +255,7 @@ public class ClaseConcreta extends Clase {
             }
             tamanioCIR = obtenerClaseAncestro().obtenerTamanioCIR();
         }
+
         for(Atributo atributo : atributos.values()){
             if(!atributo.esHeredado()){
                 atributo.setOffset(this.obtenerTamanioCIR());
@@ -346,11 +348,12 @@ public class ClaseConcreta extends Clase {
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("NOP ; La clase no posee métodos dinámicos");
     }
     private void setAtributoComoHeredado(String nombreAtributo){
-        for(Atributo atributo : atributos.values())
-            if(atributo.obtenerNombreAtributo().equals(nombreAtributo)) {
+        for(Atributo atributo : atributos.values()) {
+            if (atributo.obtenerNombreAtributo().equals(nombreAtributo)) {
                 atributo.setEsHeredado();
                 break;
             }
+        }
     }
     public void generarCodigo() throws IOException{
         GeneradorInstrucciones.obtenerInstancia().setModoCode();

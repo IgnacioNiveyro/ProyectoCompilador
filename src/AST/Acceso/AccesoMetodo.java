@@ -43,11 +43,8 @@ public class AccesoMetodo extends NodoAcceso{
         int index = 0;
         for(NodoExpresion nodoExpresion : this.listaExpresiones){
             tipoParametro = listaParametros.get(index).obtenerTipoDelParametro();
-            System.out.println("Tipo del parametro obtenido es: "+tipoParametro.obtenerNombreClase());
             tipoExpresion = nodoExpresion.chequear();
-            System.out.println("Tipo de la expresion obtenida es: "+tipoExpresion.obtenerNombreClase());
             index+=1;
-            System.out.println("!Son tipos compatibles (entro al if)?"+!tipoExpresion.esCompatibleConElTipo(tipoParametro));
             if(!tipoExpresion.esCompatibleConElTipo(tipoParametro)){
                 throw new ExcepcionSemanticaSimple(this.token, "Los parametros poseen un tipo incompatible");
             }
