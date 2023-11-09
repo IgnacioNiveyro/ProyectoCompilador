@@ -23,23 +23,17 @@ public class NodoAccesoVar extends NodoAcceso{
 
 
         if(TablaSimbolos.obtenerInstancia().esParametroMetodo(nombreVariable,metodoActual)) {
-            //System.out.println("Es un parametro del metodo");
             tipoVariable = TablaSimbolos.obtenerInstancia().recuperarTipoParametro(nombreVariable, metodoActual);
             parametro = TablaSimbolos.obtenerInstancia().recuperarParametro(nombreVariable, metodoActual);
         }else
             if(TablaSimbolos.obtenerInstancia().esVariableLocalDelBloqueActual(nombreVariable)) {
-                //System.out.println("Es una variable local del bloque del metodo");
                 variableLocal = TablaSimbolos.obtenerInstancia().recuperarVariableLocal(nombreVariable);
                 tipoVariable = variableLocal.obtenerTipoVariableLocal();
             }
             else {
-                //System.out.println("Es un atributo de la clase (propio o heredado)");
 
                 ClaseConcreta claseConcreta = metodoActual.obtenerClaseMetodo();
-                //System.out.println(metodoActual.obtenerAlcance());
-                //System.out.println("Clase del método "+metodoActual.obtenerNombreMetodo()+" es "+claseConcreta.obtenerNombreClase());
                 if (TablaSimbolos.obtenerInstancia().esAtributo(nombreVariable, claseConcreta)) {
-                    //System.out.println("Entre al if de es un atributo "+nombreVariable+" de la clase "+claseConcreta.obtenerNombreClase());
                     atributo = claseConcreta.obtenerAtributos().get(this.token.getLexema());
 
                     if (!TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerAlcance().equals("static"))
@@ -65,7 +59,6 @@ public class NodoAccesoVar extends NodoAcceso{
                 else
                     throw new ExcepcionSemanticaSimple(this.token, "El encadenado posee un lado izquierdo de tipo primitivo.");
         }
-        //System.out.println("El tipo de la variable "+nombreVariable+" es: "+tipoVariable.obtenerNombreClase());
         return tipoVariable;
     }
     public boolean esAsignable(){

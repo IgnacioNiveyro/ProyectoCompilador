@@ -15,8 +15,6 @@ public class TipoPrimitivo extends Tipo{
 
     public void establecerNombreClase(Token token){
 
-        //System.out.println("Entre a establecerNombreClase "+token);
-
         if(Arrays.asList("op&&", "op!", "op||", "menor", "mayor", "menor_igual", "mayor_igual", "op==", "op!=").contains(token.getToken_id()))
             this.nombreClase = "boolean";
         else
@@ -29,21 +27,17 @@ public class TipoPrimitivo extends Tipo{
     }
     public boolean esCompatibleConElOperador(String operador){
 
-        //System.out.println("Entre a esCompatibleConElOperador "+operador);
-
         if(Arrays.asList("op-", "op+", "op*", "op/", "menor", "mayor", "menor_igual", "mayor_igual", "op==", "op!=", "op=", "op%").contains(operador) && this.obtenerNombreClase().equals("int"))
             return true;
         else
             if(Arrays.asList("op&&", "op!", "op||", "op!=", "op==", "op=").contains(operador) && this.obtenerNombreClase().equals("boolean"))
                 return true;
             else
-                if(Arrays.asList("op=", "op==", "!=").contains(operador) && this.obtenerNombreClase().equals("char"))
+                if(Arrays.asList("op=", "op==", "op!=").contains(operador) && this.obtenerNombreClase().equals("char"))
                     return true;
         return false;
     }
     public boolean esCompatibleConElTipo(Tipo tipoAComparar){
-
-        //System.out.println("Entre a esCompatibleConElTipo "+tipoAComparar);
 
         if(!tipoAComparar.esTipoPrimitivo())
             return false;

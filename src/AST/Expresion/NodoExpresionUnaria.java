@@ -24,9 +24,9 @@ public class NodoExpresionUnaria extends NodoExpresion {
     }
     public void generarCodigo() throws IOException{
         nodoOperando.generarCodigo();
-        if(token.getLexema().equals("op!"))
+        if(token.getLexema().equals("!"))
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("NOT");
-        if(token.getLexema().equals("op-"))
+        if(token.getLexema().equals("-"))
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("NEG");
     }
 }

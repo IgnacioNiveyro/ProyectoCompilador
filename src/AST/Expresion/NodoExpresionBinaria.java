@@ -16,28 +16,16 @@ public class NodoExpresionBinaria extends NodoExpresion{
         this.ladoDerecho = ladoDerecho;
     }
 
-    public Tipo cheque2ar() throws ExcepcionSemanticaSimple{
-        System.out.println("Lado izq: "+ladoIzquierdo); /**a1 == true && a1 == 5 */
-        System.out.println("Lado der: "+ladoDerecho);
-        System.out.println("Token: "+token);
-        return null;
-    }
+
 
     public Tipo chequear() throws ExcepcionSemanticaSimple{
 
-        //System.out.println("Lado izq: "+ladoIzquierdo); /**a1 == true && a1 == 5 */
-        //System.out.println("Lado der: "+ladoDerecho);
-        //System.out.println("Token: "+token);
 
         Tipo tipoLadoIzquierdo = ladoIzquierdo.chequear();
         Tipo tipoLadoDerecho = ladoDerecho.chequear();
         String operador = this.token.getToken_id();
 
-        //System.out.println(tipoLadoIzquierdo.obtenerNombreClase());
-        //System.out.println(tipoLadoDerecho.obtenerNombreClase());
-        //System.out.println(operador);
         if(tipoLadoIzquierdo.esCompatibleConElOperador(operador) && tipoLadoDerecho.esCompatibleConElOperador(operador)){
-
             if(tipoLadoIzquierdo.esCompatibleConElTipo(tipoLadoDerecho) || tipoLadoDerecho.esCompatibleConElTipo(tipoLadoIzquierdo)){
                 Tipo tipoPrimitivo = new TipoPrimitivo(this.token);
                 tipoPrimitivo.establecerNombreClase(this.token);

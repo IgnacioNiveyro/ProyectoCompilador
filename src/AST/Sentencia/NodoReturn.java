@@ -41,8 +41,7 @@ public class NodoReturn extends NodoSentencia{
         bloqueDelReturn = bloque;
     }
     protected void generarCodigo() throws IOException{
-        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("FMEM "+bloqueDelReturn.obtenerCantidadTotalVariables()+"         ; Se libera la memoria de las variables luego del return");
-
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("FMEM "+bloqueDelReturn.obtenerTotalVariables()+"         ; Se libera la memoria de las variables luego del return");
         if(metodo.obtenerTipoRetornoMetodo().obtenerNombreClase().equals("void")){
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP            ; Nodo return, se actualiza el FP para que ahora apunte al RA llamador");
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RET " + metodo.getReturnOffset() + "       ; Se liberan " + metodo.getReturnOffset() + " lugares de la pila");

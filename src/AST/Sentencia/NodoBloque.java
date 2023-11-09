@@ -26,8 +26,14 @@ public class NodoBloque extends NodoSentencia{
         offsetDisponibleVariablesLocales = 1;
         cantidadTotalVariables = 0;
     }
-    public int obtenerCantidadTotalVariables(){
-        return cantidadTotalVariables;
+    public int obtenerTotalVariables(){
+        int cantidadTotal;
+        if(bloqueAncestro != null){
+            cantidadTotal = bloqueAncestro.obtenerTotalVariables()+cantidadTotalVariables;
+        }
+        else
+            cantidadTotal = cantidadTotalVariables;
+        return cantidadTotal;
     }
     public int obtenerOffsetDisponibleVariablesLocales(){
         return offsetDisponibleVariablesLocales;
@@ -36,14 +42,14 @@ public class NodoBloque extends NodoSentencia{
         if(bloqueAncestro != null && offsetDisponibleVariablesLocales == 1)
             offsetDisponibleVariablesLocales = obtenerOffsetAncestroDisponible();
 
-        nodoDeclaracionVariableLocal.setOffsetVariable(offsetDisponibleVariablesLocales - 1);
-        offsetDisponibleVariablesLocales -= 1;
+        nodoDeclaracionVariableLocal.setOffsetVariable(this.offsetDisponibleVariablesLocales - 1);
+        this.offsetDisponibleVariablesLocales -= 1;
     }
     private int obtenerOffsetAncestroDisponible(){
         NodoBloque ancestro = this.bloqueAncestro;
         while(ancestro != null){
             if(ancestro.obtenerOffsetDisponibleVariablesLocales() != 1)
-                return ancestro.obtenerOffsetAncestroDisponible();
+                return ancestro.obtenerOffsetDisponibleVariablesLocales();
             ancestro = ancestro.obtenerBloqueAncestro();
         }
         return 1;
@@ -55,7 +61,6 @@ public class NodoBloque extends NodoSentencia{
             return false;
     }
     public void insertarVariableLocal(NodoDeclaracionVariableLocal nodoVariableLocal) throws ExcepcionSemanticaSimple{
-        //System.out.println("entre a insertarVariableLocal con "+nodoVariableLocal.obtenerNombreVariable());
         if(this.bloqueAncestro != null){
             for(NodoDeclaracionVariableLocal variableLocalEnBloqueAncestro : bloqueAncestro.obtenerTablaVariablesLocales().values())
                 this.tablaVariablesLocales.put(variableLocalEnBloqueAncestro.obtenerNombreVariable(), variableLocalEnBloqueAncestro);
@@ -69,6 +74,8 @@ public class NodoBloque extends NodoSentencia{
         }
         else
             throw new ExcepcionSemanticaSimple(nodoVariableLocal.obtenerTokenVariable(), "El nombre "+ nodoVariableLocal.obtenerNombreVariable()+" esta en uso en un parametro dentro del metodo "+metodoActual.obtenerNombreMetodo());
+
+        this.setOffsetDisponibleVariablesLocales(nodoVariableLocal);
     }
     public void chequear() throws ExcepcionSemanticaSimple{
         TablaSimbolos.obtenerInstancia().setBloqueActual(this);

@@ -332,8 +332,6 @@ public class ClaseConcreta extends Clase {
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("VT_Clase"+this.obtenerNombreClase()+":");
         String instruccionVT = "DW";
 
-        //System.out.println("Clase: "+this.obtenerNombreClase()+"Tamaño es: "+offsetMetodosDinamicos.size()+" tamaño vt "+tamanioVT);
-        //System.out.println("offsetMetodosDinamicos.size() "+offsetMetodosDinamicos.size());
         if(offsetMetodosDinamicos.size() > 0){
             for(int offset = 0; offset<=tamanioVT; offset++){
                 Metodo metodo = this.offsetMetodosDinamicos.get(offset);

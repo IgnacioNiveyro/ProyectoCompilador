@@ -43,7 +43,7 @@ public class VarEncadenada extends Encadenado{
         return false;
     }
     public void generarCodigo() throws IOException{
-        if(this.esLadoIzquierdo || this.encadenado != null){
+        if(!this.esLadoIzquierdo || this.encadenado != null){
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADREF "+atributo.getOffset()+" ; Se apila el valor del atributo de instancia "+atributo.obtenerNombreAtributo());
         }
         else{

@@ -225,7 +225,7 @@ public class Metodo {
         }
     }
     public int getOffsetAlmacenadoReturn(){
-        if(obtenerNombreMetodo().equals("static"))
+        if(obtenerAlcance().equals("static"))
             return 3+listaParametros.size();
         else
             return 3+listaParametros.size()+1;

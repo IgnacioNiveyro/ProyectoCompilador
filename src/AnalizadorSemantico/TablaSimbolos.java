@@ -220,28 +220,7 @@ public class TablaSimbolos {
         }
         return mayorVT + 1;
     }
-    public void imprimirOffsetClasesEInterfaces() throws IOException{
-        System.out.println("-");
-        for(ClaseConcreta claseConcreta: tablaDeClasesConcretas.values()){
-            if(!claseConcreta.obtenerNombreClase().equals("Object"))
-                if(!claseConcreta.obtenerNombreClase().equals("System"))
-                    if(!claseConcreta.obtenerNombreClase().equals("String")){
-                        System.out.println("--");
-                        System.out.println("Clase: "+claseConcreta.obtenerNombreClase());
-                        for(Metodo metodo : claseConcreta.obtenerMetodos().values()){
-                            if(!metodo.obtenerAlcance().equals("static"))
-                                System.out.println("metodo: "+metodo.obtenerNombreMetodo()+" con offset: "+metodo.getOffset());
-                        }
-                    }
-        }
-        System.out.println("---");
-        for(Interface i: tablaDeInterfaces.values()){
-            System.out.println("----");
-            System.out.println("Interface "+i.obtenerNombreClase());
-            for(Metodo metodo : i.obtenerMetodos().values())
-                System.out.println("metodo "+metodo.obtenerNombreMetodo()+" con offset: "+metodo.getReturnOffset());
-        }
-    }
+
     private void insertarStringClass(){
         Token stringToken = new Token("idClase", "String", 0);
         ClaseConcreta claseAncestro = tablaDeClasesConcretas.get("Object");
@@ -415,10 +394,10 @@ public class TablaSimbolos {
     }
     public void chequearSentencias() throws ExcepcionSemanticaSimple{
         for(ClaseConcreta claseConcreta: this.tablaDeClasesConcretas.values()) {
-            //System.out.println("Estoy en clase concreta: "+claseConcreta.obtenerNombreClase());
+
             this.claseActual = claseConcreta;
             for (Metodo metodo : claseConcreta.obtenerMetodos().values()) {
-                //System.out.println("Estoy en metodo: "+metodo.obtenerNombreMetodo());
+
                 this.metodoActual = metodo;
                 if (!metodo.estaChequeado()) {
                     if (metodo.obtenerBloquePrincipal() != null) {
