@@ -38,12 +38,16 @@ public class Metodo {
         tieneOffset = false;
         esMetodoInterface = false;
     }
-    public Metodo(Token tokenDelMetodo, String visibilidad){
+    public Metodo(Token tokenDelMetodo, String visibilidad, String nombreClase){
         this.tokenDelMetodo = tokenDelMetodo;
         this.alcanceDelMetodo = visibilidad;
         this.tipoRetornoDelMetodo = null;
         listaParametros = new ArrayList<>();
         esConstructor = true;
+        codigoGenerado = false;
+        tieneOffset = false;
+        bloquePrincipalChequeado = false;
+        this.nombreClase = nombreClase;
     }
     public boolean getEsConstructor(){
         return esConstructor;
@@ -221,11 +225,11 @@ public class Metodo {
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADSP");
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP");
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP");
-            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RET 0");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RET 0 ; Retorna lo propio de la unidad y la libera " + this.getReturnOffset() + " lugares");
         }
     }
     public int getOffsetAlmacenadoReturn(){
-        if(obtenerAlcance().equals("static"))
+        if(this.obtenerAlcance().equals("static"))
             return 3+listaParametros.size();
         else
             return 3+listaParametros.size()+1;

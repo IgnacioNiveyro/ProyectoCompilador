@@ -24,13 +24,13 @@ public class AccesoMetodo extends NodoAcceso{
         metodo = claseConcreta.obtenerMetodos().get(this.token.getLexema());
         if(TablaSimbolos.obtenerInstancia().obtenerMetodoActual().obtenerAlcance().equals("static") && !metodo.obtenerAlcance().equals("static"))
             throw new ExcepcionSemanticaSimple(this.token, "el metodo que se intenta invocar posee alcance estatico");
-        if(metodo.tieneParametros())
+        if(metodo.obtenerListaParametros().size() > 0)
             this.chequearArgumentosMetodo(metodo);
         if(this.encadenado == null)
             return metodo.obtenerTipoRetornoMetodo();
         else
-            if(!claseConcreta.obtenerMetodos().get(this.token.getLexema()).obtenerTipoRetornoMetodo().esTipoPrimitivo())
-                return this.encadenado.chequear(claseConcreta.obtenerMetodos().get(this.token.getLexema()).obtenerTipoRetornoMetodo());
+            if(!this.metodo.obtenerTipoRetornoMetodo().esTipoPrimitivo())
+                return this.encadenado.chequear(this.metodo.obtenerTipoRetornoMetodo());
             else
                 throw new ExcepcionSemanticaSimple(this.token, "El metodo "+this.token.getLexema()+" no puede tener un encadenado ya que retorna un tipo primitivo.");
     }
@@ -94,7 +94,7 @@ public class AccesoMetodo extends NodoAcceso{
         if(listaExpresiones != null)
             for(int index = listaExpresiones.size() - 1; index >= 0; index--){
                 listaExpresiones.get(index).generarCodigo();
-                if(!metodo.obtenerAlcance().equals("static"))
+                if(!this.metodo.obtenerAlcance().equals("static"))
                     GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
             }
     }

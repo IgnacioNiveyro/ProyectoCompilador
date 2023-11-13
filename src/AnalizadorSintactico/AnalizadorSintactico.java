@@ -253,9 +253,9 @@ public class AnalizadorSintactico {
             Token tokenConstructor = tokenActual;
             //Constructor constructor = new Constructor(tokenConstructor, visibilidad);
             //TablaSimbolos.obtenerInstancia().setMetodoActual(constructor);
-            Metodo metodoConstructor = new Metodo(tokenConstructor,visibilidad);
+            Metodo metodoConstructor = new Metodo(tokenConstructor,visibilidad, TablaSimbolos.obtenerInstancia().getClaseActual().obtenerNombreClase());
             TablaSimbolos.obtenerInstancia().setMetodoActual(metodoConstructor);
-            metodoConstructor.setNombreClase(TablaSimbolos.obtenerInstancia().getClaseActual().obtenerNombreClase());
+            //metodoConstructor.setNombreClase(TablaSimbolos.obtenerInstancia().getClaseActual().obtenerNombreClase());
             match("idClase");
             ArgsFormales();
             NodoBloque bloquePrincipal = new NodoBloque(null,null);

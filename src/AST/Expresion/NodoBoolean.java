@@ -18,7 +18,7 @@ public class NodoBoolean extends NodoOperandoLiteral{
     }
 
     public void generarCodigo() throws IOException{
-        if(token.getLexema().equals("pr_true"))
+        if(token.getLexema().equals("true"))
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH 1");
         else
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH 0");

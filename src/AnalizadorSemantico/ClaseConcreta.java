@@ -195,7 +195,7 @@ public class ClaseConcreta extends Clase {
     }
     public void chequearConstructor() {
         if (!tieneConstructor) {
-            constructorClase = new Metodo(new Token("idClase", this.obtenerNombreClase(), 0), "public");
+            constructorClase = new Metodo(new Token("idClase", this.obtenerNombreClase(), 0), "public", this.obtenerNombreClase());
             tieneConstructor = true;
         }else
             constructorClase.chequearConstructor();
@@ -361,7 +361,8 @@ public class ClaseConcreta extends Clase {
                 metodo.setCodigoGenerado();
             }
         GeneradorInstrucciones.obtenerInstancia().setModoCode();
-        constructorClase.generarCodigo();
+        if(constructorClase!=null)
+            constructorClase.generarCodigo();
     }
     public int obtenerTamanioCIR(){
         return tamanioCIR;

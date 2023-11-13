@@ -43,7 +43,7 @@ public class NodoIf extends NodoSentencia{
         condicion.generarCodigo();
 
         if(sentenciaElse == null){
-            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("BF "+ifLabel+"       ; Si el tope de la fila es falso, salto a "+ifLabel);
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("BF "+ifLabel+"       ; Si el tope de la pila es falso, salto a "+ifLabel);
             sentencia.generarCodigo();
         }else{
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("BF "+elseLabel+"      ; Si el tope de la pila es falso, salto a "+elseLabel);
