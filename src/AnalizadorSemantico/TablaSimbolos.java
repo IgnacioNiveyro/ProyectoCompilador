@@ -193,7 +193,7 @@ public class TablaSimbolos {
         interfaceAGenerarOffset.setOffsetGenerado();
     }
     private void generarOffsetMetodosParaInterfacesConAncestros(Interface interfaceConAncestros){
-        for(Interface interfaceAncestro : interfaceConAncestros.obtenerInterfacesAncestro()){
+        for(Interface interfaceAncestro : interfaceConAncestros.getAncestorsInterfaces()){
             Interface interfaceAncestroInST = TablaSimbolos.obtenerInstancia().obtenerInterface(interfaceAncestro.obtenerNombreClase());
             if(interfaceAncestroInST.tieneOffsetGenerado())
                 this.copiarOffsetMetodos(interfaceAncestroInST, interfaceAncestro);
@@ -213,7 +213,7 @@ public class TablaSimbolos {
     private int obtenerMayorVT(){
         int mayorVT = 0;
         for(ClaseConcreta claseConcreta:tablaDeClasesConcretas.values()){
-            if(claseConcreta.obtenerInterfaceAncestro() != null){
+            if(claseConcreta.getAncestorsInterfaces().size() > 0){
                 if(claseConcreta.getTamanioVT() > mayorVT)
                     mayorVT = claseConcreta.getTamanioVT();
             }

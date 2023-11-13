@@ -24,7 +24,6 @@ public class NodoExpresionBinaria extends NodoExpresion{
         Tipo tipoLadoIzquierdo = ladoIzquierdo.chequear();
         Tipo tipoLadoDerecho = ladoDerecho.chequear();
         String operador = this.token.getToken_id();
-        System.out.println("NodoExpresionBinaria - operador "+operador);
         if(tipoLadoIzquierdo.esCompatibleConElOperador(operador) && tipoLadoDerecho.esCompatibleConElOperador(operador)){
             if(tipoLadoIzquierdo.esCompatibleConElTipo(tipoLadoDerecho) || tipoLadoDerecho.esCompatibleConElTipo(tipoLadoIzquierdo)){
                 Tipo tipoPrimitivo = new TipoPrimitivo(this.token);

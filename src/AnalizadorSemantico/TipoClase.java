@@ -34,8 +34,10 @@ public class TipoClase extends Tipo{
 
         ClaseConcreta claseConcreta = TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(this.obtenerNombreClase());
         Interface interfaceComparar = TablaSimbolos.obtenerInstancia().obtenerInterface(tipoAComparar.obtenerNombreClase());
+
         //comparo clase con interface
         if(claseConcreta != null && interfaceComparar != null){
+
             if(claseConcreta.tieneInterfaceAncestro(interfaceComparar.obtenerNombreClase()))
                 return true;
             while(claseConcreta.obtenerClaseAncestro() != null){
@@ -49,14 +51,17 @@ public class TipoClase extends Tipo{
         else{
             if(claseConcreta == null){
                 Interface estaClaseInterface = TablaSimbolos.obtenerInstancia().obtenerInterface(this.obtenerNombreClase());
+
                 if(interfaceComparar != null){
-                    // Estoy comparando dos interfaces
+
                     if(estaClaseInterface.tieneInterfaceAncestro(interfaceComparar.obtenerNombreClase()))
                         return true;
                 }
                 else{
-                    // Comparo interface con clase
+
                     ClaseConcreta claseConcretaComparar = TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(tipoAComparar.obtenerNombreClase());
+
+
                     if(claseConcretaComparar.obtenerNombreClase().equals("Object"))
                         return true;
                     if(claseConcretaComparar.tieneInterfaceAncestro(estaClaseInterface.obtenerNombreClase()))
@@ -65,6 +70,7 @@ public class TipoClase extends Tipo{
             }
             // Comparo dos clases
             else{
+
                 while(claseConcreta.obtenerClaseAncestro() != null){
                     if(claseConcreta.obtenerClaseAncestro().obtenerNombreClase().equals(tipoAComparar.obtenerNombreClase()))
                         return true;

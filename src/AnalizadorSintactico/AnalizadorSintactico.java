@@ -79,6 +79,10 @@ public class AnalizadorSintactico {
             ClaseConcreta claseActual = new ClaseConcreta(tokenClaseActual,tokenClaseAncestro);
             TablaSimbolos.obtenerInstancia().setClaseActual(claseActual);
             TablaSimbolos.obtenerInstancia().insertarClaseConcreta(claseActual);
+            if(tokenClaseAncestro != null && TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema()) != null) {
+
+                claseActual.addAncestorInterface(TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema()));
+            }
             if(implementa)
                 claseActual.implementa();
             implementa = false;
@@ -100,6 +104,10 @@ public class AnalizadorSintactico {
             Interface interfaceActual = new Interface(tokenDeInterface, tokenExtiende);
             TablaSimbolos.obtenerInstancia().setClaseActual(interfaceActual);
             TablaSimbolos.obtenerInstancia().insertarInterface(interfaceActual);
+            if(tokenExtiende != null && TablaSimbolos.obtenerInstancia().obtenerInterface(tokenExtiende.getLexema()) != null) {
+
+                interfaceActual.addAncestorInterface(TablaSimbolos.obtenerInstancia().obtenerInterface(tokenExtiende.getLexema()));
+            }
             match("llave_abre");
             ListaEncabezados();
             match("llave_cierra");

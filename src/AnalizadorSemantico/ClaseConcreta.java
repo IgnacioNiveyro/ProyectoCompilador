@@ -32,6 +32,23 @@ public class ClaseConcreta extends Clase {
         tamanioVT = 0;
         tamanioVTseteado = false;
         offsetMetodosDinamicos = new Hashtable<>();
+        //imprimirInterfacesAncestro();
+    }
+    public void addAncestorInterface(Interface interfaceToAdd) {
+        String interfaceToAddName = interfaceToAdd.obtenerNombreClase();
+        String interfaceNameToCompare;
+        boolean nameExists = false;
+        for (Interface ancestorInterface: this.interfacesAncestro) {
+            interfaceNameToCompare = ancestorInterface.obtenerNombreClase();
+            if (interfaceToAddName.equals(interfaceNameToCompare)) {
+                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(interfaceToAdd.obtenerToken(), "La interface " + "\"" + this.obtenerNombreClase() + "\"" + " ya extiende a la interface " + interfaceToAdd.obtenerNombreClase()));
+                nameExists = true;
+                break;
+            }
+        }
+        if (!nameExists) {
+            this.interfacesAncestro.add(interfaceToAdd);
+        }
     }
 
     public int getTamanioVT(){
@@ -39,17 +56,14 @@ public class ClaseConcreta extends Clase {
     }
 
     public boolean tieneInterfaceAncestro(String nombreInterfaceChequear){
-        boolean tieneInterfaceAncestro = false;
-        if(tokenClaseAncestro != null){
-            Interface i = TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema());
-            if(i != null){
-                if(i.obtenerNombreClase().equals(nombreInterfaceChequear))
-                    return true;
-                if(i.tieneInterfaceAncestro(nombreInterfaceChequear))
-                    tieneInterfaceAncestro = true;
-            }
+        boolean toReturn = false;
+        for (Interface i: this.interfacesAncestro) {
+            if (i.obtenerNombreClase().equals(nombreInterfaceChequear))
+                return true;
+            if (i.tieneInterfaceAncestro(nombreInterfaceChequear))
+                toReturn =  true;
         }
-        return tieneInterfaceAncestro;
+        return toReturn;
     }
 
     public void implementa(){
@@ -97,11 +111,7 @@ public class ClaseConcreta extends Clase {
             return TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(tokenClaseAncestro.getLexema());
         return null;
     }
-    public Interface obtenerInterfaceAncestro(){
-        if(tokenClaseAncestro != null)
-            return TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema());
-        return null;
-    }
+
     public void consolidate() throws ExcepcionSemantica{
         if(!estaConsolidada)
             if(!tieneHerenciaCircular)
@@ -113,17 +123,21 @@ public class ClaseConcreta extends Clase {
                     consolidarMetodos(ancestro);
                     verificarMetodosInterfaces();
                     estaConsolidada = true;
-                }
-                else{
-                    if(obtenerInterfaceAncestro() != null){
+                }else {
+                    if (obtenerInterfaceAncestro() != null) {
                         Interface ancestro = obtenerInterfaceAncestro();
-                    if(!ancestro.estaConsolidada)
-                        ancestro.consolidate();
-                    consolidarMetodos(TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object"));
-                    verificarMetodosInterfaces();
-                    estaConsolidada = true;
-            }
-        }
+                        if (!ancestro.estaConsolidada)
+                            ancestro.consolidate();
+                        consolidarMetodos(TablaSimbolos.obtenerInstancia().obtenerClaseConcreta("Object"));
+                        verificarMetodosInterfaces();
+                        estaConsolidada = true;
+                    }
+                }
+    }
+    public Interface obtenerInterfaceAncestro(){
+        if(tokenClaseAncestro != null)
+            return TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema());
+        return null;
     }
     public void consolidarAtributos(ClaseConcreta ancestro){
         for(Atributo atributoAncestro: ancestro.obtenerAtributos().values()){
@@ -151,24 +165,29 @@ public class ClaseConcreta extends Clase {
         }
     }
     public void verificarMetodosInterfaces(){
-        if(tokenClaseAncestro!=null){
-            Interface interfaceVerificar = TablaSimbolos.obtenerInstancia().obtenerInterface(tokenClaseAncestro.getLexema());
-            if(interfaceVerificar != null)
-                interfaceVerificar.verificarImplementacionMetodos(tokenClaseAncestro, this);
+        for (Interface interfaceThatImplements: this.interfacesAncestro) {
+            Token interfaceToken = interfaceThatImplements.obtenerToken();
+            String interfaceName = interfaceToken.getLexema();
+            Interface interfaceToVerifyMethodsImplementations = TablaSimbolos.obtenerInstancia().obtenerInterface(interfaceName);
+            if (interfaceToVerifyMethodsImplementations != null)
+                interfaceToVerifyMethodsImplementations.verificarImplementacionMetodos(interfaceToken, this);
         }
     }
     public void estaBienDeclarado() throws ExcepcionSemantica{
         chequearHerenciaCircular();
         chequearConstructor();
         chequearClaseAncestro();
+        chequearDeclaracionInterfaces();
         chequearAtributosDeclarados();
         chequearMetodosDeclarados();
     }
-
-    public Token obtenerTokenClaseAncestro(){
-        if(tokenClaseAncestro==null)
-            return new Token("Object", "Object",-1);
-        return tokenClaseAncestro;
+    private void chequearDeclaracionInterfaces(){
+        for (Interface interfaceToCheck : this.interfacesAncestro) {
+            Token interfaceToken = interfaceToCheck.obtenerToken();
+            String interfaceName = interfaceToken.getLexema();
+            if (!this.interfaceDeclarada(interfaceName))
+                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(interfaceToken, "La interface " + interfaceName + " no esta declarada"));
+        }
     }
     public String obtenerNombreClaseAncestro(){
         if(tokenClaseAncestro != null)

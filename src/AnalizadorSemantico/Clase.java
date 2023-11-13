@@ -6,6 +6,7 @@ import java.util.Hashtable;
 public abstract class Clase {
     protected Token tokenDeClase;
     protected Hashtable<String, Metodo> metodos;
+    protected HashSet<Interface> interfacesAncestro;
     protected boolean estaConsolidada;
     protected boolean extiende;
     protected boolean tieneHerenciaCircular;
@@ -13,9 +14,13 @@ public abstract class Clase {
     public Clase(Token token){
         this.tokenDeClase = token;
         metodos = new Hashtable<>();
+        interfacesAncestro = new HashSet<>();
         extiende = false;
         estaConsolidada = false;
         tieneHerenciaCircular = false;
+    }
+    public HashSet<Interface> getInterfacesAncestro(){
+        return this.interfacesAncestro;
     }
     public Token obtenerToken(){
         return tokenDeClase;
@@ -44,5 +49,8 @@ public abstract class Clase {
     public abstract void consolidate() throws ExcepcionSemantica;
 
     public abstract void estaBienDeclarado() throws ExcepcionSemantica;
+    public HashSet<Interface> getAncestorsInterfaces() {
+        return this.interfacesAncestro;
+    }
 
 }
