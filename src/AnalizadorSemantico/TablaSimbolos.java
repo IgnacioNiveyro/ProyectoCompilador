@@ -160,6 +160,8 @@ public class TablaSimbolos {
     private void generarOffsetMetodos(){
         for(ClaseConcreta claseConcreta: tablaDeClasesConcretas.values()){
             claseConcreta.generarOffsetsAtributos();
+        }
+        for(ClaseConcreta claseConcreta: tablaDeClasesConcretas.values()){
             claseConcreta.generarOffsetMetodosClase();
         }
         generarOffsetMetodosInterface();

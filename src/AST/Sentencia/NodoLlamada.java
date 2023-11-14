@@ -17,6 +17,7 @@ public class NodoLlamada extends NodoSentencia{
         super(token);
         this.nodoAcceso = nodoAcceso;
     }
+    public boolean isVariableDeclaration() {return false;}
     public void chequear() throws ExcepcionSemanticaSimple{
         tipoLlamada = nodoAcceso.chequear();
         if(nodoAcceso.obtenerEncadenado() != null){

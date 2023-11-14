@@ -28,6 +28,7 @@ public class NodoWhile extends NodoSentencia{
                 throw new ExcepcionSemanticaSimple(this.token, "La condicion del ciclo While debe ser Boolean.");
         }
     }
+    public boolean isVariableDeclaration() {return false;}
     protected void generarCodigo() throws IOException{
         String finLabel = nuevoLabelFinalWhile();
         String inicioLabel = nuevoLabelInicioWhile();

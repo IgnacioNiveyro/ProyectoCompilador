@@ -18,4 +18,6 @@ public abstract class NodoSentencia {
         return token;
     }
     protected abstract void generarCodigo() throws IOException;
+
+    public abstract boolean isVariableDeclaration();
 }

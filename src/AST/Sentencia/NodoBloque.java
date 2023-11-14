@@ -17,7 +17,7 @@ public class NodoBloque extends NodoSentencia{
     private NodoBloque bloqueAncestro;
     private int cantidadTotalVariables;
     private int offsetDisponibleVariablesLocales;
-
+    private int lastVariableOffset;
     public NodoBloque(Token token, NodoBloque bloqueAncestro){
         super(token);
         this.listaSentencias = new ArrayList<>();
@@ -26,6 +26,7 @@ public class NodoBloque extends NodoSentencia{
         offsetDisponibleVariablesLocales = 1;
         cantidadTotalVariables = 0;
     }
+    public boolean isVariableDeclaration() {return false;}
     public int obtenerTotalVariables(){
         int cantidadTotal;
         if(bloqueAncestro != null){
@@ -99,15 +100,29 @@ public class NodoBloque extends NodoSentencia{
         return this.listaSentencias;
     }
     public void generarCodigo() throws IOException {
-        for(NodoSentencia nodoSentencia: listaSentencias)
-            nodoSentencia.generarCodigo();
-        liberarMemoria();
+        if(bloqueAncestro!=null)
+            lastVariableOffset = bloqueAncestro.lastVariableOffset;
+
+        for(NodoSentencia nodoSentencia: listaSentencias) {
+            if(nodoSentencia.isVariableDeclaration()) {
+                ((NodoDeclaracionVariableLocal) nodoSentencia).setOffsetVariable(lastVariableOffset--);
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RMEM 1 ; Reservo espacio variable local");
+                nodoSentencia.generarCodigo();
+            }else
+                nodoSentencia.generarCodigo();
+        }
+        if(tablaVariablesLocales.size() != 0)
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("FMEM "+tablaVariablesLocales.size()+" ; Libera variables locales");
+        //liberarMemoria();
     }
     private void liberarMemoria() throws IOException{
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("FMEM "+cantidadTotalVariables);
     }
     public void incrementarTotalVariablesBloque(){
         cantidadTotalVariables += 1;
+    }
+    public int getAmountOfVariablesInMemory(){
+        return -1*(lastVariableOffset);
     }
 
 }

@@ -67,7 +67,31 @@ public class NodoAccesoVar extends NodoAcceso{
     public boolean esInvocable(){
         return false;
     }
+    public void generarCo2digo() throws IOException {
+        if (atributo!=null){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    LOAD 3 ; Cargo this para acceder a atributo");
+            if (!esLadoIzquierdo() || encadenado != null){
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    LOADREF "+atributo.getOffset()+" ; Cargo direccion de atributo ");
+            } else {
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    SWAP ; Muevo this a SP - 1");
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    STOREREF "+atributo.getOffset()+" ; Guardo valor en la direccion del atributo");
+            }
+        } else {
+            if(variableLocal!=null){
+                if (!esLadoIzquierdo() || encadenado != null)
+                   GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    LOAD "+variableLocal.obtenerOffsetVariable()+" ; Cargo la direccion de parametro/var local");
+                else GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    STORE "+variableLocal.obtenerOffsetVariable()+" ; Guardo valor en la direccion de parametro/var local");
+            }else
+                if(parametro!=null){
+                    if (!esLadoIzquierdo() || encadenado != null)
+                        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    LOAD "+parametro.getOffset()+" ; Cargo la direccion de parametro/var local");
+                    else GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    STORE "+parametro.getOffset()+" ; Guardo valor en la direccion de parametro/var local");
+                }
+        }
 
+        if (encadenado != null)
+            encadenado.generarCodigo();
+    }
     public void generarCodigo() throws IOException{
         if(variableLocal != null){
             if(!esLadoIzquierdo() || encadenado != null)

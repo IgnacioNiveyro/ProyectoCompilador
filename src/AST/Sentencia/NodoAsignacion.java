@@ -19,6 +19,7 @@ public class NodoAsignacion extends NodoSentencia{
         this.ladoIzquierdo = ladoIzquierdo;
         this.ladoDerecho = ladoDerecho;
     }
+    public boolean isVariableDeclaration() {return false;}
     public void chequear() throws ExcepcionSemanticaSimple{
         Tipo tipoLadoIzquierdo;
         if(ladoIzquierdo != null && this.ladoIzquierdoEsAsignable())
@@ -40,8 +41,8 @@ public class NodoAsignacion extends NodoSentencia{
     @Override
     protected void generarCodigo() throws IOException {
         if(this.token.getLexema().equals("=")){
-            ladoDerecho.generarCodigo();
             setLadoIzquierdoComoLadoIzquierdo();
+            ladoDerecho.generarCodigo();
             ladoIzquierdo.generarCodigo();
         }
     }

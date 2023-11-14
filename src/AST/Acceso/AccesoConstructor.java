@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class AccesoConstructor extends NodoAcceso{
 
     ArrayList<NodoExpresion> listaExpresiones;
+    Metodo constructor;
     public AccesoConstructor(Token token, ArrayList<NodoExpresion> listaExpresiones){
         super(token);
         this.listaExpresiones = listaExpresiones;
@@ -36,7 +37,7 @@ public class AccesoConstructor extends NodoAcceso{
                 else {
                     tipoConstructor = new TipoClase(this.token);
                     ClaseConcreta claseConcretaConstructor = (ClaseConcreta) TablaSimbolos.obtenerInstancia().obtenerClaseConcreta(tipoConstructor.obtenerNombreClase());
-                    Metodo constructor = claseConcretaConstructor.obtenerConstructorClase();
+                    constructor = claseConcretaConstructor.obtenerConstructorClase();
                     if(constructor.tieneParametros() || listaExpresiones!=null)
                         chequearArgumentosConstructor(constructor);
                 }
@@ -64,13 +65,27 @@ public class AccesoConstructor extends NodoAcceso{
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("DUP ; Se duplica el tope de la pila");
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH " + claseConcreta.getVTLabel() + "       ; Se apila la dirección del comienzo de la virtual table");
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREREF 0 ; Se guarda la referencia a la virtual table en el CIR creado (el offset es 0)" );
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("DUP ; Se duplica el tope de la pila");
+
+        if(constructor!=null) {
+            for (Parametro p : constructor.obtenerListaParametros()) {
+                generarCodigoParametros();
+            }
+        }
+
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH Constructor_" + this.token.getLexema() + " ; Se apila la dirección del comienzo del constructor de clase " + this.token.getLexema());
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("CALL ; Se invoca la unidad en el tope de la pila (dirección de comienzo de generación de código del constructor de la clase " + this.token.getLexema() + ") ");
-
-        if(this.encadenado != null)
+        if(this.encadenado != null) {
             encadenado.generarCodigo();
+        }
     }
-
+    private void generarCodigoParametros() throws IOException{
+        if(listaExpresiones != null)
+            for(int index = listaExpresiones.size() - 1; index >= 0; index--){
+                listaExpresiones.get(index).generarCodigo();
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
+            }
+    }
     private void chequearArgumentosConstructor(Metodo metodo) throws ExcepcionSemanticaSimple{
         if(this.listaExpresiones == null || this.listaExpresiones.size() != metodo.obtenerListaParametros().size())
             throw new ExcepcionSemanticaSimple(this.token, "La cantidad de parametros del constructor invocado es incorrecta");

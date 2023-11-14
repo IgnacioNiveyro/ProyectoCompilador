@@ -33,6 +33,7 @@ public class LlamadaEncadenada extends Encadenado{
         }
         return tipoMetodo;
     }
+
     public void generarCodigo() throws IOException{
 
         if(metodo.obtenerAlcance().equals("static"))
@@ -68,11 +69,20 @@ public class LlamadaEncadenada extends Encadenado{
     }
     private void generarCodigoParametros() throws IOException{
         if(listaExpresiones != null)
+            for(NodoExpresion p : listaExpresiones){
+                p.generarCodigo();
+                if(!metodo.obtenerAlcance().equals("static"))
+                    GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
+            }
+    }
+    private void generar2CodigoParametros() throws IOException{
+        if(listaExpresiones != null)
             for(int index = listaExpresiones.size() - 1; index>=0; index--){
                 listaExpresiones.get(index).generarCodigo();
                 if(!metodo.obtenerAlcance().equals("static"))
                     GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
             }
+
     }
 
     private void chequearArgumentos(Metodo metodo) throws ExcepcionSemanticaSimple{

@@ -12,7 +12,7 @@ public class SentenciaVacia extends NodoSentencia{
     public void chequear() throws ExcepcionSemanticaSimple{
 
     }
-
+    public boolean isVariableDeclaration() {return false;}
     @Override
     protected void generarCodigo() throws IOException {
 

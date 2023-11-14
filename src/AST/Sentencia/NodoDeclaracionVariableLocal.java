@@ -43,11 +43,14 @@ public class NodoDeclaracionVariableLocal extends NodoSentencia{
             throw new ExcepcionSemanticaSimple(this.token, "El nombre para la variable ya esta utilizado en un parametro");
     }
     public void generarCodigo() throws IOException{
-        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RMEM 1 ; Se reserva espacio para una variable local");
-        nodoExpresion.generarCodigo();
-        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STORE " +offsetVariable+" ; Se guarda el valor de la expresion en la variable "+ this.token.getLexema());
-        this.nodoBloque.incrementarTotalVariablesBloque();
+        //GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RMEM 1 ; Se reserva espacio para una variable local");
+        if(nodoExpresion != null) {
+            nodoExpresion.generarCodigo();
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STORE " + offsetVariable + " ; Se guarda el valor de la expresion en la variable " + this.token.getLexema());
+
+        }this.nodoBloque.incrementarTotalVariablesBloque();
     }
+    public boolean isVariableDeclaration() {return true;}
     private boolean esUnaVariableDeclaradaBloquePrincipal(NodoBloque bloqueActual, String nombreVariable){
 
         if(bloqueActual != null) {

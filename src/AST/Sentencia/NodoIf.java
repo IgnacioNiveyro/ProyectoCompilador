@@ -25,7 +25,7 @@ public class NodoIf extends NodoSentencia{
     }
 
 
-
+    public boolean isVariableDeclaration() {return false;}
     public void chequear() throws ExcepcionSemanticaSimple{
         Tipo tipoCondicion = condicion.chequear();
         if(tipoCondicion != null)
@@ -37,7 +37,32 @@ public class NodoIf extends NodoSentencia{
         if(sentenciaElse != null)
             sentenciaElse.chequear();
     }
-    protected void generarCodigo() throws IOException{
+    public void generarCodigo() throws IOException {
+        if (sentenciaElse == null)
+            generateIfCode();
+        else generateIfElseCode();
+    }
+
+    private void generateIfCode() throws IOException {
+        String ifLabel = this.nuevoIfLabel();
+        condicion.generarCodigo();
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    BF "+ifLabel+" ; Si es falso, salto al final de then, sino ejecuto then");
+        sentencia.generarCodigo();
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion(ifLabel+": NOP ; Final del then");
+    }
+
+    private void generateIfElseCode() throws IOException {
+        String elseLabel = this.nuevoElseLabel();
+        String outIfLabel = this.nuevoIfLabel();
+        condicion.generarCodigo();
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    BF "+elseLabel+" ; Si es falso, salta a else, sino ejecuto then");
+        sentencia.generarCodigo();
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    JUMP "+outIfLabel+" ; Termina de ejecutar then, salta a final de if");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion(elseLabel+": NOP ; Principio de else");
+        sentenciaElse.generarCodigo();
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion(outIfLabel+": NOP ; Final del if");
+    }
+    protected void generar2Codigo() throws IOException{
         String ifLabel = this.nuevoIfLabel();
         String elseLabel = this.nuevoElseLabel();
         condicion.generarCodigo();

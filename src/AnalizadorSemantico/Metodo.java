@@ -199,17 +199,8 @@ public class Metodo {
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADFP ; Guardo el ED del RA del llamador");
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADSP ; Se apila el RA de la unidad llamada");
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP ; Se actualiza el Frame Pointer para apuntar al RA actual");
-
             if (listaParametros.size() > 0) {
-                int offsetParametro;
-                if(!this.obtenerAlcance().equals("static"))
-                    offsetParametro = 3;
-                else
-                    offsetParametro = 2;
-                for(Parametro parametro : this.listaParametros){
-                    offsetParametro += 1;
-                    parametro.setOffset(offsetParametro);
-                }
+                setParametersOffset();
             }
             if (bloquePrincipal != null) {
                 bloquePrincipal.generarCodigo();
@@ -220,12 +211,16 @@ public class Metodo {
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP ; Actualiza FramePointer");
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RET " + this.getReturnOffset() + " ; Retorna lo propio de la unidad y la libera " + this.getReturnOffset() + " lugares");
         }else{
+            int memToFree = listaParametros.size() + 1;
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("Constructor_"+this.tokenDelMetodo.getLexema()+":");
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADFP");
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADSP");
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP");
+            if(bloquePrincipal != null)
+                bloquePrincipal.generarCodigo();
+
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP");
-            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RET 0 ; Retorna lo propio de la unidad y la libera " + this.getReturnOffset() + " lugares");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RET "+memToFree);
         }
     }
     public int getOffsetAlmacenadoReturn(){
@@ -234,7 +229,11 @@ public class Metodo {
         else
             return 3+listaParametros.size()+1;
     }
-
+    public void setParametersOffset(){
+        int i = this.obtenerAlcance().equals("static") ? listaParametros.size() + 2 : listaParametros.size() + 3;
+        for(Parametro p : listaParametros)
+            p.setOffset(i--);
+    }
     private void generarCodigoParaMetodoPredefinido() throws IOException{
         if(obtenerNombreMetodo().equals("debugPrint")){
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");

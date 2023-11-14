@@ -285,6 +285,9 @@ public class ClaseConcreta extends Clase {
 
     }
     public void generarOffsetMetodosClase(){
+        if(constructorClase!= null)
+            constructorClase.setParametersOffset();
+
         if(obtenerClaseAncestro()!= null)
             if(!obtenerClaseAncestro().tieneOffsetMetodosGenerados())
                 obtenerClaseAncestro().generarOffsetMetodosClase();
