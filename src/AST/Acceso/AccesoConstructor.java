@@ -68,9 +68,14 @@ public class AccesoConstructor extends NodoAcceso{
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("DUP ; Se duplica el tope de la pila");
 
         if(constructor!=null) {
-            for (Parametro p : constructor.obtenerListaParametros()) {
+            if(listaExpresiones != null)
+                for(NodoExpresion s : listaExpresiones){
+                    s.generarCodigo();
+                    GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP ; Muevo this.");
+                }
+            /**for (Parametro p : constructor.obtenerListaParametros()) {
                 generarCodigoParametros();
-            }
+            }*/
         }
 
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH Constructor_" + this.token.getLexema() + " ; Se apila la dirección del comienzo del constructor de clase " + this.token.getLexema());
@@ -83,7 +88,7 @@ public class AccesoConstructor extends NodoAcceso{
         if(listaExpresiones != null)
             for(NodoExpresion s : listaExpresiones){
                 s.generarCodigo();
-                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP ; aca.");
             }
     }
     private void generarCodigo2Parametros() throws IOException{

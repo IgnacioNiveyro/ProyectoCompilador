@@ -99,7 +99,7 @@ public class GeneradorInstrucciones {
         }
     }
     private String generarEspaciosEnBlanco(int longitudInstruccionLuegoPuntoComa, String instruccion){
-        int indiceDondeEmpiezaLaInstruccion = 35;
+        int indiceDondeEmpiezaLaInstruccion = 40;
         String espaciosEnBlanco = "";
         while(longitudInstruccionLuegoPuntoComa < indiceDondeEmpiezaLaInstruccion){
             espaciosEnBlanco += " ";

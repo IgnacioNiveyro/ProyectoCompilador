@@ -58,16 +58,16 @@ public class NodoReturn extends NodoSentencia{
         int offsetReturn;
         nodoExpresion.generarCodigo();
         offsetReturn = metodo.obtenerAlcance().equals("static") ? parameterCount + 3 : parameterCount + 4; // Estatico: PR, ED, Parametros, Ret || Dinamico: PR, ED, THIS, Parametros, Ret
-        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    STORE "+offsetReturn+" ; Guarda retorno en su lugar");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STORE "+offsetReturn+" ; Guarda retorno en su lugar");
     }
 
     private void generateReturnCode() throws IOException {
         int localVariablesToFree,memToFree;
         memToFree = !metodo.getEsConstructor() && metodo.obtenerAlcance().equals("static") ? parameterCount : parameterCount + 1; // Si es dinamico o constructor, tiene que borrar el this
         localVariablesToFree = bloqueDelReturn.obtenerTotalVariables();
-        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    FMEM "+localVariablesToFree+" ; Borra variables locales reservadas");
-        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    STOREFP ; Usa ED para volver a RA llamador");
-        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    RET "+memToFree+" ; Libera los parametros y retorna de la unidad");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("FMEM "+localVariablesToFree+" ; Borra variables locales reservadas");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREFP ; Usa ED para volver a RA llamador");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("RET "+memToFree+" ; Libera los parametros y retorna de la unidad");
     }
     protected void generarCodigo2() throws IOException{
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("FMEM "+bloqueDelReturn.obtenerTotalVariables()+"         ; Se libera la memoria de las variables luego del return");

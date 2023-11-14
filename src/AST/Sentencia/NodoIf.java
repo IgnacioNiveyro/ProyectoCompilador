@@ -55,9 +55,9 @@ public class NodoIf extends NodoSentencia{
         String elseLabel = this.nuevoElseLabel();
         String outIfLabel = this.nuevoIfLabel();
         condicion.generarCodigo();
-        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    BF "+elseLabel+" ; Si es falso, salta a else, sino ejecuto then");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("BF "+elseLabel+" ; Si es falso, salta a else, sino ejecuto then");
         sentencia.generarCodigo();
-        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("    JUMP "+outIfLabel+" ; Termina de ejecutar then, salta a final de if");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion("JUMP "+outIfLabel+" ; Termina de ejecutar then, salta a final de if");
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion(elseLabel+": NOP ; Principio de else");
         sentenciaElse.generarCodigo();
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion(outIfLabel+": NOP ; Final del if");
