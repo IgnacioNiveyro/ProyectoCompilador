@@ -81,6 +81,13 @@ public class AccesoConstructor extends NodoAcceso{
     }
     private void generarCodigoParametros() throws IOException{
         if(listaExpresiones != null)
+            for(NodoExpresion s : listaExpresiones){
+                s.generarCodigo();
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
+            }
+    }
+    private void generarCodigo2Parametros() throws IOException{
+        if(listaExpresiones != null)
             for(int index = listaExpresiones.size() - 1; index >= 0; index--){
                 listaExpresiones.get(index).generarCodigo();
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");

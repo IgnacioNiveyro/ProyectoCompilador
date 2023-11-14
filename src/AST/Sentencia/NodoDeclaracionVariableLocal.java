@@ -35,9 +35,8 @@ public class NodoDeclaracionVariableLocal extends NodoSentencia{
                 throw new ExcepcionSemanticaSimple(this.token, "El nombre para la variable "+this.token.getLexema()+" fue previamente declarada.");
 
             this.setTipo(tipoVariableLocal);
+            TablaSimbolos.obtenerInstancia().getBloqueActual().insertarVariableLocal(this);
             this.nodoBloque = TablaSimbolos.obtenerInstancia().getBloqueActual();
-            this.nodoBloque.insertarVariableLocal(this);
-            //TablaSimbolos.obtenerInstancia().getBloqueActual().insertarVariableLocal(this);
         }
         else
             throw new ExcepcionSemanticaSimple(this.token, "El nombre para la variable ya esta utilizado en un parametro");

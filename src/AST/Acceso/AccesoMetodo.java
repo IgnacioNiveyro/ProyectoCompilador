@@ -92,6 +92,14 @@ public class AccesoMetodo extends NodoAcceso{
     }
     private void generarCodigoParametros() throws IOException{
         if(listaExpresiones != null)
+            for(NodoExpresion s : listaExpresiones){
+                s.generarCodigo();
+                if(!this.metodo.obtenerAlcance().equals("static"))
+                    GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
+            }
+    }
+    private void generarCodigo2Parametros() throws IOException{
+        if(listaExpresiones != null)
             for(int index = listaExpresiones.size() - 1; index >= 0; index--){
                 listaExpresiones.get(index).generarCodigo();
                 if(!this.metodo.obtenerAlcance().equals("static"))

@@ -3,6 +3,7 @@ package AST.Sentencia;
 import AnalizadorLexico.Token;
 import AnalizadorSemantico.Metodo;
 import AnalizadorSemantico.ExcepcionSemanticaSimple;
+import AnalizadorSemantico.Parametro;
 import AnalizadorSemantico.TablaSimbolos;
 import GeneradorInstrucciones.GeneradorInstrucciones;
 
@@ -61,12 +62,39 @@ public class NodoBloque extends NodoSentencia{
         else
             return false;
     }
-    public void insertarVariableLocal(NodoDeclaracionVariableLocal nodoVariableLocal) throws ExcepcionSemanticaSimple{
+    public void insertarVariableLocal(NodoDeclaracionVariableLocal nodoVariableLocal) throws ExcepcionSemanticaSimple {
+        Metodo metodoActual = TablaSimbolos.obtenerInstancia().obtenerMetodoActual();
+
+        boolean esParametro = false;
+        for(Parametro p : metodoActual.obtenerListaParametros()){
+            if(nodoVariableLocal.obtenerNombreVariable().equals(p.obtenerNombreDelParametro())){
+                esParametro = true;
+                break;
+            }
+        }
+        if(esParametro)
+            throw new ExcepcionSemanticaSimple(nodoVariableLocal.obtenerTokenVariable(), "Ya existe un parametro "+nodoVariableLocal.obtenerNombreVariable()+" en el ambiente");
+        if(isLocalVariable(nodoVariableLocal.obtenerNombreVariable()))
+            throw new ExcepcionSemanticaSimple(nodoVariableLocal.obtenerTokenVariable(), "Ya existe un parametro "+nodoVariableLocal.obtenerNombreVariable()+" en el ambiente");
+
+        tablaVariablesLocales.put(nodoVariableLocal.obtenerNombreVariable(), nodoVariableLocal);
+
+    }
+    public boolean isLocalVariable(String identifier) {
+        if (tablaVariablesLocales.get(identifier) == null){
+            if (bloqueAncestro != null)
+                return bloqueAncestro.isLocalVariable(identifier);
+            else return false;
+        } else return true;
+    }
+    public void insertar2VariableLocal(NodoDeclaracionVariableLocal nodoVariableLocal) throws ExcepcionSemanticaSimple{
+        System.out.println("Voy a insertar una variable "+nodoVariableLocal.obtenerNombreVariable());
         if(this.bloqueAncestro != null){
             for(NodoDeclaracionVariableLocal variableLocalEnBloqueAncestro : bloqueAncestro.obtenerTablaVariablesLocales().values())
                 this.tablaVariablesLocales.put(variableLocalEnBloqueAncestro.obtenerNombreVariable(), variableLocalEnBloqueAncestro);
         }
         Metodo metodoActual = TablaSimbolos.obtenerInstancia().obtenerMetodoActual();
+
         if(!metodoActual.obtenerListaParametros().contains(nodoVariableLocal.obtenerNombreVariable())){
             if(!this.tablaVariablesLocales.containsKey(nodoVariableLocal.obtenerNombreVariable()))
                 this.tablaVariablesLocales.put(nodoVariableLocal.obtenerNombreVariable(), nodoVariableLocal);
@@ -76,6 +104,7 @@ public class NodoBloque extends NodoSentencia{
         else
             throw new ExcepcionSemanticaSimple(nodoVariableLocal.obtenerTokenVariable(), "El nombre "+ nodoVariableLocal.obtenerNombreVariable()+" esta en uso en un parametro dentro del metodo "+metodoActual.obtenerNombreMetodo());
 
+        System.out.println("Salgo de insertarVariableLocal "+tablaVariablesLocales.size());
         this.setOffsetDisponibleVariablesLocales(nodoVariableLocal);
     }
     public void chequear() throws ExcepcionSemanticaSimple{
@@ -84,6 +113,7 @@ public class NodoBloque extends NodoSentencia{
             if(nodoSentencia != null)
                 nodoSentencia.chequear();
         }
+
         if(this.obtenerBloqueAncestro() != null)
             TablaSimbolos.obtenerInstancia().setBloqueActual(this.bloqueAncestro);
     }

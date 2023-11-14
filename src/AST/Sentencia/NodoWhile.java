@@ -33,12 +33,12 @@ public class NodoWhile extends NodoSentencia{
         String finLabel = nuevoLabelFinalWhile();
         String inicioLabel = nuevoLabelInicioWhile();
 
-        GeneradorInstrucciones.obtenerInstancia().generarInstruccion(inicioLabel+":");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion(inicioLabel+": NOP ; Condicion del while");
         condicion.generarCodigo();
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("BF "+finLabel+"               ; Si el tope de la fila es falso, se salta a "+finLabel);
         sentencia.generarCodigo();
         GeneradorInstrucciones.obtenerInstancia().generarInstruccion("JUMP "+inicioLabel);
-        GeneradorInstrucciones.obtenerInstancia().generarInstruccion(finLabel+":");
+        GeneradorInstrucciones.obtenerInstancia().generarInstruccion(finLabel+": NOP ; Fin del while");
     }
     private String nuevoLabelFinalWhile(){
         String nombreLabel = "while_end_label_"+finNumeroLabel;
