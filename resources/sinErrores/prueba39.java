@@ -1,4 +1,4 @@
-///6&exitosamente
+//6
 
 class Init{
     static void main() {

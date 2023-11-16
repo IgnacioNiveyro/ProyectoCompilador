@@ -83,11 +83,11 @@ public class ClaseConcreta extends Clase {
     public boolean tieneConstructor(){return tieneConstructor;}
 
     public void insertarAtributo(Atributo atributo){
-        if(!this.atributos.containsKey(atributo.obtenerNombreAtributo())) {
-            Atributo atributoAInsertar = new Atributo(atributo.obtenerToken(), atributo.obtenerTipoAtributo(), atributo.obtenerVisibilidad());
-            atributos.put(atributoAInsertar.obtenerNombreAtributo(), atributoAInsertar);
-        }else
-            TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(atributo.obtenerToken(), "El atributo "+atributo.obtenerNombreAtributo()+" ya existe en la clase "+obtenerNombreClase()));
+            if (!this.atributos.containsKey(atributo.obtenerNombreAtributo())) {
+                Atributo atributoAInsertar = new Atributo(atributo.obtenerToken(), atributo.obtenerTipoAtributo(), atributo.obtenerVisibilidad());
+                atributos.put(atributoAInsertar.obtenerNombreAtributo(), atributoAInsertar);
+            } else
+                TablaSimbolos.obtenerInstancia().obtenerListaConErroresSemanticos().add(new ErrorSemantico(atributo.obtenerToken(), "El atributo " + atributo.obtenerNombreAtributo() + " ya existe en la clase " + obtenerNombreClase()));
     }
     public void insertarConstructor(Metodo constructorAInsertar){
         if((!tieneConstructor) && constructorAInsertar.obtenerToken().getLexema().equals(tokenDeClase.getLexema())) {
@@ -366,6 +366,34 @@ public class ClaseConcreta extends Clase {
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion(instruccionVT);
         }else
             GeneradorInstrucciones.obtenerInstancia().generarInstruccion("NOP ; La clase no posee métodos dinámicos");
+
+        ArrayList<Atributo> atributosStatic = new ArrayList<>();
+        for(Atributo atributo : atributos.values()){
+            if(atributo.esTipoStatic())
+                atributosStatic.add(atributo);
+        }
+
+        if(atributosStatic.size() > 0)
+            GeneradorInstrucciones.obtenerInstancia().setModoData();
+
+        for(Atributo atributo : atributosStatic){
+            if(!atributo.cargueVT()) {
+                System.out.println("Entro con atributo: "+atributo.obtenerNombreAtributo());
+                String instruccion = atributo.obtenerLabel() + ": DW 0";
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion(instruccion);
+                atributo.setCargueVT();
+            }
+        }
+    }
+    private boolean tieneAtributosStatic(){
+        boolean toReturn = false;
+        for(Atributo a : atributos.values()){
+            if(a.esTipoStatic()){
+                toReturn = true;
+                break;
+            }
+        }
+        return toReturn;
     }
     private void setAtributoComoHeredado(String nombreAtributo){
         for(Atributo atributo : atributos.values()) {

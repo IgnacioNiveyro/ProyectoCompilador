@@ -1,4 +1,8 @@
 ///ObtengoobjetoB&ObtengoobjetoA&ObtengoobjetoB&9&exitosamente
+//Obtengo objeto B
+//Obtengo objeto A
+//Obtengo objeto B
+//9
 
 class MainModule{
     static void main(){

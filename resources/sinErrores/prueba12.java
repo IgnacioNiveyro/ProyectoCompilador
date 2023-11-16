@@ -1,4 +1,6 @@
-///5&5&5&exitosamente
+//5
+//5
+//5
 
 class A{
     static void main(){

@@ -1,4 +1,4 @@
-///99&exitosamente
+//99
 
 class A{
     int x;

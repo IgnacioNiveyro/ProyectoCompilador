@@ -1,4 +1,7 @@
 ///101&99&0&exitosamente
+//101
+//99
+//0
 
 class MainModule{
     static void main(){

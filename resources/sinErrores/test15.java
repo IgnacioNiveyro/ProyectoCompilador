@@ -1,5 +1,21 @@
-///Valor actual de iteracion: 0&El numero (0) es par!!&Valor actual de iteracion: 1&Valor actual de iteracion: 2&El numero (2) es par!!&Valor actual de iteracion: 3&Valor actual de iteracion: 4&El numero (4) es par!!&Valor actual de iteracion: 5&Valor actual de iteracion: 6&El numero (6) es par!!&Valor actual de iteracion: 7&Valor actual de iteracion: 8&El numero (8) es par!!&Valor actual de iteracion: 9&Valor actual de iteracion: 10&El numero (10) es par!!&exitosamente
-
+///exitosamente
+//        Valor actual de iteracion: 0
+//        El numero (0) es par!!
+//        Valor actual de iteracion: 1
+//        Valor actual de iteracion: 2
+//        El numero (2) es par!!
+//        Valor actual de iteracion: 3
+//        Valor actual de iteracion: 4
+//        El numero (4) es par!!
+//        Valor actual de iteracion: 5
+//        Valor actual de iteracion: 6
+//        El numero (6) es par!!
+//        Valor actual de iteracion: 7
+//        Valor actual de iteracion: 8
+//        El numero (8) es par!!
+//        Valor actual de iteracion: 9
+//        Valor actual de iteracion: 10
+//        El numero (10) es par!!
 
 class MainModule{
     static void main(){

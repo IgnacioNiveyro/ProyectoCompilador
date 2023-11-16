@@ -37,6 +37,6 @@ public class NodoLlamada extends NodoSentencia{
     public void generarCodigo() throws IOException{
         nodoAcceso.generarCodigo();
         if(!tipoLlamada.obtenerNombreClase().equals("void"))
-            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("POP       ; El retorno del metodo invocado no es void por lo que el valor retornado no es asignado a ninguna variable entonces se descarta");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("POP       ; El retorno del metodo invocado se descarta");
     }
 }

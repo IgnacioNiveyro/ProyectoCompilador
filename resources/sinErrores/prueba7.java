@@ -1,4 +1,6 @@
-///<0&00&>0&exitosamente
+//<0
+//00
+//>0
 
 class A{
     static void main(){

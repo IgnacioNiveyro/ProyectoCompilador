@@ -1,5 +1,16 @@
-///8=8&3=3&6=6&5=5&1=1&false=false&true=true&false=false&true=true&true=true&true=true&false=false&true=true&exitosamente
-
+//8=8
+//3=3
+//6=6
+//5=5
+//1=1
+//false=false
+//true=true
+//false=false
+//true=true
+//true=true
+//true=true
+//false=false
+//true=true
 
 class A{
     static void main(){

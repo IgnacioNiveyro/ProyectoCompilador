@@ -1,5 +1,4 @@
-///m1enA&m2enA&m3enB& &m1enB&m2enB&m3enB&exitosamente
-
+///m1enA&m2enA&m3enB&m1enB&m2enB&m3enB&&exitosamente
 
 class MainModule{
 

@@ -1,4 +1,6 @@
-///111&222&333&exitosamente
+//111
+//222
+//333
 
 class A{
     static void main(){

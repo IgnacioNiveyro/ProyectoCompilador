@@ -1,5 +1,10 @@
-///1111&2222&truefalse&true&jmm& &!&exitosamente
-
+//1111
+//2222
+//truefalse
+//true
+//jmm
+//
+//!
 
 class A{
     static void main(){

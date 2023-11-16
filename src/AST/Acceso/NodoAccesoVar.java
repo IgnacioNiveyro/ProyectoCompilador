@@ -93,11 +93,38 @@ public class NodoAccesoVar extends NodoAcceso{
             encadenado.generarCodigo();
     }
     public void generarCodigo() throws IOException{
-        if(variableLocal != null){
-            if(!esLadoIzquierdo() || encadenado != null)
-                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD "+variableLocal.obtenerOffsetVariable()+" ; Se apila el valor de la variable local "+variableLocal.obtenerNombreVariable());
+        if(atributo != null) {
+            if (atributo.esTipoStatic())
+                generarAccesoStatic();
             else
-                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STORE "+variableLocal.obtenerOffsetVariable());
+                generarAccesoDinamico();
+        }else
+            generarCo1digo();
+    }
+    public void generarAccesoStatic() throws IOException{
+        boolean acceso = !esLadoIzquierdo() || encadenado != null;
+        String label = atributo.obtenerLabel();
+        //if(!atributo.pushieEtiqueta()) {
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("PUSH " + label);
+            atributo.setEtiquetaPusheada();
+        //}
+        if(acceso){
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADREF 0");
+        }else{
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
+            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREREF 0");
+        }
+    }
+    public void generarAccesoDinamico() throws IOException{
+        generarCo1digo();
+    }
+    public void generarCo1digo() throws IOException{
+        if(variableLocal != null){
+            if(!esLadoIzquierdo() || encadenado != null) {
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD " + variableLocal.obtenerOffsetVariable() + " ; Se apila el valor de la variable local " + variableLocal.obtenerNombreVariable());
+            }else {
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STORE " + variableLocal.obtenerOffsetVariable());
+            }
         }
         if(parametro != null){
             if(!esLadoIzquierdo() || encadenado != null)
@@ -106,14 +133,19 @@ public class NodoAccesoVar extends NodoAcceso{
                 GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STORE "+parametro.getOffset());
         }
         if(atributo != null){
-            GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
-            if(!esLadoIzquierdo() || encadenado != null){
-                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADREF "+atributo.getOffset()+"              ; Se apila el valor del atributo "+atributo.obtenerNombreAtributo());
+            if(atributo.esTipoStatic()){
+
+            }else{
+                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOAD 3");
+                if(!esLadoIzquierdo() || encadenado != null){
+                    GeneradorInstrucciones.obtenerInstancia().generarInstruccion("LOADREF "+atributo.getOffset()+"              ; Se apila el valor del atributo "+atributo.obtenerNombreAtributo());
+                }
+                else{
+                    GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
+                    GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREREF "+atributo.getOffset());
+                }
             }
-            else{
-                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("SWAP");
-                GeneradorInstrucciones.obtenerInstancia().generarInstruccion("STOREREF "+atributo.getOffset());
-            }
+
         }
         if(encadenado != null)
             encadenado.generarCodigo();

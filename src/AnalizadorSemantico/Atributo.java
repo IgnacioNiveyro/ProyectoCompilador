@@ -8,12 +8,16 @@ public class Atributo {
     private Tipo tipoDelAtributo;
     private boolean esHeredado;
     private int offset;
+    boolean etiquetaPusheada;
+    static boolean cargueVT;
 
     public Atributo(Token token, Tipo tipoDelAtributo, String esStatic){
         this.esStatic = esStatic;
         this.tipoDelAtributo = tipoDelAtributo;
         this.token = token;
         this.esHeredado = false;
+        this.etiquetaPusheada = false;
+        this.cargueVT = false;
     }
     public void setOffset(int offset){
         this.offset = offset;
@@ -53,5 +57,19 @@ public class Atributo {
     public boolean esHeredado(){
         return esHeredado;
     }
-
+    public String obtenerLabel(){
+        return "atr_"+this.obtenerNombreAtributo();
+    }
+    public boolean pushieEtiqueta(){
+        return etiquetaPusheada;
+    }
+    public void setEtiquetaPusheada(){
+        etiquetaPusheada = true;
+    }
+    public boolean cargueVT(){
+        return cargueVT;
+    }
+    public void setCargueVT(){
+        cargueVT = true;
+    }
 }

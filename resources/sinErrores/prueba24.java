@@ -1,5 +1,5 @@
-///m1 en B&m1 en C&exitosamente
-
+//m1 en B
+//m1 en C
 
 class A{
     static void main(){

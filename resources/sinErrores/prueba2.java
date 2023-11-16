@@ -1,4 +1,4 @@
-///Hola Mundo!&exitosamente
+//Hola Mundo!
 
 class A{
     static void main(){

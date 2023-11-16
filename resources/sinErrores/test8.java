@@ -1,4 +1,10 @@
 ///true&false&true&false&false&false&exitosamente
+//true
+//false
+//true
+//false
+//false
+//false
 
 class MainModule{
     static void main(){
